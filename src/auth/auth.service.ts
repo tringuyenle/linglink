@@ -39,7 +39,8 @@ export class AuthService {
             }
             return user; 
         } catch(error) {
-            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
+            if (error.message == 'Wrong password') return error;
+            throw new HttpException('Something wrong', HttpStatus.BAD_REQUEST);
         }
     }
 }
