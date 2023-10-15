@@ -1,7 +1,6 @@
-import { Expose } from "class-transformer";
 import { IsEmail, IsNotEmpty } from "class-validator";
 
-export class AuthDTO {
+export class RegisterDTO {
     @IsEmail()
     @IsNotEmpty()
     email: string
@@ -9,9 +8,7 @@ export class AuthDTO {
     @IsNotEmpty()
     hashedPassword: string
 
-    firstName: string
-
-    lastName: string
+    name: string
 
     createdAt: Date
 

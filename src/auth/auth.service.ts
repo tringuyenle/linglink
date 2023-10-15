@@ -1,32 +1,45 @@
-import { Injectable } from '@nestjs/common';
-import { Model } from 'mongoose';
+import { ForbiddenException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as argon from 'argon2';
-import { AuthDTO } from './dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { User } from '../schemas/user.schema';
+import { RegisterDTO } from './dto';
+import { UserService } from '../user/user.service';
+import { LogInDTO } from './dto/login.dto';
 
 @Injectable({})
 export class AuthService {
-    constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+    constructor(private readonly userService: UserService) {}
     
-    async register(authDTO: AuthDTO) {
+    async register(registrationData: RegisterDTO) {
         //generate password to hashedpassword
-        const hashedPassword = await argon.hash(authDTO.hashedPassword);
-        //insert data into database
-        const newUser = new this.userModel({
-            email: authDTO.email,
-            hashedPassword: hashedPassword,
-            firstName: authDTO.firstName,
-            lastName: authDTO.lastName,
-            createdAt: new Date,
-            updatedAt: new Date,
-        });
-        return await newUser.save();
+        const hashedPassword = await argon.hash(registrationData.hashedPassword);
+        
+        try {
+            //insert data into database
+            const createdUser = await this.userService.create({
+              ...registrationData,
+              hashedPassword: hashedPassword,
+              createdAt: new Date,
+              updatedAt: new Date,
+            });
+            createdUser.hashedPassword = undefined;
+            return createdUser;
+          } catch (error) {
+            if (error.code == "11000") {
+                throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
+            }
+            throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    login() {
-        return {
-            message: 'hello login already',
+    async login(loginData: LogInDTO) {
+        try {
+            const user = await this.userService.getByEmail(loginData.email);
+            const isPasswordMatching = await argon.verify(user.hashedPassword, loginData.password);
+            if (!isPasswordMatching) {
+                throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
+            }
+            return user; 
+        } catch(error) {
+            throw new HttpException('Wrong credentials provided', HttpStatus.BAD_REQUEST);
         }
     }
 }
