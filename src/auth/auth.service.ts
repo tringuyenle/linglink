@@ -4,12 +4,14 @@ import { RegisterDTO } from './dto';
 import { UserService } from '../user/user.service';
 import { LogInDTO } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable({})
 export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
+        private readonly configService: ConfigService
         ) {}
     
     async register(registrationData: RegisterDTO) {
@@ -24,8 +26,8 @@ export class AuthService {
               createdAt: new Date,
               updatedAt: new Date,
             });
-            createdUser.hashedPassword = undefined;
-            return createdUser;
+                
+            return await this.signJwtToken(createdUser.id, createdUser.email); 
           } catch (error) {
             if (error.code == "11000") {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
@@ -42,9 +44,23 @@ export class AuthService {
                 throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
             }
             user.hashedPassword = undefined;
-            return user; 
+            return await this.signJwtToken(user.id, user.email); 
         } catch(error) {
             return error;
         }
+    }
+
+    async signJwtToken(userId: string, email: string): Promise<{accessToken: string}> {
+        const payload = {
+            sub: userId,
+            email
+        }
+        const jwtString = await this.jwtService.signAsync(payload, {
+            expiresIn: '10m',
+            secret: this.configService.get('JWT_SECRET')
+        })
+        return {
+            accessToken: jwtString,
+        };
     }
 }
