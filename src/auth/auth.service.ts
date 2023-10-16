@@ -3,10 +3,14 @@ import * as argon from 'argon2';
 import { RegisterDTO } from './dto';
 import { UserService } from '../user/user.service';
 import { LogInDTO } from './dto/login.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable({})
 export class AuthService {
-    constructor(private readonly userService: UserService) {}
+    constructor(
+        private readonly userService: UserService,
+        private readonly jwtService: JwtService,
+        ) {}
     
     async register(registrationData: RegisterDTO) {
         //generate password to hashedpassword
@@ -37,10 +41,10 @@ export class AuthService {
             if (!isPasswordMatching) {
                 throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
             }
+            user.hashedPassword = undefined;
             return user; 
         } catch(error) {
-            if (error.message == 'Wrong password') return error;
-            throw new HttpException('Something wrong', HttpStatus.BAD_REQUEST);
+            return error;
         }
     }
 }
