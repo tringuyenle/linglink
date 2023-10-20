@@ -15,6 +15,14 @@ export class UserService {
         }
         throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
     }
+
+    async getById(_id: string) {
+        const user = await this.userModel.findOne({ _id: _id }).exec();
+        if (user) {
+          return user;
+        }
+        throw new HttpException('User with this id does not exist', HttpStatus.NOT_FOUND);
+    }
      
     async create(userData: CreateUserDTO) {
         const newUser = await this.userModel.create(userData);
