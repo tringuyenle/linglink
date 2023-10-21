@@ -33,7 +33,6 @@ export class AuthService {
                 userId: createdUser.id
             }); 
           } catch (error) {
-            return error.message;
             if (error.code == "11000") {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
             }
@@ -56,22 +55,6 @@ export class AuthService {
             return error;
         }
     }
-
-    // async signJwtToken(userId: string, email: string): Promise<{accessToken: string, refreshToken: string}> {
-    //     const payload = {
-    //         sub: userId,
-    //         email
-    //     }
-    //     const securityConfig = this.configService.get<SecurityConfig>('security');
-    //     const jwtString = await this.jwtService.signAsync(payload, {
-    //         expiresIn: securityConfig.expiresIn,
-    //         secret: this.configService.get('JWT_SECRET')
-    //     })
-    //     return {
-    //         accessToken: jwtString,
-    //         refreshToken: jwtString,
-    //     };
-    // }
 
     async generateTokens(payload: { userId: string }): Promise<Token> {
         const [accessToken, refreshToken] = await Promise.all([
@@ -111,7 +94,6 @@ export class AuthService {
                 userId,
             });
         } catch (e) {
-            return e;
             throw new UnauthorizedException();
         }
     }
