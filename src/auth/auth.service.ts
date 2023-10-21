@@ -29,7 +29,9 @@ export class AuthService {
               updatedAt: new Date,
             });
                 
-            return this.generateTokens(createdUser.id); 
+            return this.generateTokens({
+                userId: createdUser.id
+            }); 
           } catch (error) {
             return error.message;
             if (error.code == "11000") {
@@ -47,7 +49,9 @@ export class AuthService {
                 throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
             }
             user.hashedPassword = undefined;
-            return this.generateTokens(user.id); 
+            return this.generateTokens({
+                userId: user.id
+            }); 
         } catch(error) {
             return error;
         }
@@ -69,9 +73,11 @@ export class AuthService {
     //     };
     // }
 
-    async generateTokens(payload: { userId: string }): Promise<{accessToken: string, refreshToken: string}> {
-            const accessToken = await this.generateAccessToken(payload);
-            const refreshToken = await this.generateRefreshToken(payload);
+    async generateTokens(payload: { userId: string }): Promise<Token> {
+        const [accessToken, refreshToken] = await Promise.all([
+            this.generateAccessToken(payload),
+            this.generateRefreshToken(payload)
+        ]);
 
         return {
             accessToken: accessToken,
@@ -80,30 +86,32 @@ export class AuthService {
     }
 
     async generateAccessToken(payload: { userId: string }): Promise<string> {
-        return this.jwtService.sign(payload, {
+        const securityConfig = this.configService.get<SecurityConfig>('security');
+        return this.jwtService.signAsync(payload, {
             secret: this.configService.get('JWT_SECRET'),
-            expiresIn: '15m',
+            expiresIn: securityConfig.expiresIn,
         });
     }
 
     async generateRefreshToken(payload: { userId: string }): Promise<string> {
-        // const securityConfig = this.configService.get<SecurityConfig>('security');
-        return this.jwtService.sign(payload, {
+        const securityConfig = this.configService.get<SecurityConfig>('security');
+        return this.jwtService.signAsync(payload, {
             secret: this.configService.get('JWT_REFRESH_SECRET'),
-            expiresIn: '30m',
+            expiresIn: securityConfig.refreshIn,
         });
     }
 
     async refreshToken(token: string) {
         try {
-            const { userId } = this.jwtService.verify(token, {
-            secret: this.configService.get('JWT_REFRESH_SECRET'),
-        });
+            const { userId } = await this.jwtService.verifyAsync(token, {
+                secret: this.configService.get('JWT_REFRESH_SECRET'),
+            });
 
-        return this.generateTokens({
-            userId,
-        });
+            return this.generateTokens({
+                userId,
+            });
         } catch (e) {
+            return e;
             throw new UnauthorizedException();
         }
     }
