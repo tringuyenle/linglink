@@ -10,6 +10,8 @@ export class RegisterDTO {
 
     name: string
 
+    role: string
+
     createdAt: Date
 
     updatedAt: Date

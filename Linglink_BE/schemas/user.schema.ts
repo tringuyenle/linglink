@@ -12,6 +12,9 @@ export class User {
     name: string;
 
     @Prop()
+    role: string;
+
+    @Prop()
     createdAt: Date;
 
     @Prop()

@@ -10,6 +10,8 @@ export class CreateUserDTO {
 
     name: string
 
+    role: string
+
     createdAt: Date
 
     updatedAt: Date
