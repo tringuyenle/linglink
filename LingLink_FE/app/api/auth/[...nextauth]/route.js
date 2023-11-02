@@ -23,8 +23,8 @@ export const authOptions = {
           password: credentials.password,
         };
 
-        const res = await fetch('https://cloudcoders.azurewebsites.net/api/tokens', {
-          method: 'POST',
+        const res = await fetch('http://localhost:3000/auth/login', {
+          method: 'POST', 
           body: JSON.stringify(payload),
           headers: {
             'Content-Type': 'application/json',

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
-import { PassportModule } from '@nestjs/passport';
+import config from '../common/configs/config';
 import { UserService } from 'src/user/user.service';
 import { UserSchema } from '../../schemas/user.schema';
 import { AuthController } from './auth.controller';
@@ -10,8 +10,8 @@ import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), JwtModule.register({})],
+  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), JwtModule.register({}), ConfigModule.forRoot({load: [config],}),],
   controllers: [AuthController],
-  providers: [AuthService, UserService, ConfigService, JwtStrategy]
+  providers: [AuthService, UserService, JwtStrategy]
 })
 export class AuthModule {}
