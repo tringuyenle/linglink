@@ -1,17 +1,16 @@
 {
-  "name": "linglink-fe",
+  "name": "ll-fe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3005",
     "build": "next build -p 3005",
     "start": "next start -p 3005",
-    "lint": "next lint"
+    "lint": "next lint -p 3005"
   },
   "dependencies": {
     "next": "13.5.6",
     "next-auth": "^4.24.4",
-    "next-cli": "^1.0.0",
     "react": "^18",
     "react-dom": "^18"
   },
