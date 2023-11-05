@@ -25,8 +25,6 @@ export class AuthService {
             const createdUser = await this.userService.create({
               ...registrationData,
               hashedPassword: hashedPassword,
-              createdAt: new Date,
-              updatedAt: new Date,
             });
                 
             return this.generateTokens({

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema()
+@Schema({ timestamps: true })
 export class User {
     @Prop({unique: true})
     email: string;
@@ -13,12 +13,6 @@ export class User {
 
     @Prop()
     role: string;
-
-    @Prop()
-    createdAt: Date;
-
-    @Prop()
-    updatedAt: Date;
 };
 
 export const UserSchema = SchemaFactory.createForClass(User);
