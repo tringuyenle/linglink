@@ -9,7 +9,6 @@ export class UserController {
 
     @Get('me')
     me(@GetUser() user: User): User {
-        
         return user;   
     }
 }

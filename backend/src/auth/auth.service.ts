@@ -43,7 +43,7 @@ export class AuthService {
             const user = await this.userService.getByEmail(loginData.email);
             const isPasswordMatching = await argon.verify(user.hashedPassword, loginData.password);
             if (!isPasswordMatching) {
-                throw new HttpException('Wrong password', HttpStatus.BAD_REQUEST);
+                throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
             }
             user.hashedPassword = undefined;
             return this.generateTokens({
