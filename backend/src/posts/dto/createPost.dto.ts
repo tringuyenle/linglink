@@ -1,4 +1,5 @@
 import { IsNotEmpty } from "class-validator";
+import { User } from "schemas/user.schema";
 
 export class CreatePostDTO {
     @IsNotEmpty()
@@ -9,7 +10,7 @@ export class CreatePostDTO {
 
     question: string
 
-    user: string
+    user: User
 
     createdAt: Date
 

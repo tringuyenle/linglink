@@ -10,8 +10,9 @@ export class PostsController {
     constructor(private readonly postsService: PostsService) {}
 
     @Post()
-    create(@Body() createPostDto: CreatePostDTO) {
-        return this.postsService.create(createPostDto);
+    @UseGuards(MyJwtGuard)
+    create(@Req() req, @Body() createPostDto: CreatePostDTO) {
+        return this.postsService.create(req.user, createPostDto);
     }
 
     @Get()
@@ -20,8 +21,8 @@ export class PostsController {
     }
 
     @Get(':id')
-    findOne(@Param('id') id: string) {
-        return this.postsService.findOne(+id);
+    getPostById(@Param() id: string) {
+        return this.postsService.getPostById(id);
     }
 
     @Put(':id')
