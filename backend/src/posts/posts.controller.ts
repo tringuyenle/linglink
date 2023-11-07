@@ -17,21 +17,21 @@ export class PostsController {
 
     @Get()
     findAll() {
-        return this.postsService.findAll();
+        return this.postsService.getAllPosts();
     }
 
     @Get(':id')
-    getPostById(@Param() id: string) {
+    getPostById(@Param('id') id: string) {
         return this.postsService.getPostById(id);
     }
 
     @Put(':id')
     update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDTO) {
-        return this.postsService.update(+id, updatePostDto);
+        return this.postsService.update(id, updatePostDto);
     }
 
     @Delete(':id')
     remove(@Param('id') id: string) {
-        return this.postsService.remove(+id);
+        return this.postsService.remove(id);
     }
 }
