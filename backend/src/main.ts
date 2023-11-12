@@ -30,6 +30,6 @@ async function bootstrap() {
 
   // add middleware to validation
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(3000, '0.0.0.0');
 }
 bootstrap();

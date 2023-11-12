@@ -7,9 +7,10 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: linklink_docker_compose
-    environment:
-      - PORT=${PORT}
+    env_file: 
+      - .env
     ports:
-      - '3003:3003'
+      - '3003:3000'
+    network_mode: host
     volumes:
       - ./src:/app/src
