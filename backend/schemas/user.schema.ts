@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { UserRoles } from '../src/user/enums/user.enum';
-import { TargetTypes } from '../src/user/enums/target.enum';
+import { UserRoles } from '../src/common/enums/user.enum';
+import { TargetTypes } from '../src/common/enums/target.enum';
 
 export class Target {
     targetType: TargetTypes;
 
-    targetPoint: number;
+    targetScore: number;
+
+    currentScore: { type: number, default: 0 };
 
     targetDate: Date;
 };

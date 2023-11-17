@@ -12,7 +12,7 @@ export class PostsService {
 
     async create(user: User, postsData: CreatePostDTO) {
         const newPost = await this.postModel.create(postsData);
-        newPost.user = user;
+        newPost.author = user;
         await newPost.save();
         return newPost;
     }

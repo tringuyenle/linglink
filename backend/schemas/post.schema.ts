@@ -5,7 +5,7 @@ import { User } from './user.schema';
 @Schema({ timestamps: true })
 export class Post {
     @Prop()
-    title: string;
+    topic: string;
 
     @Prop()
     content: string;
@@ -13,8 +13,23 @@ export class Post {
     @Prop()
     question: string;
 
+    @Prop()
+    img_url: string;
+
+    @Prop()
+    upVotes: number;
+
     @Prop({ type: Types.ObjectId, ref: 'User' })
-    user: User;
+    upVotesList: User[];
+
+    @Prop()
+    downVotes: number;
+
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    downVotesList: User[];
+
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    author: User;
 };
 
 export const PostSchema = SchemaFactory.createForClass(Post);

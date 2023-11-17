@@ -1,0 +1,14 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Types } from 'mongoose';
+import { Post } from './post.schema';
+
+@Schema({ timestamps: true })
+export class Topic {
+    @Prop()
+    topicName: string;
+
+    @Prop({ type: Types.ObjectId, ref: 'Post' })
+    postsList: Post[];
+};
+
+export const TopicSchema = SchemaFactory.createForClass(Topic);
