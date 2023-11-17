@@ -1,4 +1,6 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
+import { Target } from "schemas/user.schema";
+import { UserRoles } from "../../user/enums/user.enum";
 
 export class RegisterDTO {
     @IsEmail()
@@ -10,7 +12,9 @@ export class RegisterDTO {
 
     name: string
 
-    role: string
+    role: UserRoles
+
+    target: Target
 
     createdAt: Date
 

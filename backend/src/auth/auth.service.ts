@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Token } from './models/token.model';
 import { SecurityConfig } from '../common/configs/config.interface';
+import { UserRoles } from 'src/user/enums/user.enum';
 
 @Injectable({})
 export class AuthService {
@@ -25,6 +26,7 @@ export class AuthService {
             const createdUser = await this.userService.create({
               ...registrationData,
               hashedPassword: hashedPassword,
+              role: UserRoles.STUDENT,
             });
                 
             return this.generateTokens({
@@ -40,7 +42,7 @@ export class AuthService {
 
     async login(loginData: LogInDTO) {
         try {
-            const user = await this.userService.getByEmail(loginData.email);
+            const user = await this.userService.getByUserEmail(loginData.email);
             const isPasswordMatching = await argon.verify(user.hashedPassword, loginData.password);
             if (!isPasswordMatching) {
                 throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);

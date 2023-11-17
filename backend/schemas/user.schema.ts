@@ -1,4 +1,14 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { UserRoles } from '../src/user/enums/user.enum';
+import { TargetTypes } from '../src/user/enums/target.enum';
+
+export class Target {
+    targetType: TargetTypes;
+
+    targetPoint: number;
+
+    targetDate: Date;
+};
 
 @Schema({ timestamps: true })
 export class User {
@@ -12,7 +22,10 @@ export class User {
     name: string;
 
     @Prop()
-    role: string;
+    role: UserRoles;
+
+    @Prop()
+    target: Target;
 };
 
 export const UserSchema = SchemaFactory.createForClass(User);
