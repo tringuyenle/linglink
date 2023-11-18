@@ -10,7 +10,7 @@ import { UpdatePostDTO } from './dto/updatePost.dto';
 export class PostsService {
     constructor(@InjectModel('Post') private readonly postModel: Model<Post>) {}
 
-    async create(user: User, postsData: CreatePostDTO) {
+    async createPost(user: User, postsData: CreatePostDTO) {
         const newPost = await this.postModel.create(postsData);
         newPost.author = user;
         await newPost.save();
@@ -29,11 +29,19 @@ export class PostsService {
         throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
     }
 
-    async update(postId: string ,postsData: UpdatePostDTO) {
-        return await this.postModel.findOneAndUpdate({_id: postId} as FilterQuery<Post>, postsData);
+    async updatePostById(user: User, postId: string ,postsData: UpdatePostDTO) {
+        const currentPost = await this.getPostById(postId);
+        if (user.email === currentPost.author.email) {
+            return await this.postModel.findOneAndUpdate({_id: postId} as FilterQuery<Post>, postsData, { new: true });
+        }
+        return new HttpException('The post has been updated by the author', HttpStatus.UNAUTHORIZED)
     }
 
-    async remove(postId: string) {
-        return await this.postModel.deleteOne({_id: postId} as FilterQuery<Post>);
+    async removePostById(user: User, postId: string) {
+        const currentPost = await this.getPostById(postId);
+        if (user.email === currentPost.author.email) {
+            return await this.postModel.deleteOne({_id: postId} as FilterQuery<Post>);
+        }
+        return new HttpException('The post has been updated by the author', HttpStatus.UNAUTHORIZED)
     }
 }
