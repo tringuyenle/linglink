@@ -27,6 +27,11 @@ export class PostsController {
         return this.postsService.getPostById(id);
     }
 
+    @Get('topic/:id')
+    getPostByTopic(@Param('id') id: string) {
+        return this.postsService.getPostByTopic(id);
+    }
+
     @Put(':id')
     @UseGuards(MyJwtGuard)
     updatePostById(@Req() req, @Param('id') id: string, @Body() updatePostDto: UpdatePostDTO) {

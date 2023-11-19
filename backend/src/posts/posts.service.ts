@@ -1,7 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Topic } from 'schemas/topic.schema';
 import { User } from 'schemas/user.schema';
 import { Post } from '../../schemas/post.schema';
 import { CreatePostDTO } from './dto/createPost.dto';
@@ -16,12 +15,18 @@ export class PostsService {
     ) {}
 
     async createPost(user: User, postsData: CreatePostDTO) {
-        const newPost = await this.postModel.create(postsData);
-        newPost.author = user;
         const topic = await this.topicsService.getTopicById(postsData.topicID);
-        newPost.topic = topic;
+
+        const newPost = await this.postModel.create(
+            {
+                ...postsData,
+                author: user,
+                topic: topic
+            }
+        );
+
         await newPost.save();
-        await this.topicsService.addNewPostIntoTopicById(postsData.topicID,newPost);
+        if (topic) await this.topicsService.addNewPostIntoTopicById(postsData.topicID, newPost);
         return newPost;
     }
 
@@ -30,9 +35,17 @@ export class PostsService {
     }
 
     async getPostById(postId: string) {
-        const post = await this.postModel.findOne({ _id: postId }).populate({path: 'author', select: '-hashedPassword'}).exec();
+        const post = await this.postModel.findById( postId ).populate({path: 'author', select: '-hashedPassword'}).exec();
         if (post) {
           return post;
+        }
+        throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    async getPostByTopic(topicId: string) {
+        const topic = await this.topicsService.getTopicById(topicId);
+        if (topic) {
+          return topic.postsList;
         }
         throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
     }
@@ -48,8 +61,9 @@ export class PostsService {
     async removePostById(user: User, postId: string) {
         const currentPost = await this.getPostById(postId);
         if (user.email === currentPost.author.email) {
+            await this.topicsService.deletePostInTopicById(currentPost.topic.toString(), currentPost);
             return await this.postModel.deleteOne({_id: postId} as FilterQuery<Post>);
         }
-        return new HttpException('The post has been updated by the author', HttpStatus.UNAUTHORIZED)
+        return new HttpException('The post has been deleted by the author', HttpStatus.UNAUTHORIZED)
     }
 }

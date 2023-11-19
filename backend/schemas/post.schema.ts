@@ -1,11 +1,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { Question } from './question.schema';
 import { Topic } from './topic.schema';
 import { User } from './user.schema';
 
 @Schema({ timestamps: true })
 export class Post {
+    _id: ObjectId;
+
     @Prop({ type: Types.ObjectId, ref: 'Topic' })
     topic: Topic;
 

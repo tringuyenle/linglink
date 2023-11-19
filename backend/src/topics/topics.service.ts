@@ -19,11 +19,11 @@ export class TopicsService {
     }
     
     async getTopicById(id: string): Promise<Topic> {
-        const topic = await this.topicModel.findById(id).populate({path: 'postsList'}).exec();
-        if (topic) {
-            return topic;
-        }
-        throw new HttpException('Topic with this id does not exist', HttpStatus.NOT_FOUND);
+        return await this.topicModel.findById(id).populate({path: 'postsList'}).exec();
+        // if (topic) {
+        //     return topic;
+        // }
+        // throw new HttpException('Topic with this id does not exist', HttpStatus.NOT_FOUND);
     }
     
     async updateTopicById(id: string, updateTopicDto: CreateTopicDTO): Promise<Topic> {
@@ -32,6 +32,10 @@ export class TopicsService {
 
     async addNewPostIntoTopicById(id: string, post: Post): Promise<Topic> {
         return this.topicModel.findByIdAndUpdate(id, { $push: {postsList: post}}, { new: true }).exec();
+    }
+
+    async deletePostInTopicById(id: string, post: Post): Promise<Topic> {
+        return this.topicModel.findByIdAndUpdate(id, { $pull: {postsList: post._id}}, { new: true }).exec();
     }
     
     async removeTopicById(id: string): Promise<Topic> {

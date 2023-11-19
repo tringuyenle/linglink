@@ -1,9 +1,11 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 import { Post } from './post.schema';
 
 @Schema({ timestamps: true })
 export class Topic {
+    _id: ObjectId;
+
     @Prop()
     topicName: string;
 
