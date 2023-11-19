@@ -7,16 +7,18 @@ import { PostsService } from './posts.service';
 //@UseGuards(MyJwtGuard)
 @Controller('posts')
 export class PostsController {
-    constructor(private readonly postsService: PostsService) {}
+    constructor(
+        private readonly postsService: PostsService,
+    ) {}
 
     @Post()
     @UseGuards(MyJwtGuard)
-    create(@Req() req, @Body() createPostDto: CreatePostDTO) {
-        return this.postsService.create(req.user, createPostDto);
+    createPost(@Req() req, @Body() createPostDto: CreatePostDTO) {
+        return this.postsService.createPost(req.user, createPostDto);
     }
 
     @Get()
-    findAll() {
+    getAllPosts() {
         return this.postsService.getAllPosts();
     }
 
@@ -25,13 +27,20 @@ export class PostsController {
         return this.postsService.getPostById(id);
     }
 
+    @Get('topic/:id')
+    getPostByTopic(@Param('id') id: string) {
+        return this.postsService.getPostByTopic(id);
+    }
+
     @Put(':id')
-    update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDTO) {
-        return this.postsService.update(id, updatePostDto);
+    @UseGuards(MyJwtGuard)
+    updatePostById(@Req() req, @Param('id') id: string, @Body() updatePostDto: UpdatePostDTO) {
+        return this.postsService.updatePostById(req.user, id, updatePostDto);
     }
 
     @Delete(':id')
-    remove(@Param('id') id: string) {
-        return this.postsService.remove(id);
+    @UseGuards(MyJwtGuard)
+    removePostById(@Req() req, @Param('id') id: string) {
+        return this.postsService.removePostById(req.user, id);
     }
 }

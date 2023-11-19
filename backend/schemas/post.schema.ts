@@ -1,20 +1,39 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
+import { Question } from './question.schema';
+import { Topic } from './topic.schema';
 import { User } from './user.schema';
 
 @Schema({ timestamps: true })
 export class Post {
-    @Prop()
-    title: string;
+    _id: ObjectId;
+
+    @Prop({ type: Types.ObjectId, ref: 'Topic' })
+    topic: Topic;
 
     @Prop()
     content: string;
 
     @Prop()
-    question: string;
+    question: Question;
+
+    @Prop()
+    img_url: string;
+
+    @Prop({ default: 0 })
+    upVotes: number;
 
     @Prop({ type: Types.ObjectId, ref: 'User' })
-    user: User;
+    upVotesList: User[];
+
+    @Prop({ default: 0 })
+    downVotes: number;
+
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    downVotesList: User[];
+
+    @Prop({ type: Types.ObjectId, ref: 'User' })
+    author: User;
 };
 
 export const PostSchema = SchemaFactory.createForClass(Post);
