@@ -7,7 +7,7 @@ export class Topic {
     @Prop()
     topicName: string;
 
-    @Prop({ type: Types.ObjectId, ref: 'Post' })
+    @Prop({ type: [Types.ObjectId], ref: 'Post' })
     postsList: Post[];
 };
 

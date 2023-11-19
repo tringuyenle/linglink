@@ -7,7 +7,9 @@ import { PostsService } from './posts.service';
 //@UseGuards(MyJwtGuard)
 @Controller('posts')
 export class PostsController {
-    constructor(private readonly postsService: PostsService) {}
+    constructor(
+        private readonly postsService: PostsService,
+    ) {}
 
     @Post()
     @UseGuards(MyJwtGuard)

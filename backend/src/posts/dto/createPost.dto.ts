@@ -1,9 +1,8 @@
 import { IsNotEmpty } from "class-validator";
 import { Question } from "schemas/question.schema";
-import { User } from "schemas/user.schema";
 
 export class CreatePostDTO {
-    topic: string;
+    topicID: string;
 
     @IsNotEmpty()
     content: string;
@@ -12,18 +11,5 @@ export class CreatePostDTO {
 
     img_url: string;
 
-    upVotes: number;
-
-    upVotesList: User[];
-
-    downVotes: number;
-
-    downVotesList: User[];
-
-    @IsNotEmpty()
-    author: User;
-
-    createdAt: Date
-
-    updatedAt: Date
+    audio_url: string;
 }

@@ -20,7 +20,6 @@ export class UpdatePostDTO {
 
     downVotesList: User[];
 
-    @IsNotEmpty()
     author: User;
 
     createdAt: Date

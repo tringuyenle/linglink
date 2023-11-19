@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Post } from 'schemas/post.schema';
 import { Topic } from 'schemas/topic.schema';
 import { CreateTopicDTO } from './dto/createTopic.dto';
 
@@ -18,11 +19,19 @@ export class TopicsService {
     }
     
     async getTopicById(id: string): Promise<Topic> {
-        return this.topicModel.findById(id).exec();
+        const topic = await this.topicModel.findById(id).populate({path: 'postsList'}).exec();
+        if (topic) {
+            return topic;
+        }
+        throw new HttpException('Topic with this id does not exist', HttpStatus.NOT_FOUND);
     }
     
     async updateTopicById(id: string, updateTopicDto: CreateTopicDTO): Promise<Topic> {
         return this.topicModel.findByIdAndUpdate(id, updateTopicDto, { new: true }).exec();
+    }
+
+    async addNewPostIntoTopicById(id: string, post: Post): Promise<Topic> {
+        return this.topicModel.findByIdAndUpdate(id, { $push: {postsList: post}}, { new: true }).exec();
     }
     
     async removeTopicById(id: string): Promise<Topic> {
