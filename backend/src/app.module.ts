@@ -7,10 +7,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PostsModule } from './posts/posts.module';
 import { TopicsModule } from './topics/topics.module';
 import { TagsModule } from './tags/tags.module';
+import { QuestionsModule } from './questions/questions.module';
 require("dotenv").config();
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DB_URL), AuthModule , UserModule, PostsModule, TopicsModule, TagsModule],
+  imports: [MongooseModule.forRoot(process.env.DB_URL), AuthModule , UserModule, PostsModule, TopicsModule, TagsModule, QuestionsModule],
   controllers: [AppController],
   providers: [AppService],
 })
