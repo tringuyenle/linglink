@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { Post } from 'schemas/post.schema';
 import { Topic } from 'schemas/topic.schema';
 import { CreateTopicDTO } from './dto/createTopic.dto';
+import { UpdateTopicDTO } from './dto/updateTopic.dto';
 
 @Injectable()
 export class TopicsService {
@@ -26,7 +27,7 @@ export class TopicsService {
         // throw new HttpException('Topic with this id does not exist', HttpStatus.NOT_FOUND);
     }
     
-    async updateTopicById(id: string, updateTopicDto: CreateTopicDTO): Promise<Topic> {
+    async updateTopicById(id: string, updateTopicDto: UpdateTopicDTO): Promise<Topic> {
         return this.topicModel.findByIdAndUpdate(id, updateTopicDto, { new: true }).exec();
     }
 

@@ -1,27 +1,34 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FilterQuery, Model } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import { User } from 'schemas/user.schema';
 import { Post } from '../../schemas/post.schema';
 import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
 import { TopicsService } from '../topics/topics.service';
+import { CreateQuestionDTO } from 'src/questions/dto/createQuestion.dto';
+import { QuestionsService } from 'src/questions/questions.service';
 
 @Injectable()
 export class PostsService {
     constructor(
         @InjectModel('Post') private readonly postModel: Model<Post>,
-        private readonly topicsService: TopicsService
+        private readonly topicsService: TopicsService,
+        private readonly questionsService: QuestionsService,
     ) {}
 
     async createPost(user: User, postsData: CreatePostDTO) {
         const topic = await this.topicsService.getTopicById(postsData.topicID);
+        let question = null;
+        if (postsData.question) question = new Types.ObjectId(postsData.question);
+        else if (postsData.newQuestion) question = await this.questionsService.createQuestion(postsData.newQuestion);
 
         const newPost = await this.postModel.create(
             {
                 ...postsData,
                 author: user,
-                topic: topic
+                topic: topic,
+                question: question
             }
         );
 

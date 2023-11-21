@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UserRoles } from '../src/common/enums/user.enum';
 import { TargetTypes } from '../src/common/enums/target.enum';
+import { IsEnum } from 'class-validator';
 
 export class Target {
     targetType: TargetTypes;
@@ -23,7 +24,8 @@ export class User {
     @Prop()
     name: string;
 
-    @Prop()
+    @Prop({ type: String, enum: UserRoles, default: UserRoles.STUDENT })
+    @IsEnum(UserRoles)
     role: UserRoles;
 
     @Prop()

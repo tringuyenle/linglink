@@ -14,7 +14,7 @@ export class Post {
     @Prop()
     content: string;
 
-    @Prop()
+    @Prop({ type: Types.ObjectId, ref: 'Question' })
     question: Question;
 
     @Prop()

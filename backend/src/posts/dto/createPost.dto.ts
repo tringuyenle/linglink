@@ -1,5 +1,6 @@
 import { IsNotEmpty } from "class-validator";
 import { Question } from "schemas/question.schema";
+import { CreateQuestionDTO } from "src/questions/dto/createQuestion.dto";
 
 export class CreatePostDTO {
     topicID: string;
@@ -7,7 +8,9 @@ export class CreatePostDTO {
     @IsNotEmpty()
     content: string;
 
-    question: Question;
+    question: string;
+    
+    newQuestion: CreateQuestionDTO;
 
     img_url: string;
 
