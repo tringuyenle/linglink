@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../schemas/user.schema';
 import { CreateUserDTO } from './dto/createUser.dto';
+import { CreateUserByOauthDTO } from './dto/createUserByOauth.dto';
 
 @Injectable()
 export class UserService {
@@ -29,4 +30,14 @@ export class UserService {
         await newUser.save();
         return newUser;
     }
+
+    async findOrCreateByOauth(userData: CreateUserByOauthDTO) {
+      const user = await this.userModel.findOne({ email: userData.email }).exec();
+      if (user) return user;
+      else {
+        const newUser = await this.userModel.create(userData);
+        await newUser.save();
+        return newUser;
+      }
+  }
 }

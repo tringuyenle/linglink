@@ -20,6 +20,19 @@ const extractor = (request: FastifyRequest): string | string[] => {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new FastifyAdapter());
 
+  //fix for error of oauth2: setHeaders is not a function 
+  let fastifyInstance = app.getHttpAdapter().getInstance();
+  fastifyInstance.addHook('onRequest', (request, reply, done) => {
+    reply.setHeader = function (key, value) {
+      return this.raw.setHeader(key, value)
+    }
+    reply.end = function () {
+      this.raw.end()
+    }
+    request.res = reply
+    done()
+  })
+
   // set api router
   app.setGlobalPrefix('api');
   // set api version

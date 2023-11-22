@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { MyJwtGuard } from '../auth/myjwt.guard';
+import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
 import { PostsService } from './posts.service';
