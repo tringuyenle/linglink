@@ -9,6 +9,8 @@ export class RegisterDTO {
     hashedPassword: string
 
     name: string
+    
+    avatar: string
 
     role: string
 
