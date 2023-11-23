@@ -40,7 +40,7 @@ export class AuthService {
 
     async login(loginData: LogInDTO) {
         try {
-            const user = await this.userService.getByEmail(loginData.email);
+            const user = await this.userService.getByUserEmail(loginData.email);
             const isPasswordMatching = await argon.verify(user.hashedPassword, loginData.password);
             if (!isPasswordMatching) {
                 throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);

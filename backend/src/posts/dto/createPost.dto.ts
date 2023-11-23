@@ -1,18 +1,18 @@
 import { IsNotEmpty } from "class-validator";
-import { User } from "schemas/user.schema";
+import { Question } from "schemas/question.schema";
+import { CreateQuestionDTO } from "src/questions/dto/createQuestion.dto";
 
 export class CreatePostDTO {
-    @IsNotEmpty()
-    title: string
+    topicID: string;
 
     @IsNotEmpty()
-    content: string
+    content: string;
 
-    question: string
+    question: string;
+    
+    newQuestion: CreateQuestionDTO;
 
-    user: User
+    img_url: string;
 
-    createdAt: Date
-
-    updatedAt: Date
+    audio_url: string;
 }

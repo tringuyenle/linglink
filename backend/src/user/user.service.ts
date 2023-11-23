@@ -8,7 +8,7 @@ import { CreateUserDTO } from './dto/createUser.dto';
 export class UserService {
     constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
     
-    async getByEmail(email: string) {
+    async getByUserEmail(email: string) {
         const user = await this.userModel.findOne({ email: email }).exec();
         if (user) {
           return user;
@@ -16,7 +16,7 @@ export class UserService {
         throw new HttpException('User with this email does not exist', HttpStatus.NOT_FOUND);
     }
 
-    async getById(_id: string) {
+    async getByUserId(_id: string) {
         const user = await this.userModel.findOne({ _id: _id }).exec();
         if (user) {
           return user;
