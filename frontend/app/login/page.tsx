@@ -1,21 +1,17 @@
-import { Metadata } from "next"
+"use client"
 import Link from "next/link"
-
+import Lottie from "lottie-react";
+import educationAnimation from "@/app/assets/lotties/education.json"
 import UserLoginForm from "@/components/forms/user-login-form"
 import { Button } from "@/components/ui/button"
-
-export const metadata: Metadata = {
-    title: "Authentication",
-    description: "Authentication forms built using the components.",
-}
 
 export default function LoginIn() {
     return (
         <>
             <div className="container relative hidden h-[800px] flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
                 <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-                    <div className="absolute inset-0 bg-zinc-900" />
-                    <div className="relative z-20 flex items-center text-lg font-medium">
+                    <div className="absolute inset-0 bg-[#5f99e4]" />
+                    <div className="relative z-20 flex items-center text-lg font-medium text-white">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -30,15 +26,11 @@ export default function LoginIn() {
                         </svg>
                         Acme Inc
                     </div>
-                    <div className="relative z-20 mt-auto">
-                        <blockquote className="space-y-2">
-                            <p className="text-lg">
-                                &ldquo;This library has saved me countless hours of work and
-                                helped me deliver stunning designs to my clients faster than
-                                ever before.&rdquo;
-                            </p>
-                            <footer className="text-sm">Sofia Davis</footer>
-                        </blockquote>
+                    <div className="relative z-20 mt-6">
+                        <Lottie animationData={educationAnimation} loop={true} />
+                        <div className="mt-6 animate-typing overflow-hidden whitespace-nowrap border-r-4 pr-2 border-r-white text-2xl text-white font-bold">
+                            LingLink - ứng dụng cộng đồng học ngôn ngữ bổ ích.
+                        </div>
                     </div>
                 </div>
                 <div className="lg:p-8">
