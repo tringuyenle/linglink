@@ -1,14 +1,10 @@
-import { Metadata } from "next"
+"use client"
 import Link from "next/link"
-
+import Lottie from "lottie-react";
+import educationAnimation from "@/app/assets/lotties/education.json"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import UserSignInForm from "@/components/forms/user-register-form"
-
-export const metadata: Metadata = {
-    title: "Authentication",
-    description: "Authentication forms built using the components.",
-}
 
 export default function SignIn() {
     return (
@@ -21,10 +17,10 @@ export default function SignIn() {
                         "absolute right-4 top-4 md:right-8 md:top-8"
                     )}
                 >
-                    Login
+                    Đăng nhập
                 </Link>
                 <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
-                    <div className="absolute inset-0 bg-zinc-900" />
+                    <div className="absolute inset-0 bg-[#5f99e4]" />
                     <div className="relative z-20 flex items-center text-lg font-medium">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -40,15 +36,11 @@ export default function SignIn() {
                         </svg>
                         Acme Inc
                     </div>
-                    <div className="relative z-20 mt-auto">
-                        <blockquote className="space-y-2">
-                            <p className="text-lg">
-                                &ldquo;This library has saved me countless hours of work and
-                                helped me deliver stunning designs to my clients faster than
-                                ever before.&rdquo;
-                            </p>
-                            <footer className="text-sm">Sofia Davis</footer>
-                        </blockquote>
+                    <div className="relative z-20 mt-8">
+                        <Lottie animationData={educationAnimation} loop={true} />
+                        <div className="mt-6 animate-typing overflow-hidden whitespace-nowrap border-r-4 pr-2 border-r-white text-2xl text-white font-bold">
+                            LingLink - ứng dụng cộng đồng học ngôn ngữ bổ ích.
+                        </div>
                     </div>
                 </div>
                 <div className="lg:p-8">
