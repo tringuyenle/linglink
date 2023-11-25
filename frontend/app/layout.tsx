@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter as FontSans } from "next/font/google"
 import './globals.css'
 import { cn } from "@/lib/utils"
+import TanstackProvider from '@/components/providers/TanstackProvider'
+import { StoreProvider } from './redux/StoreProvider'
 
 export const metadata: Metadata = {
   title: 'Ling Link',
@@ -28,7 +30,11 @@ export default async function RootLayout({
           fontSans.variable
         )}
       >
-        {children}
+        <StoreProvider>
+          <TanstackProvider>
+            {children}
+          </TanstackProvider>
+        </StoreProvider>
       </body>
     </html>
   )
