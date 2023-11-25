@@ -29,9 +29,6 @@ export class User {
     role: UserRoles;
 
     @Prop()
-    role: string;
-
-    @Prop()
     avatar: string;
     target: Target;
 
