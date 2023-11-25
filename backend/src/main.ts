@@ -18,7 +18,7 @@ const extractor = (request: FastifyRequest): string | string[] => {
 };
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, new FastifyAdapter());
+  const app = await NestFactory.create(AppModule, new FastifyAdapter(), { cors: true });
 
   //fix for error of oauth2: setHeaders is not a function 
   let fastifyInstance = app.getHttpAdapter().getInstance();
