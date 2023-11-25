@@ -5,9 +5,7 @@ import { RegisterDTO, LogInDTO, RefreshTokenInput } from './dto';
 
 @Controller('auth')
 export class AuthController {
-    constructor(private authService: AuthService) {
-        
-    }
+    constructor(private authService: AuthService) {}
 
     @Post('register')
     register(@Body() body: RegisterDTO) {

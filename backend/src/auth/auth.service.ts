@@ -45,7 +45,6 @@ export class AuthService {
             if (!isPasswordMatching) {
                 throw new HttpException('Wrong password', HttpStatus.UNAUTHORIZED);
             }
-            user.hashedPassword = undefined;
             return this.generateTokens({
                 userId: user.id
             }); 

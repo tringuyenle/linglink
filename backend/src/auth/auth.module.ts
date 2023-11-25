@@ -8,9 +8,15 @@ import { UserSchema } from '../../schemas/user.schema';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategy';
+import { GoogleModule } from './google/google.module';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), JwtModule.register({}), ConfigModule.forRoot({load: [config],}),],
+  imports: [
+    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]), 
+    JwtModule.register({}), 
+    ConfigModule.forRoot({load: [config],}), 
+    GoogleModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService, UserService, JwtStrategy]
 })

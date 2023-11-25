@@ -1,12 +1,11 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
 import { UserRoles } from "../../common/enums/user.enum";
 
-export class CreateUserDTO {
+export class CreateUserByOauthDTO {
     @IsEmail()
     @IsNotEmpty()
     email: string
 
-    @IsNotEmpty()
     hashedPassword: string
 
     name: string
