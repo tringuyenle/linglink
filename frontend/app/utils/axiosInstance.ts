@@ -1,6 +1,10 @@
+"use client"
 import axios, { AxiosInstance } from 'axios';
+import {deleteCookie, getCookie, setCookie } from 'cookies-next';
 
-const createAxiosInstance = (accessToken: string, refreshToken: string): AxiosInstance => {
+const createAxiosInstance = (): AxiosInstance => {
+    let accessToken = getCookie('accessToken');
+    let refreshToken = getCookie('refreshToken');
     const instance = axios.create({
         baseURL: 'http://localhost:3000/api/v1',
         headers: {
@@ -37,7 +41,7 @@ const createAxiosInstance = (accessToken: string, refreshToken: string): AxiosIn
 
                     // Lưu access token mới vào headers và local storage
                     instance.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
-                    localStorage.setItem('accessToken', newAccessToken);
+                    setCookie("accessToken", newAccessToken)
 
                     // Gửi lại yêu cầu gốc với access token mới
                     const originalRequest = error.config;
@@ -46,6 +50,8 @@ const createAxiosInstance = (accessToken: string, refreshToken: string): AxiosIn
                 } catch (refreshError) {
                     // Nếu làm mới token thất bại, chuyển người dùng đến trang đăng nhập hoặc thực hiện xử lý khác
                     // Ví dụ: chuyển hướng đến trang đăng nhập
+                    deleteCookie("accessToken")
+                    deleteCookie("refreshToken")
                     window.location.href = '/login';
                     return Promise.reject(refreshError);
                 }

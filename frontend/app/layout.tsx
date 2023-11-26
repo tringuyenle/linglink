@@ -4,6 +4,10 @@ import './globals.css'
 import { cn } from "@/lib/utils"
 import TanstackProvider from '@/components/providers/TanstackProvider'
 import { StoreProvider } from './redux/StoreProvider'
+import { Suspense } from 'react'
+import Loading from './loading'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
   title: 'Ling Link',
@@ -32,7 +36,20 @@ export default async function RootLayout({
       >
         <StoreProvider>
           <TanstackProvider>
-            {children}
+            <Suspense fallback={<Loading />}>
+              {children}
+            </Suspense>
+            <ToastContainer
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="light" />
           </TanstackProvider>
         </StoreProvider>
       </body>
