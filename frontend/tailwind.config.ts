@@ -8,6 +8,16 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
+    container: {
+      center: true,
+      padding: {
+        DEFAULT: '1rem',
+        sm: '2rem',
+        lg: '4rem',
+        xl: '5rem',
+        '2xl': '6rem',
+      },
+    },
     extend: {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
@@ -16,6 +26,44 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        active: {
+          DEFAULT: "#63b3ed",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
       keyframes: {
         typing: {
@@ -34,13 +82,32 @@ const config: Config = {
           "100%": {
             borderColor: "white"
           }
-        }
+        },
+        slideDown: {
+          'from': {
+            transform: 'translateY(-50%)',
+          },
+          'to': {
+            transform: 'translateY(0)',
+          },
+        },
+        slideUp: {
+          'from': {
+            transform: 'translateY(10%)',
+          },
+          'to': {
+            transform: 'translateY(0%)',
+          },
+        },
       },
       animation: {
-        typing: "typing 2s steps(20) infinite alternate, blink .7s infinite"
+        typing: "typing 2s steps(20) infinite alternate, blink .7s infinite",
+        meteoreffect: "meteor 20s linear infinite",
+        'slide-down': 'slideDown 0.5s ease-in-out',
+        'slide-up': 'slideUp 0.5s ease-in-out',
       }
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 export default config
