@@ -4,9 +4,7 @@ import './globals.css'
 import { cn } from "@/lib/utils"
 import TanstackProvider from '@/components/providers/TanstackProvider'
 import { StoreProvider } from './redux/StoreProvider'
-import { Suspense } from 'react'
-import Loading from './loading'
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export const metadata: Metadata = {
@@ -19,7 +17,7 @@ export const fontSans = FontSans({
   variable: "--font-sans",
 })
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -30,15 +28,13 @@ export default async function RootLayout({
       <head />
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-secondary font-sans antialiased",
           fontSans.variable
         )}
       >
         <StoreProvider>
           <TanstackProvider>
-            <Suspense fallback={<Loading />}>
-              {children}
-            </Suspense>
+            {children}
             <ToastContainer
               position="top-right"
               autoClose={5000}
