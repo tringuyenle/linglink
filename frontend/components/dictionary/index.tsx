@@ -85,8 +85,8 @@ export default function Dictionary() {
                                                 item.definitions.map((defitem: any, defindex: any) => {
                                                     return (
                                                         <div key={defindex}>
-                                                            <div className="font mb-1 text-md">
-                                                                Definition:
+                                                            <div className="font mb-1 text-md flex items-center">
+                                                                <div className="w-2 h-2 rounded-full bg-black mr-2" />Definition:
                                                             </div>
                                                             <div className="italic ml-4 pl-2 border-l-[2px] border-blue-300 text-sm border-h-[80%]">
                                                                 {defitem.definition}
@@ -94,8 +94,8 @@ export default function Dictionary() {
                                                             {
                                                                 defitem.example && (
                                                                     <>
-                                                                        <div className="font mb-1">
-                                                                            Example:
+                                                                        <div className="font mb-1 flex items-center">
+                                                                        <div className="w-2 h-2 rounded-full bg-black mr-2" /> Example:
                                                                         </div>
                                                                         <div className="italic">
                                                                             {defitem.example}

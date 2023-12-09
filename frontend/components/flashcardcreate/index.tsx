@@ -20,6 +20,15 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectLabel,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 
@@ -39,39 +48,55 @@ export default function FlashCardCreate() {
 
     return (
         <div className="px-6 py-2 bg-background shadow-md rounded-md w-full">
-            <div className="flex justify-end">
-                <Sheet>
-                    <SheetTrigger asChild>
-                        <Button className="mb-2" variant="outline"><MdOutlineAddCircleOutline className="text-xl" /></Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                        <SheetHeader>
-                            <SheetTitle>Thêm Flashcard</SheetTitle>
-                            <SheetDescription>
-                                Tạo flashcard để học tập từ vựng nhanh chóng.
-                            </SheetDescription>
-                        </SheetHeader>
-                        <div className="grid gap-4 py-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="word" className="text-right">
-                                    Từ vựng
-                                </Label>
-                                <Input id="word" placeholder='Hello' className="col-span-3" />
+            <div className="flex justify-between">
+                <Select>
+                    <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Chọn bộ từ vựng" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectGroup>
+                            <SelectLabel>Bộ từ vựng của bạn</SelectLabel>
+                            <SelectItem value="fruit">Trái cây</SelectItem>
+                            <SelectItem value="bussiness">Kinh doanh</SelectItem>
+                            <SelectItem value="office">Văn phòng</SelectItem>
+                            <SelectItem value="animal">Động vật</SelectItem>
+                        </SelectGroup>
+                    </SelectContent>
+                </Select>
+                <div className="flex justify-end">
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button className="mb-2" variant="outline"><MdOutlineAddCircleOutline className="text-xl" /></Button>
+                        </SheetTrigger>
+                        <SheetContent>
+                            <SheetHeader>
+                                <SheetTitle>Thêm Flashcard</SheetTitle>
+                                <SheetDescription>
+                                    Tạo flashcard để học tập từ vựng nhanh chóng.
+                                </SheetDescription>
+                            </SheetHeader>
+                            <div className="grid gap-4 py-4">
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="word" className="text-right">
+                                        Từ vựng
+                                    </Label>
+                                    <Input id="word" placeholder='Hello' className="col-span-3" />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="mean" className="text-right">
+                                        Nghĩa
+                                    </Label>
+                                    <Input id="mean" placeholder="Xin chào" className="col-span-3" />
+                                </div>
                             </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="mean" className="text-right">
-                                    Nghĩa
-                                </Label>
-                                <Input id="mean" placeholder="Xin chào" className="col-span-3" />
-                            </div>
-                        </div>
-                        <SheetFooter>
-                            <SheetClose asChild>
-                                <Button type="submit">Tạo flashcard</Button>
-                            </SheetClose>
-                        </SheetFooter>
-                    </SheetContent>
-                </Sheet>
+                            <SheetFooter>
+                                <SheetClose asChild>
+                                    <Button type="submit">Tạo flashcard</Button>
+                                </SheetClose>
+                            </SheetFooter>
+                        </SheetContent>
+                    </Sheet>
+                </div>
             </div>
             <Swiper
                 modules={[Navigation, Pagination, Scrollbar, A11y]}

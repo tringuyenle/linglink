@@ -44,10 +44,10 @@ const Filter: React.FC = () => {
   }
   return (
     <div className="flex gap-2">
-      <Button onClick={()=>handleClick(0)} className={`${active === 0 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(0)} className={`${active === 0 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
         Phổ biến nhất
       </Button>
-      <Button onClick={()=>handleClick(1)} className={`${active === 1 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(1)} className={`${active === 1 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
         Mới nhất
       </Button>
     </div>
@@ -100,7 +100,7 @@ const Home: React.FC = () => {
                 <Post data={`${post} ne`} />
               </li>
               {
-                isLoading ? <div>
+                isLoading ? <div className="w-full my-4 justify-center flex shadow-md bg-background py-2">
                   Đang tải bài viết mới
                 </div> : ""
               }
