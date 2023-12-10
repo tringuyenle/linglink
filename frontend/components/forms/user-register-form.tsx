@@ -22,11 +22,11 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
     const mutation = useMutation({
         mutationFn: async (values: any) => {
             try {
-                let response = await axios.post("http://localhost:3000/api/v1/auth/register", {
+                let response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/register`, {
                     "avatar": 'https://res.cloudinary.com/dfoj6menm/image/upload/v1700982970/jw7rubbgpuftwz5lezoo.png',
                     "name": values.name,
                     "email": values.email,
-                    "hashedPassword": values.password
+                    "password": values.password
                 }, {
                     headers: {
                         'Content-Type': 'application/json'
@@ -55,10 +55,10 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
         validationSchema: Yup.object({
             name: Yup.string().min(6, 'Phải có ít nhất 6 ký tự').required('Cần nhập họ và tên'),
             email: Yup.string().email('Địa chỉ email không hợp lệ').required('Cần nhập email'),
-            password: Yup.string().min(9, 'Phải có ít nhất 9 ký tự').required('Cần nhập mật khẩu'),
+            password: Yup.string().min(9, 'Phải có ít nhất 8 ký tự').required('Cần nhập mật khẩu'),
             repassword: Yup.string()
                 .oneOf([Yup.ref('password')], 'Mật khẩu không khớp') // Kiểm tra khớp với trường 'password'
-                .min(9, 'Phải có ít nhất 9 ký tự')
+                .min(9, 'Phải có ít nhất 8 ký tự')
                 .required('Cần nhập mật khẩu'),
         }),
         onSubmit: async (values) => {

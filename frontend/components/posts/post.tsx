@@ -68,7 +68,7 @@ const Body = ({ content }: { content: string }) => {
             <div className="px-6">
                 Vui ghê 🐧{content}
             </div>
-            <Image className="w-auto h-auto" width={0} height={0} alt="ảnh" src="https://scontent.fsgn5-12.fna.fbcdn.net/v/t39.30808-6/405331513_741887607984038_8626028128028410582_n.jpg?stp=dst-jpg_s960x960&_nc_cat=1&ccb=1-7&_nc_sid=dd5e9f&_nc_eui2=AeFKR8wjt_qdaEL5KUk98E9G33_naizs8_Dff-dqLOzz8HrkCNmXxkflAEUTIH6m37_zA-qmy4pTPkVO-TJFhk--&_nc_ohc=Px6GGQUkIFoAX_9lY_6&_nc_ht=scontent.fsgn5-12.fna&oh=00_AfD08DC5eviOawbveeTJxW5tsxcZq-MpQiMS8ykLrIxEmQ&oe=6573FED3" />
+            <Image className="w-auto h-auto" width={0} height={0} alt="ảnh" src="https://babilala.vn/wp-content/uploads/2023/02/cac-thang-trong-tieng-anh.png" />
         </div>
     )
 }

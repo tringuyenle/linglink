@@ -10,12 +10,37 @@ import { GiCardExchange } from "react-icons/gi";
 import { PiExam } from "react-icons/pi";
 import { GrSchedules } from "react-icons/gr";
 import {
+    CreditCard,
+    LifeBuoy,
+    LogOut,
+    Settings,
+    User,
+    Languages,
+    Users
+} from "lucide-react"
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuPortal,
+    DropdownMenuSeparator,
+    DropdownMenuSub,
+    DropdownMenuSubContent,
+    DropdownMenuTrigger,
+    DropdownMenuSubTrigger
+} from "@/components/ui/dropdown-menu"
+
+import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
     const [isSticky, setIsSticky] = useState(false);
@@ -35,6 +60,10 @@ export default function Header() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+    const router = useRouter()
+    const changeLang = (lang: string) => {
+        router.replace(`/${lang}`, { scroll: false })
+    }
     return (
         <div
             className={`mb-5 h-full rounded-md w-full container flex flex-row gap-12 justify-between items-center relative z-10 shadow-md bg-background ${isSticky ? 'sticky top-0 animate-slide-down' : 'animate-slide-up'
@@ -128,10 +157,68 @@ export default function Header() {
                     <IoNotifications className="text-2xl" />
                     <span className="w-[10px] absolute right-0 top-[5px] h-[10px] rounded-full bg-red-500"></span>
                 </div>
-                <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Avatar>
+                            <AvatarImage className="cursor-pointer" src="https://github.com/shadcn.png" alt="@shadcn" />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <User className="mr-2 h-4 w-4" />
+                                <span>Thông tin cá nhân</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <CreditCard className="mr-2 h-4 w-4" />
+                                <span>Đổi mật khẩu</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                                <Settings className="mr-2 h-4 w-4" />
+                                <span>Settings</span>
+                            </DropdownMenuItem>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuGroup>
+                            <DropdownMenuItem>
+                                <Users className="mr-2 h-4 w-4" />
+                                <span>Team</span>
+                            </DropdownMenuItem>
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>
+                                    <Languages className="mr-2 h-4 w-4" />
+                                    <span>Ngôn ngữ</span>
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <DropdownMenuItem onClick={() => changeLang("vi")}>
+                                            <Image className="mr-2 h-4 w-6" height={0} width={0} alt="Vietnam flag" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHcAAABPCAMAAADmzqp4AAAAY1BMVEXaJR3//wDYAB754gnZHh3WAB/ZFB7kdxjjchj65wnYCx7++AT21QzxvxDcNxznhxbmghflfhf0zg3bLx3zyA776wfdRRvqmRTusBLgXxreTxvtqRP88AbsoxPfVBvrnxTojhZLYPKuAAABlUlEQVRoge2Y3XKCMBBGzZoESAB/EBER8P2fspgKVEHrdNhNL/Z44wwzHvnY5IuuVgzDMAzD/AXpR6tr7UMrU5H6uGO9ERsfNwyxiMGD1wghDL1Wbzvvlj7oLmbhJWhxg9yqd867ow4a9s67pw46s85rM1qtDsQ3AW3QcLh7D7RBg+gh9cpw8IaY3SDhEZUM3kQ9XVvwe8gqXz8iRp6u5NWCYriKT7ku+sDNMfrIGh0XrigJpw+0pyWf7h0I7S9WG6IsKp3Fb7VxhrV3qeKNtlB4Kxma/IU1b1A3LqmTWW2isY+0EEzHy+4IdmkIJ16cOX72ThfyicJrLhPvheAcLcuZsSrxfyjN7pcEQeu5gojQg5bn0bYf356xgzbVsGhDNTZFhX3Dqp/meKW7V98UF4WrHWIuXNNKKGiCNrWzjC3QN0WNGzS4af7ZAvemiHDrqLk5gkcHuN8sDWbQpu0GanJ0M8duvFrMoM1a1DNHNwmtWCN65dmW888RSos40bJMXx3ddIrZDe8+2tO/lQzDMAzDMP+ML8rKDZb3zOkjAAAAAElFTkSuQmCC" />
+                                            <span>Tiếng Việt</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => changeLang("en")}>
+                                            <Image className="mr-2 h-4 w-6" height={0} width={0} alt="UN flag" src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Flag_of_Great_Britain_%281707%E2%80%931800%29.svg/255px-Flag_of_Great_Britain_%281707%E2%80%931800%29.svg.png" />
+                                            <span>Tiếng Anh</span>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                        </DropdownMenuGroup>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <LifeBuoy className="mr-2 h-4 w-4" />
+                            <span>Hỗ trợ</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                            <LogOut className="mr-2 h-4 w-4" />
+                            <span>Log out</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
         </div>
     )

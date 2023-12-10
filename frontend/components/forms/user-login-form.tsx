@@ -27,7 +27,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
     const mutation = useMutation({
         mutationFn: async (values: any) => {
             try {
-                let response = await axios.post("http://localhost:3000/api/v1/auth/login", {
+                let response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/login`, {
                     "email": values.email,
                     "password": values.password
                 }, {

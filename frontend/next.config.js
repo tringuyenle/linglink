@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const withNextIntl = require('next-intl/plugin')();
+
+module.exports = withNextIntl({
+    // Other Next.js configuration ...
     images: {
         remotePatterns: [
             {
@@ -10,6 +13,19 @@ const nextConfig = {
         unoptimized: true,
     },
     reactStrictMode: false,
-}
+});
+// const nextConfig = {
 
-module.exports = nextConfig
+//     images: {
+//         remotePatterns: [
+//             {
+//                 protocol: "https",
+//                 hostname: "**"
+//             }
+//         ],
+//         unoptimized: true,
+//     },
+//     reactStrictMode: false,
+// }
+
+// module.exports = nextConfig
