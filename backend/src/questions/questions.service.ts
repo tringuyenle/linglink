@@ -15,13 +15,13 @@ export class QuestionsService {
     ) {}
     
     async createQuestion(createQuestionDto: CreateQuestionDTO): Promise<Question> {
-        const tagsList = await this.tagsService.getTagByListId(createQuestionDto.tagsListId);
+        // const tagsList = await this.tagsService.getTagByListId(createQuestionDto.tagsListId);
 
         const newQuestion = new this.questionModel({
             ...createQuestionDto,
-            tagsList: tagsList
+            // tagsList: tagsList
         });
-        if (tagsList) await this.tagsService.addNewQuestionIntoTagsByIds(createQuestionDto.tagsListId, newQuestion);
+        // if (tagsList) await this.tagsService.addNewQuestionIntoTagsByIds(createQuestionDto.tagsListId, newQuestion);
         return newQuestion.save();
     }
     

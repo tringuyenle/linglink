@@ -8,9 +8,7 @@ export class CreateQuestionDTO {
 
     answer: string[]
 
-    rightAnswer: string[]
-
-    img_url: string
+    key: number
 
     audio_url: string
 }

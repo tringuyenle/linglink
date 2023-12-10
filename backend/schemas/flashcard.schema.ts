@@ -13,7 +13,7 @@ export class Flashcard extends Document {
     answer: string;
 
     @Prop()
-    date: Date;
+    createAt: Date;
 
     @Prop({ type: Types.ObjectId, ref: 'User' })
     author: Types.ObjectId;

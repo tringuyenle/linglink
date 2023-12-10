@@ -1,5 +1,4 @@
 import { IsNotEmpty } from "class-validator";
-import { Question } from "schemas/question.schema";
 import { CreateQuestionDTO } from "src/questions/dto/createQuestion.dto";
 
 export class CreatePostDTO {

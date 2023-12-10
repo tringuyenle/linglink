@@ -8,10 +8,10 @@ export class RegisterDTO {
     email: string
 
     @IsNotEmpty()
-    hashedPassword: string
+    password: string
 
     name: string
-    
+
     avatar: string
 
     role: UserRoles

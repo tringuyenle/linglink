@@ -9,6 +9,8 @@ export class CreateUserDTO {
     @IsNotEmpty()
     hashedPassword: string
 
+    avatar: string
+
     name: string
 
     role: UserRoles

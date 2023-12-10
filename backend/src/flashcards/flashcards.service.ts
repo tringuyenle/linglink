@@ -18,7 +18,7 @@ export class FlashcardService {
         const createdFlashcard = new this.flashcardModel({
             ...createFlashcardDto,
             author: user._id,
-            date: new Date(),
+            createAt: new Date(),
         });
 
         // Step 2: Thêm Flashcard vào FlashcardList

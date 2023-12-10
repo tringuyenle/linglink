@@ -14,23 +14,26 @@ export class AuthService {
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService
-        ) {}
-    
+    ) { }
+
     async register(registrationData: RegisterDTO) {
+        if (registrationData.password.length < 8) {
+            throw new HttpException('Password must be at least 8 characters long', HttpStatus.BAD_REQUEST);
+        }
         //generate password to hashedpassword
-        const hashedPassword = await argon.hash(registrationData.hashedPassword);
-        
+        const hashedPassword = await argon.hash(registrationData.password);
+        const { password, ...userData } = registrationData;
         try {
             //insert data into database
             const createdUser = await this.userService.create({
-              ...registrationData,
-              hashedPassword: hashedPassword,
+                ...userData,
+                hashedPassword: hashedPassword,
             });
-                
+
             return this.generateTokens({
                 userId: createdUser.id
-            }); 
-          } catch (error) {
+            });
+        } catch (error) {
             if (error.code == "11000") {
                 throw new HttpException('User with that email already exists', HttpStatus.BAD_REQUEST);
             }
@@ -47,8 +50,8 @@ export class AuthService {
             }
             return this.generateTokens({
                 userId: user.id
-            }); 
-        } catch(error) {
+            });
+        } catch (error) {
             return error;
         }
     }
