@@ -1,15 +1,23 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateTopicDTO } from './dto/createTopic.dto';
 import { UpdateTopicDTO } from './dto/updateTopic.dto';
 import { TopicsService } from './topics.service';
+import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
 
 @Controller('topics')
 export class TopicsController {
-    constructor(private readonly topicsService: TopicsService) {}
+    constructor(private readonly topicsService: TopicsService) { }
 
     @Post()
+    @UseGuards(MyJwtGuard)
     createTopic(@Body() createTopicDto: CreateTopicDTO) {
-        return this.topicsService.createTopic(createTopicDto);
+        try {
+            // Gọi service để tạo câu hỏi khi xác thực thành công
+            return this.topicsService.createTopic(createTopicDto);
+        } catch (error) {
+            // Nếu có lỗi xác thực, trả về mã trạng thái 401
+            throw new HttpException('Forbidden', HttpStatus.FORBIDDEN);
+        }
     }
 
     @Get()

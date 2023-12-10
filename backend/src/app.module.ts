@@ -8,11 +8,13 @@ import { PostsModule } from './posts/posts.module';
 import { TopicsModule } from './topics/topics.module';
 import { TagsModule } from './tags/tags.module';
 import { QuestionsModule } from './questions/questions.module';
+import { FlashcardListModule } from './flashcard-list/flashcard-list.module';
+import { FlashcardModule } from './flashcards/flashcards.module';
 require("dotenv").config();
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DB_URL), AuthModule , UserModule, PostsModule, TopicsModule, TagsModule, QuestionsModule],
+  imports: [MongooseModule.forRoot(process.env.DB_URL), AuthModule, UserModule, PostsModule, TopicsModule, TagsModule, QuestionsModule, FlashcardListModule, FlashcardModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

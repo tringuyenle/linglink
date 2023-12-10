@@ -24,10 +24,7 @@ export class Question {
     answer: string[];
 
     @Prop()
-    rightAnswer: string[];
-
-    @Prop()
-    img_url: string;
+    key: number;
 
     @Prop()
     audio_url: string;

@@ -1,13 +1,13 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
-import { Post } from "schemas/post.schema";
-
 export class UpdateQuestionDTO {
-    @IsNotEmpty()
-    QuestionName: string
+    tagsListId: string[]
 
-    postsList: Post[];
+    content: string
 
-    createdAt: Date
+    answer: string[]
 
-    updatedAt: Date
+    key: number
+
+    img_url: string
+
+    audio_url: string
 }

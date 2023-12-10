@@ -20,6 +20,9 @@ export class Post {
     @Prop()
     img_url: string;
 
+    @Prop()
+    createAt: Date;
+
     @Prop({ default: 0 })
     upVotes: number;
 

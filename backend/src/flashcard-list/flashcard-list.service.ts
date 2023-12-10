@@ -14,6 +14,7 @@ export class FlashcardListService {
     async createFlashcardList(user: any, createFlashcardListDto: CreateFlashcardListDto): Promise<FlashcardList> {
         const createdFlashcardList = new this.flashcardListModel({
             ...createFlashcardListDto,
+            createAt: Date.now(),
             author: user._id, // Gán ID của người dùng làm author của danh sách flashcard
         });
         return createdFlashcardList.save();
