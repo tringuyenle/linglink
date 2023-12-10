@@ -58,7 +58,6 @@ const Home: React.FC = () => {
   const [posts, setPosts] = useState<string[]>(["1", "2"]);
   const observerTarget = useRef(null);
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       entries => {

@@ -1,12 +1,12 @@
 "use client"
 import axios, { AxiosInstance } from 'axios';
-import {deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 
 const createAxiosInstance = (): AxiosInstance => {
     let accessToken = getCookie('accessToken');
     let refreshToken = getCookie('refreshToken');
     const instance = axios.create({
-        baseURL: 'http://localhost:3000/api/v1',
+        baseURL: process.env.NEXT_PUBLIC_BASE_URL,
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
@@ -32,11 +32,12 @@ const createAxiosInstance = (): AxiosInstance => {
             return response;
         },
         async (error) => {
+            console.log(error)
             // Nếu lỗi là do access token hết hạn (401 Unauthorized)
             if (error.response && error.response.status === 401) {
                 // Thử làm mới access token
                 try {
-                    const refreshResponse = await axios.post('http://localhost:3000/api/v1/auth/refresh', { refreshToken });
+                    const refreshResponse = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`, { refreshToken });
                     const newAccessToken = refreshResponse.data.access_token;
 
                     // Lưu access token mới vào headers và local storage
@@ -52,7 +53,7 @@ const createAxiosInstance = (): AxiosInstance => {
                     // Ví dụ: chuyển hướng đến trang đăng nhập
                     deleteCookie("accessToken")
                     deleteCookie("refreshToken")
-                    window.location.href = '/login';
+                    // window.location.href = '/login';
                     return Promise.reject(refreshError);
                 }
             }
