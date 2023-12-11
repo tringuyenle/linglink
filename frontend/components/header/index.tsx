@@ -16,7 +16,6 @@ import {
     Settings,
     User,
     Languages,
-    Users
 } from "lucide-react"
 
 import {
@@ -41,9 +40,15 @@ import {
 } from "@/components/ui/tooltip"
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { deleteCookie } from "cookies-next";
+import { deleteInfor } from "@/app/redux/slices/authSlice";
+import { useAppDispatch, useAppSelector } from "@/app/redux/store";
+import { toast } from "react-toastify";
 
 export default function Header() {
     const [isSticky, setIsSticky] = useState(false);
+    const dispatch = useAppDispatch()
+    const user = useAppSelector(state => state.auth.userinfor)
 
     useEffect(() => {
         const handleScroll = () => {
@@ -64,6 +69,18 @@ export default function Header() {
     const changeLang = (lang: string) => {
         router.replace(`/${lang}`, { scroll: false })
     }
+    const handleLogout = () => {
+        // Xóa cookie khi người dùng đăng xuất
+        try {
+            dispatch(deleteInfor());
+            deleteCookie("accessToken");
+            deleteCookie("refreshToken");
+            toast.success("Đăng xuất thành công")
+        }
+        catch (err: any) {
+            toast.error(err)
+        }
+    };
     return (
         <div
             className={`mb-5 h-full rounded-md w-full container flex flex-row gap-12 justify-between items-center relative z-10 shadow-md bg-background ${isSticky ? 'sticky top-0 animate-slide-down' : 'animate-slide-up'
@@ -160,12 +177,12 @@ export default function Header() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Avatar>
-                            <AvatarImage className="cursor-pointer" src="https://github.com/shadcn.png" alt="@shadcn" />
+                            <AvatarImage className="cursor-pointer" src={user.avatar} alt="@shadcn" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
+                        <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
                             <DropdownMenuItem>
@@ -183,10 +200,6 @@ export default function Header() {
                         </DropdownMenuGroup>
                         <DropdownMenuSeparator />
                         <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <Users className="mr-2 h-4 w-4" />
-                                <span>Team</span>
-                            </DropdownMenuItem>
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
                                     <Languages className="mr-2 h-4 w-4" />
@@ -213,9 +226,9 @@ export default function Header() {
                             <span>Hỗ trợ</span>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>
+                        <DropdownMenuItem onClick={handleLogout}>
                             <LogOut className="mr-2 h-4 w-4" />
-                            <span>Log out</span>
+                            <span>Đăng xuất</span>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

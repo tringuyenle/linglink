@@ -68,7 +68,6 @@
 
 .flip-card {
   background-color: transparent;
-  width           : 300px;
   height          : 200px;
   border          : 1px solid #f1f1f1;
   perspective     : 1000px;
@@ -103,11 +102,16 @@
 
 /* Style the front side (fallback if image is missing) */
 .flip-card-front {
-  color           : black;
+  color: black;
 }
 
 /* Style the back side */
 .flip-card-back {
-  color           : white;
-  transform       : rotateY(180deg);
+  color    : white;
+  transform: rotateY(180deg);
+}
+
+.swiper-slide {
+  width: fit-content;
+  height: fit-content;
 }

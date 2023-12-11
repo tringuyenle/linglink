@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Post } from "@/components/posts/post";
 import {
   Select,
@@ -12,6 +12,9 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
+import axios from "axios";
+import { toast } from "react-toastify";
+import CreatePost from "./components/createpost";
 
 const TopicSelect: React.FC = () => {
   return (
@@ -55,39 +58,76 @@ const Filter: React.FC = () => {
 }
 
 const Home: React.FC = () => {
-  const [posts, setPosts] = useState<string[]>(["1", "2"]);
-  const observerTarget = useRef(null);
+  const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting) {
-          // Goi ham fetch data
-          setIsLoading(true)
-          setTimeout(function () {
-            if (posts.length <= 10) {
-              setPosts((prevData) => [...prevData, "1"])
-            }
-            setIsLoading(false)
-          }, 2000);
+  const [end, setEnd] = useState<boolean>(false)
+  const createpost = (post: any) => {
+    setPosts((prev) => [post, ...prev])
+  }
+  async function getPostByLastID() {
+    try {
+      if (!end) {
+        setIsLoading(true);
+        let lastId = "";
+        if (posts.length > 0) lastId = posts[posts.length - 1]._id;
+        const newData = await axios.get((`${process.env.NEXT_PUBLIC_BASE_URL}/posts/page`), {
+          params: {
+            lastPostId: lastId,
+            pageSize: 5
+          }
+        });
+        if (newData.data.length === 0) {
+          toast.warning("Bạn đã đến posts cuối cùng")
+          setEnd(true)
         }
-      },
-      { threshold: 0 }
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
+        if (posts.length > 20 && newData.data.length > 0) {
+          setPosts(() => {
+            const updatedPosts = [...newData.data];
+            return updatedPosts;
+          });
+        }
+        else setPosts((prevData) => {
+          const updatedPosts = [...prevData, ...newData.data];
+          return updatedPosts;
+        });
+        setIsLoading(false);
       }
-    };
-  }, [observerTarget.current]);
+    }
+    catch (err) {
+      setIsLoading(false);
+    }
+  }
+  useEffect(() => {
+    getPostByLastID()
+  }, []);
+
+  const elRef = useCallback((node: any) => {
+    if (node !== null) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            // Gọi hàm fetch data
+            getPostByLastID();
+          }
+        },
+        { threshold: 0 }
+      );
+
+      if (node) {
+        observer.observe(node);
+      }
+
+      return () => {
+        if (node) {
+          observer.unobserve(node);
+        }
+      };
+    }
+  }, [posts]);
   return (
-    <div className="infinite-scroll-container">
-      <div className="flex justify-between">
+    <div className="infinite-scroll-container w-full">
+      <CreatePost add={createpost} />
+      <div className="flex justify-between my-4">
         <TopicSelect />
         <Filter />
       </div>
@@ -95,8 +135,8 @@ const Home: React.FC = () => {
         {posts.map((post, index) => {
           if (index === posts.length - 1) return (
             <div key={index}>
-              <li ref={observerTarget} className="w-full flex justify-center">
-                <Post data={`${post} ne`} />
+              <li ref={elRef} className="w-full flex justify-center">
+                <Post data={post} />
               </li>
               {
                 isLoading ? <div className="w-full my-4 justify-center flex shadow-md bg-background py-2">
