@@ -39,6 +39,10 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                 setCookie('refreshToken', response.data.refreshToken);
                 dispatch(setToken(response.data))
                 toast.success("Đăng nhập thành công")
+                let axiosJWT = createAxiosInstance()
+                let userinfor = await axiosJWT.get("/user/me")
+                dispatch(setInfor(userinfor.data))
+                router.push('/', { scroll: false })
                 return response
             }
             catch (err: any) {
@@ -59,10 +63,6 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
         onSubmit: async (values) => {
             try {
                 mutation.mutate(values);
-                let axiosJWT = createAxiosInstance()
-                let userinfor = await axiosJWT.get("/user/me")
-                dispatch(setInfor(userinfor.data))
-                router.push('/', { scroll: false })
             } catch (error: any) {
                 toast.error(error)
             }

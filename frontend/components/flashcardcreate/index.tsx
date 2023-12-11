@@ -5,7 +5,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
-import { useCallback, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../ui/button';
 import { FaArrowRight } from "react-icons/fa";
 import { FaArrowLeft } from "react-icons/fa";
@@ -31,6 +31,8 @@ import {
 } from "@/components/ui/select"
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
+import createAxiosInstance from '@/app/utils/axiosInstance';
+import { toast } from 'react-toastify';
 
 
 export default function FlashCardCreate() {
@@ -46,20 +48,80 @@ export default function FlashCardCreate() {
         sliderRef.current.swiper.slideNext();
     }, []);
 
+    const [flashlist, setFlashList] = useState<any>([])
+    const [flashcards, setFlashcards] = useState<any>([])
+    const axiosJWT = createAxiosInstance()
+    const getFlashList = async () => {
+        let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`)
+        console.log(result.data)
+        setFlashList(result.data)
+        setFlashcards(result.data.flashcards)
+    }
+    useEffect(() => {
+        const getFlashList = async () => {
+            let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`)
+            console.log(result.data)
+            setFlashList(result.data)
+            setFlashcards(result.data.flashcards)
+        }
+        getFlashList()
+    }, [])
+    const [flashlistname, setFlashListName] = useState<string>("")
+    const createFlashlist = async () => {
+        try {
+            await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`, {
+                name: flashlistname
+            })
+            toast.success("Tạo bộ từ vựng thành công")
+            getFlashList()
+        }
+        catch (err: any) {
+            toast.error(err)
+        }
+
+    }
+
+    const [word, setWord] = useState<string>("")
+    const [answer, setAnswer] = useState<string>("")
+    const [listid, setListId] = useState<string>("")
+    const createFlashcard = async () => {
+        try {
+            await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcards`, {
+                word: word,
+                answer: answer,
+                flashcardListId: listid
+            })
+            toast.success("Tạo flashcard thành công")
+            getFlashList()
+        }
+        catch (err: any) {
+            toast.error(err)
+        }
+    }
+    const selectFlashlist = (idx: any) => {
+        setFlashcards(flashlist[idx].flashcards)
+    }
     return (
         <div className="px-6 py-2 bg-background shadow-md rounded-md w-full">
             <div className="flex justify-between">
-                <Select>
-                    <SelectTrigger className="w-[180px]">
+                <Select onValueChange={value => selectFlashlist(value)}>
+                    <SelectTrigger className="w-[200px]">
                         <SelectValue placeholder="Chọn bộ từ vựng" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectGroup>
                             <SelectLabel>Bộ từ vựng của bạn</SelectLabel>
-                            <SelectItem value="fruit">Trái cây</SelectItem>
+                            {
+                                flashlist.length > 0 && flashlist.map((item: any, index: any) => {
+                                    return (
+                                        <SelectItem key={index} value={index}>{item.name}</SelectItem>
+                                    )
+                                })
+                            }
+                            {/* <SelectItem value="fruit">Trái cây</SelectItem>
                             <SelectItem value="bussiness">Kinh doanh</SelectItem>
                             <SelectItem value="office">Văn phòng</SelectItem>
-                            <SelectItem value="animal">Động vật</SelectItem>
+                            <SelectItem value="animal">Động vật</SelectItem> */}
                         </SelectGroup>
                     </SelectContent>
                 </Select>
@@ -76,28 +138,71 @@ export default function FlashCardCreate() {
                                 </SheetDescription>
                             </SheetHeader>
                             <div className="grid gap-4 py-4">
+                                <Select onValueChange={(value: any) => setListId(value)}>
+                                    <SelectTrigger className="w-[200px]">
+                                        <SelectValue placeholder="Chọn bộ từ vựng" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Bộ từ vựng của bạn</SelectLabel>
+                                        </SelectGroup>
+                                        {
+                                            flashlist.length > 0 && flashlist.map((item: any, index: any) => {
+                                                return (
+                                                    <SelectItem key={index} value={item._id}>{item.name}</SelectItem>
+                                                )
+                                            })
+                                        }
+                                    </SelectContent>
+                                </Select>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="word" className="text-right">
                                         Từ vựng
                                     </Label>
-                                    <Input id="word" placeholder='Hello' className="col-span-3" />
+                                    <Input value={word} onChange={(e) => setWord(e.target.value)} id="word" placeholder='Hello' className="col-span-3" />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="mean" className="text-right">
                                         Nghĩa
                                     </Label>
-                                    <Input id="mean" placeholder="Xin chào" className="col-span-3" />
+                                    <Input value={answer} onChange={(e) => setAnswer(e.target.value)} id="mean" placeholder="Xin chào" className="col-span-3" />
                                 </div>
                             </div>
                             <SheetFooter>
                                 <SheetClose asChild>
-                                    <Button type="submit">Tạo flashcard</Button>
+                                    <Button onClick={createFlashcard} type="submit">Tạo flashcard</Button>
                                 </SheetClose>
                             </SheetFooter>
                         </SheetContent>
                     </Sheet>
                 </div>
             </div>
+            <Sheet>
+                <SheetTrigger asChild>
+                    <Button className="mb-2" variant="outline">Thêm bộ flashcards</Button>
+                </SheetTrigger>
+                <SheetContent>
+                    <SheetHeader>
+                        <SheetTitle>Thêm Bộ Flashcards</SheetTitle>
+                        <SheetDescription>
+                            Tạo bộ flashcard để học tập từ vựng nhanh chóng.
+                        </SheetDescription>
+                    </SheetHeader>
+                    <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="flashcardname" className="text-left">
+                                Tên bộ flashcards
+                            </Label>
+                            <Input onChange={(e) => setFlashListName(e.target.value)} id="flashcardname" placeholder='Nhập tên' className="col-span-3" />
+                        </div>
+                    </div>
+                    <SheetFooter>
+                        <SheetClose asChild>
+                            <Button onClick={createFlashlist} type="submit">Tạo flashcard</Button>
+                        </SheetClose>
+                    </SheetFooter>
+                </SheetContent>
+            </Sheet>
             <Swiper
                 modules={[Navigation, Pagination, Scrollbar, A11y]}
                 navigation={false}
@@ -105,30 +210,30 @@ export default function FlashCardCreate() {
                 slidesPerView={1}
                 ref={sliderRef}
             >
-                <SwiperSlide>
-                    <div className="flip-card">
-                        <div className="flip-card-inner">
-                            <div className="flip-card-front h-full flex justify-center items-center bg-active">
-                                Hello
+                {
+                    flashcards && flashcards.length > 0 ?
+                        flashcards.map((item: any, index: any) => {
+                            return (
+                                <SwiperSlide key={index}>
+                                    <div className="flip-card">
+                                        <div className="flip-card-inner">
+                                            <div className="flip-card-front h-full flex justify-center items-center bg-active">
+                                                {item.word}
+                                            </div>
+                                            <div className="flip-card-back h-full flex justify-center items-center bg-slate-400">
+                                                {item.answer}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </SwiperSlide>
+                            )
+                        })
+                        : <SwiperSlide>
+                            <div className="">
+                                Chưa tạo flashcard, nhấn + để tạo
                             </div>
-                            <div className="flip-card-back h-full flex justify-center items-center bg-slate-400">
-                                Xin chào
-                            </div>
-                        </div>
-                    </div>
-                </SwiperSlide>
-                <SwiperSlide>
-                    <div className="flip-card">
-                        <div className="flip-card-inner">
-                            <div className="flip-card-front h-full flex justify-center items-center bg-active">
-                                Hello 2
-                            </div>
-                            <div className="flip-card-back h-full flex justify-center items-center bg-slate-400">
-                                Xin chào 2
-                            </div>
-                        </div>
-                    </div>
-                </SwiperSlide>
+                        </SwiperSlide>
+                }
             </Swiper>
             <div className="flex justify-end gap-2 mt-2">
                 <Button className="" onClick={handlePrev}>

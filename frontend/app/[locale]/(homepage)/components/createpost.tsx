@@ -28,6 +28,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
     Dialog,
+    DialogClose,
     DialogContent,
     DialogDescription,
     DialogFooter,
@@ -40,12 +41,26 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
+import axios from "axios";
+import { toast } from "react-toastify";
+import createAxiosInstance from "@/app/utils/axiosInstance";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
-export default function CreatePost() {
+export default function CreatePost({ add }: { add: any }) {
     const [input, setInput] = useState<string>('')
     const onEmojiClick = (emojiObject: any, event: any) => {
         setInput((prevInput) => prevInput + emojiObject.emoji);
@@ -103,7 +118,88 @@ export default function CreatePost() {
         newAnswers[index] = value;
         setAnswers(newAnswers);
     };
-    const listanswer = ['A', 'B', 'C', 'D']
+    const listanswer = ['A', 'B', 'C', 'D'];
+    const [topic, setTopic] = useState<string>()
+    const [topics, setTopics] = useState<any>()
+    const [question, setQuestion] = useState<string>()
+    const [audio, setAudio] = useState<any>()
+    const [key, setKey] = useState<any>()
+    const [previewquestion, setPreviewQuestion] = useState<any>(null);
+    const uploadFile = async (file: any) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        let uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET;
+        if (uploadPreset === undefined) uploadPreset = ""
+        formData.append('upload_preset', uploadPreset);
+
+        const response = await axios.post(
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+            formData
+        );
+
+        return response.data.secure_url;
+    }
+    const createPost = async () => {
+        try {
+            let uploadedImages = [];
+            if (myFile) {
+                uploadedImages = await Promise.all(
+                    myFile.map(async (file) => {
+                        return uploadFile(file)
+                    })
+                );
+                console.log('Uploaded Image URLs:', uploadedImages);
+            }
+            const postreq = {
+                topicID: topic,
+                newQuestion: previewquestion,
+                content: input,
+                img_url: uploadedImages
+            }
+            // Tạo bài viết
+            const axiosJWT = createAxiosInstance()
+            const result = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/posts`, postreq)
+            add(result.data)
+            toast.success("Thêm bài viết thành công")
+        }
+        catch (err: any) {
+            toast.error("Tạo bài viết thất bại")
+        }
+    }
+    const addquestion = async () => {
+        try {
+            let uploadedAudio = "";
+            if (audio) {
+                uploadedAudio = await uploadFile(audio)
+                console.log('Uploaded Audio URLs:', uploadedAudio);
+            }
+            const questionreq = {
+                content: question,
+                answers: answers,
+                key: key,
+                audio_url: uploadedAudio
+            }
+            setPreviewQuestion(questionreq)
+        }
+        catch (err: any) {
+            toast.error(err)
+        }
+    }
+    const deletequestion = () => {
+        setPreviewQuestion(null)
+    }
+    useEffect(() => {
+        const fetchTopics = async () => {
+            try {
+                let getTopics = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/topics`)
+                setTopics(getTopics.data)
+            }
+            catch (err: any) {
+                toast.error(err)
+            }
+        }
+        fetchTopics()
+    }, [])
     return (
         <div className="bg-background rounded-md px-6 pt-3 py-6">
             <div className="flex flex-row gap-3">
@@ -125,16 +221,32 @@ export default function CreatePost() {
                             </SheetDescription>
                         </SheetHeader>
                         <div className="">
-                            <div className="flex flex-col gap-2 my-4">
-                                <Label htmlFor="word" className="text-left">
+                            <div className="flex flex-col gap-3 my-4">
+                                <Select onValueChange={setTopic}>
+                                    <Label htmlFor="topic" className="text-left">
+                                        Chủ đề
+                                    </Label>
+                                    <SelectTrigger id="topic" className="w-[180px]">
+                                        <SelectValue placeholder="Chọn chủ đề" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectLabel>Chủ đề</SelectLabel>
+                                            {topics && topics.map((topic: any, index: any) => {
+                                                return <SelectItem key={index} value={topic._id}>{topic.topicName}</SelectItem>
+                                            })}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                                <Label htmlFor="content" className="text-left">
                                     Nội dung
                                 </Label>
-                                <Textarea id="word" placeholder='' onChange={(event) => setInput(event.target.value)} value={input} className="col-span-3">
+                                <Textarea id="content" placeholder='' onChange={(event) => setInput(event.target.value)} value={input} className="col-span-3">
                                 </Textarea>
                                 <div className="w-full justify-between flex">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button variant="outline">Thêm câu hỏi</Button>
+                                            <Button onClick={addquestion} variant="outline">Thêm câu hỏi</Button>
                                         </DialogTrigger>
                                         <DialogContent className="overflow-y-scroll max-h-screen max-w-[800px]">
                                             <DialogHeader>
@@ -149,6 +261,8 @@ export default function CreatePost() {
                                                         Câu hỏi
                                                     </Label>
                                                     <Input
+                                                        value={question}
+                                                        onChange={(e) => setQuestion(e.target.value)}
                                                         id="question"
                                                         placeholder="Viết câu hỏi"
                                                         className="col-span-3"
@@ -159,10 +273,13 @@ export default function CreatePost() {
                                                         File ghi âm (nếu có):
                                                     </Label>
                                                     <Input
+                                                        // value={audio}
+                                                        onChange={(e) => setAudio(e.target.files ? e.target.files[0] : null)}
                                                         type="file"
                                                         id="audio"
                                                         placeholder="Chọn file ghi âm"
                                                         className="col-span-3"
+                                                        accept=".mp3,audio/*"
                                                     />
                                                 </div>
                                                 <div>
@@ -174,10 +291,11 @@ export default function CreatePost() {
                                                         <SelectContent>
                                                             <SelectGroup>
                                                                 <SelectLabel>Chọn đáp án của đề bài</SelectLabel>
-                                                                <SelectItem value="A">Apple</SelectItem>
-                                                                <SelectItem value="B">Banana</SelectItem>
-                                                                <SelectItem value="C">Blueberry</SelectItem>
-                                                                <SelectItem value="D">Grapes</SelectItem>
+                                                                {
+                                                                    answers && answers.map((item: any, idx: any) => {
+                                                                        return <SelectItem onChange={(value) => setKey(value)} key={idx} value={idx}>{listanswer[idx]}</SelectItem>
+                                                                    })
+                                                                }
                                                             </SelectGroup>
                                                         </SelectContent>
                                                     </Select>
@@ -203,7 +321,9 @@ export default function CreatePost() {
                                                 <Button onClick={addAnswer}>Thêm câu trả lời</Button>
                                             </div>
                                             <DialogFooter>
-                                                <Button type="submit">Tạo câu hỏi</Button>
+                                                <DialogClose asChild>
+                                                    <Button type="submit">Tạo câu hỏi</Button>
+                                                </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
                                     </Dialog>
@@ -216,6 +336,44 @@ export default function CreatePost() {
                                         </PopoverContent>
                                     </Popover>
                                 </div>
+                            </div>
+                            <div>
+                                {previewquestion !== null && <div>
+                                    <div>
+                                        <div className="px-6 text-lg font-semibold mb-4">
+                                            Câu hỏi: {previewquestion.content}
+                                        </div>
+                                        <div className="px-6 grid grid-cols-2 gap-3">
+                                            {
+                                                previewquestion.answers.map((answer: any, idx: any) => {
+                                                    return (
+                                                        <div className="w-full" key={idx}>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger asChild>
+                                                                    <div className="w-full transition duration-300 hover:scale-[1.05] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
+                                                                        {answer}
+                                                                    </div>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>{`Đáp án câu hỏi là: ${previewquestion.answers[key]}`}</AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            {idx === key ? "Chúc mừng bạn trả lời đúng" : "Bạn đã trả lời sai, đừng nản chí, hãy thử lại"}
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Đóng</AlertDialogCancel>
+                                                                        {/* <AlertDialogAction>Continue</AlertDialogAction> */}
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
+                                </div>}
                             </div>
                             <div className="text-md font-semibold">Hình Ảnh</div>
                             <div {...imageroot({ className: 'dropzone py-5 px-3 border border-ring flex justify-center border-dashed cursor-pointer rounded-md' })}>
@@ -233,7 +391,7 @@ export default function CreatePost() {
                         </div>
                         <SheetFooter>
                             <SheetClose asChild>
-                                <Button className="mt-2" type="submit">Tạo bài viết</Button>
+                                <Button onClick={createPost} className="mt-2" type="submit">Tạo bài viết</Button>
                             </SheetClose>
                         </SheetFooter>
                     </SheetContent>
