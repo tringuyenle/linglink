@@ -115,7 +115,9 @@ export default function CreatePost({ add }: { add: any }) {
     // Hàm xử lý thay đổi giá trị của một ô điền đáp án
     const handleAnswerChange = (index: any, value: any) => {
         const newAnswers = [...answers];
+        console.log("OLD", newAnswers)
         newAnswers[index] = value;
+        console.log("NEW", newAnswers)
         setAnswers(newAnswers);
     };
     const listanswer = ['A', 'B', 'C', 'D'];
@@ -179,14 +181,20 @@ export default function CreatePost({ add }: { add: any }) {
                 key: key,
                 audio_url: uploadedAudio
             }
+            console.log(questionreq)
             setPreviewQuestion(questionreq)
+            setQuestion('')
+            setAnswers([])
+            setAudio(null)
         }
         catch (err: any) {
-            toast.error(err)
+            toast.error("Thêm thất bại")
         }
     }
     const deletequestion = () => {
+        console.log("RUN")
         setPreviewQuestion(null)
+        setKey(null)
     }
     useEffect(() => {
         const fetchTopics = async () => {
@@ -195,7 +203,7 @@ export default function CreatePost({ add }: { add: any }) {
                 setTopics(getTopics.data)
             }
             catch (err: any) {
-                toast.error(err)
+                toast.error("Tải posts thất bại")
             }
         }
         fetchTopics()
@@ -222,7 +230,7 @@ export default function CreatePost({ add }: { add: any }) {
                         </SheetHeader>
                         <div className="">
                             <div className="flex flex-col gap-3 my-4">
-                                <Select onValueChange={setTopic}>
+                                <Select onValueChange={(value) => setTopic(value)}>
                                     <Label htmlFor="topic" className="text-left">
                                         Chủ đề
                                     </Label>
@@ -246,7 +254,7 @@ export default function CreatePost({ add }: { add: any }) {
                                 <div className="w-full justify-between flex">
                                     <Dialog>
                                         <DialogTrigger asChild>
-                                            <Button onClick={addquestion} variant="outline">Thêm câu hỏi</Button>
+                                            <Button variant="outline">Thêm câu hỏi</Button>
                                         </DialogTrigger>
                                         <DialogContent className="overflow-y-scroll max-h-screen max-w-[800px]">
                                             <DialogHeader>
@@ -284,7 +292,7 @@ export default function CreatePost({ add }: { add: any }) {
                                                 </div>
                                                 <div>
                                                     <Label>Chọn đáp án</Label>
-                                                    <Select>
+                                                    <Select onValueChange={(value) => setKey(value)} >
                                                         <SelectTrigger className="w-[200px] mt-2">
                                                             <SelectValue placeholder="Chọn đáp án" />
                                                         </SelectTrigger>
@@ -293,7 +301,7 @@ export default function CreatePost({ add }: { add: any }) {
                                                                 <SelectLabel>Chọn đáp án của đề bài</SelectLabel>
                                                                 {
                                                                     answers && answers.map((item: any, idx: any) => {
-                                                                        return <SelectItem onChange={(value) => setKey(value)} key={idx} value={idx}>{listanswer[idx]}</SelectItem>
+                                                                        return <SelectItem key={idx} value={idx}>{item}</SelectItem>
                                                                     })
                                                                 }
                                                             </SelectGroup>
@@ -322,7 +330,7 @@ export default function CreatePost({ add }: { add: any }) {
                                             </div>
                                             <DialogFooter>
                                                 <DialogClose asChild>
-                                                    <Button type="submit">Tạo câu hỏi</Button>
+                                                    <Button onClick={addquestion} type="submit">Tạo câu hỏi</Button>
                                                 </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
@@ -343,6 +351,9 @@ export default function CreatePost({ add }: { add: any }) {
                                         <div className="px-6 text-lg font-semibold mb-4">
                                             Câu hỏi: {previewquestion.content}
                                         </div>
+                                        <div>
+                                            <Button className="ml-6 mb-4" onClick={deletequestion}>Xóa câu hỏi</Button>
+                                        </div>
                                         <div className="px-6 grid grid-cols-2 gap-3">
                                             {
                                                 previewquestion.answers.map((answer: any, idx: any) => {
@@ -350,7 +361,7 @@ export default function CreatePost({ add }: { add: any }) {
                                                         <div className="w-full" key={idx}>
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger asChild>
-                                                                    <div className="w-full transition duration-300 hover:scale-[1.05] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
+                                                                    <div className="w-full transition duration-300 hover:scale-[1.02] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
                                                                         {answer}
                                                                     </div>
                                                                 </AlertDialogTrigger>

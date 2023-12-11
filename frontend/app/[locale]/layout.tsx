@@ -8,6 +8,8 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { NextIntlClientProvider } from 'next-intl';
 import '../globals.css'
+import { Suspense } from 'react';
+import Loading from './loading';
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -47,20 +49,20 @@ export default async function RootLayout({
         <StoreProvider>
           <TanstackProvider>
             <NextIntlClientProvider locale={locale} messages={messages}>
-              {/* <Suspense fallback={<Loading />}> */}
-              {children}
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light" />
-              {/* </Suspense> */}
+              <Suspense fallback={<Loading />}>
+                {children}
+                <ToastContainer
+                  position="top-right"
+                  autoClose={5000}
+                  hideProgressBar={false}
+                  newestOnTop={false}
+                  closeOnClick
+                  rtl={false}
+                  pauseOnFocusLoss
+                  draggable
+                  pauseOnHover
+                  theme="light" />
+              </Suspense>
             </NextIntlClientProvider>
           </TanstackProvider>
         </StoreProvider>
