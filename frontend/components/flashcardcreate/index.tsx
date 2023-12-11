@@ -53,14 +53,12 @@ export default function FlashCardCreate() {
     const axiosJWT = createAxiosInstance()
     const getFlashList = async () => {
         let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`)
-        console.log(result.data)
         setFlashList(result.data)
         setFlashcards(result.data.flashcards)
     }
     useEffect(() => {
         const getFlashList = async () => {
             let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`)
-            console.log(result.data)
             setFlashList(result.data)
             setFlashcards(result.data.flashcards)
         }
@@ -76,7 +74,7 @@ export default function FlashCardCreate() {
             getFlashList()
         }
         catch (err: any) {
-            toast.error(err)
+            toast.error("Tạo thất bại")
         }
 
     }
@@ -95,7 +93,7 @@ export default function FlashCardCreate() {
             getFlashList()
         }
         catch (err: any) {
-            toast.error(err)
+            toast.error("Tạo thất bại")
         }
     }
     const selectFlashlist = (idx: any) => {

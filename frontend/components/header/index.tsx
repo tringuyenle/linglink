@@ -76,6 +76,7 @@ export default function Header() {
             deleteCookie("accessToken");
             deleteCookie("refreshToken");
             toast.success("Đăng xuất thành công")
+            router.push("/login")
         }
         catch (err: any) {
             toast.error(err)

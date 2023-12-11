@@ -39,7 +39,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
             }
             catch (err: any) {
                 console.log(err)
-                toast.error(err)
+                toast.error("Đăng ký thất bại")
             }
         },
     })
@@ -65,7 +65,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
             try {
                 mutation.mutate(values);
             } catch (error: any) {
-
+                
             }
         },
     });

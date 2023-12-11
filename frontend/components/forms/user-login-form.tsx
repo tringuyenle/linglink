@@ -46,7 +46,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                 return response
             }
             catch (err: any) {
-                toast.error(err)
+                toast.error("Đăng nhập thất bại")
             }
         },
     })
@@ -58,13 +58,13 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
         },
         validationSchema: Yup.object({
             email: Yup.string().email('Địa chỉ email không hợp lệ').required('Cần nhập email'),
-            password: Yup.string().min(3, 'Phải có ít nhất 3 ký tự').required('Cần nhập mật khẩu'),
+            password: Yup.string().min(8, 'Phải có ít nhất 8 ký tự').required('Cần nhập mật khẩu'),
         }),
         onSubmit: async (values) => {
             try {
                 mutation.mutate(values);
             } catch (error: any) {
-                toast.error(error)
+                console.log(error)
             }
         },
     });
