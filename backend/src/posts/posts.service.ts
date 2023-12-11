@@ -86,4 +86,24 @@ export class PostsService {
         }
         return new HttpException('The post has been deleted by the author', HttpStatus.UNAUTHORIZED)
     }
+    async getAllPostsByPage(lastPostId: string, pageSize: number): Promise<Post[]> {
+        let query = {};
+
+        if (lastPostId) {
+            // Nếu có lastPostId, thêm điều kiện lọc để chỉ lấy bài viết có _id nhỏ hơn lastPostId
+            query['_id'] = { $lt: lastPostId };
+        }
+
+        const posts = await this.postModel
+            .find(query)
+            .sort({ _id: -1 })
+            .limit(pageSize)
+            .populate('author')
+            .populate('question')
+            .populate('topic')
+            .exec();
+
+        return posts;
+    }
+
 }

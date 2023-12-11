@@ -21,7 +21,7 @@ export class Question {
     content: string;
 
     @Prop()
-    answer: string[];
+    answers: string[];
 
     @Prop()
     key: number;

@@ -18,7 +18,7 @@ export class Post {
     question: Question;
 
     @Prop()
-    img_url: string;
+    imgs_url: [string];
 
     @Prop()
     createAt: Date;

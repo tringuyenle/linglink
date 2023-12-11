@@ -59,4 +59,13 @@ export class FlashcardListService {
             })
             .exec();
     }
+    async getFlashCardListByUserId(user: any): Promise<FlashcardList[]> {
+        return this.flashcardListModel
+            .find({ author: user._id })
+            .populate({
+                path: 'flashcards',
+            })
+            .select('-author')
+            .exec();
+    }
 }
