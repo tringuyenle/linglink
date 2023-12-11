@@ -1,12 +1,12 @@
-import { IsNotEmpty } from "class-validator";
-import { Tag } from "schemas/tag.schema";
+// import { IsNotEmpty } from "class-validator";
+// import { Tag } from "schemas/tag.schema";
 
 export class CreateQuestionDTO {
     tagsListId: string[]
 
     content: string
 
-    answer: string[]
+    answers: string[]
 
     key: number
 
