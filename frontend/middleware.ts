@@ -20,7 +20,7 @@ export function middleware(request: NextRequest) {
         request.nextUrl.pathname = "/"
     else if (!isAuth && (pathname === "/")) {
         request.nextUrl.pathname = "/login"
-        request.nextUrl.href = `${request.nextUrl.href}/login`
+        request.nextUrl.href = `http:localhost:3005/login`
     }
     return intlMiddleware(request)
     // return NextResponse.redirect(new URL('/home', request.url))
