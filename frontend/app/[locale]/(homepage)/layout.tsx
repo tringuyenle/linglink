@@ -3,6 +3,7 @@ import Goal from "./components/goals"
 import Dictionary from "@/components/dictionary"
 import FlashCardCreate from "@/components/flashcardcreate"
 import Header from "@/components/header";
+import ChatWithGemini from "@/components/geminiAI";
 
 export default function HomeLayout({
   children,
@@ -23,6 +24,7 @@ export default function HomeLayout({
         <div className="w-1/4 flex flex-col gap-4">
           <FlashCardCreate />
           <Dictionary />
+          <ChatWithGemini/>
         </div>
       </div>
     </div>
