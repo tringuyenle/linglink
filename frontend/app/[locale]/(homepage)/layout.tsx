@@ -23,8 +23,8 @@ export default function HomeLayout({
         </div>
         <div className="w-1/4 flex flex-col gap-4">
           <FlashCardCreate />
-          <Dictionary />
           <ChatWithGemini/>
+          <Dictionary />
         </div>
       </div>
     </div>
