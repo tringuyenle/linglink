@@ -16,7 +16,7 @@ import { TagSchema } from 'schemas/tag.schema';
             {name: 'Post', schema: PostSchema},
             {name: 'Topic', schema: TopicSchema},
             {name: 'Question', schema: QuestionSchema},
-            {name: 'Tag', schema: TagSchema}
+            {name: 'Tag', schema: TagSchema},
         ]),
     ],
     providers: [PostsService, TopicsService, QuestionsService, TagsService],
