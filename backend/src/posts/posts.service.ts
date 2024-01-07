@@ -14,7 +14,7 @@ export class PostsService {
         @InjectModel('Post') private readonly postModel: Model<Post>,
         private readonly topicsService: TopicsService,
         private readonly questionsService: QuestionsService,
-    ) { }
+    ) {}
 
     async createPost(user: User, postsData: CreatePostDTO) {
         try {
@@ -106,4 +106,23 @@ export class PostsService {
         return posts;
     }
 
+    async changeNumComments(post: Post, changedCommentCount: number) {
+        try {
+            // Increment the numComments field
+            const newNumComments = post.numComments + changedCommentCount;
+
+            // Use findOneAndUpdate to update the document
+            const updatedPost = await this.postModel.findOneAndUpdate(
+                { _id: post._id } as FilterQuery<Post>,
+                { $set: { numComments: newNumComments } },
+                { new: true }
+            );
+
+            return updatedPost;
+        } catch (error) {
+            // Handle errors
+            console.error('Error updating post:', error);
+            throw error;
+        }
+    }
 }

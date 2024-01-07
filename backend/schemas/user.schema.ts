@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { UserRoles } from '../src/common/enums/user.enum';
 import { TargetTypes } from '../src/common/enums/target.enum';
 import { IsEnum } from 'class-validator';
+import { ObjectId } from 'mongoose';
 
 export class Target {
     targetType: TargetTypes;
@@ -15,6 +16,8 @@ export class Target {
 
 @Schema({ timestamps: true })
 export class User {
+    _id: ObjectId;
+
     @Prop({unique: true})
     email: string;
 

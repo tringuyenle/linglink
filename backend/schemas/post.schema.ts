@@ -24,6 +24,9 @@ export class Post {
     createAt: Date;
 
     @Prop({ default: 0 })
+    numComments: number;
+
+    @Prop({ default: 0 })
     upVotes: number;
 
     @Prop({ type: Types.ObjectId, ref: 'User' })

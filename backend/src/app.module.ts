@@ -10,10 +10,17 @@ import { TagsModule } from './tags/tags.module';
 import { QuestionsModule } from './questions/questions.module';
 import { FlashcardListModule } from './flashcard-list/flashcard-list.module';
 import { FlashcardModule } from './flashcards/flashcards.module';
+import { CommentsModule } from './comments/comments.module';
 require("dotenv").config();
 
 @Module({
-  imports: [MongooseModule.forRoot(process.env.DB_URL), AuthModule, UserModule, PostsModule, TopicsModule, TagsModule, QuestionsModule, FlashcardListModule, FlashcardModule],
+  imports: 
+  [
+    MongooseModule.forRoot(process.env.DB_URL), 
+    AuthModule, UserModule, PostsModule, 
+    TopicsModule, TagsModule, QuestionsModule, 
+    FlashcardListModule, FlashcardModule, CommentsModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
