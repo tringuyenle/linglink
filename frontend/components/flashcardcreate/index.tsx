@@ -33,6 +33,7 @@ import { Label } from '../ui/label';
 import { Input } from '../ui/input';
 import createAxiosInstance from '@/app/utils/axiosInstance';
 import { toast } from 'react-toastify';
+import { Textarea } from '../ui/textarea';
 
 
 export default function FlashCardCreate() {
@@ -188,10 +189,16 @@ export default function FlashCardCreate() {
                     </SheetHeader>
                     <div className="grid gap-4 py-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="flashcardname" className="text-left">
+                            <Label htmlFor="flashcardlistname" className="text-left">
                                 Tên bộ flashcards
                             </Label>
-                            <Input onChange={(e) => setFlashListName(e.target.value)} id="flashcardname" placeholder='Nhập tên' className="col-span-3" />
+                            <Input onChange={(e) => setFlashListName(e.target.value)} id="flashcardlistname" placeholder='Nhập tên' className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="flashcardname" className="text-left">
+                                Mô tả
+                            </Label>
+                            <Textarea id="flashlist description" placeholder='Nhập mô tả' className="col-span-3" />
                         </div>
                     </div>
                     <SheetFooter>
