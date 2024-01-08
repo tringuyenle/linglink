@@ -11,6 +11,7 @@ import { QuestionsModule } from './questions/questions.module';
 import { FlashcardListModule } from './flashcard-list/flashcard-list.module';
 import { FlashcardModule } from './flashcards/flashcards.module';
 import { CommentsModule } from './comments/comments.module';
+import { ReactionsModule } from './reactions/reactions.module';
 require("dotenv").config();
 
 @Module({
@@ -20,6 +21,7 @@ require("dotenv").config();
     AuthModule, UserModule, PostsModule, 
     TopicsModule, TagsModule, QuestionsModule, 
     FlashcardListModule, FlashcardModule, CommentsModule,
+    ReactionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
