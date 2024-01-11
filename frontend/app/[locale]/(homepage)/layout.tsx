@@ -3,6 +3,7 @@ import Goal from "./components/goals"
 import Dictionary from "@/components/dictionary"
 import FlashCardCreate from "@/components/flashcardcreate"
 import Header from "@/components/header";
+import ChatWithGemini from "@/components/geminiAI";
 
 export default function HomeLayout({
   children,
@@ -20,6 +21,10 @@ export default function HomeLayout({
         <div className="w-1/2 flex flex-col gap-8">
           {children}
         </div>
+        <div className="w-1/4 flex flex-col gap-4">
+          <FlashCardCreate />
+          <ChatWithGemini/>
+          <Dictionary />
         <div className="w-1/4 h-full sticky top-[100px] overflow-y-auto">
           <div className="overflow-auto flex flex-col gap-4 max-h-screen">
             <FlashCardCreate />
