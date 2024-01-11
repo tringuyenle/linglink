@@ -31,7 +31,6 @@ import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -40,8 +39,10 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { format } from 'date-fns';
 
 const Header = ({ user }: { user: any }) => {
+    console.log(user)
     return (
         <div className="flex flex-row justify-between px-6 items-center">
             <div className="flex flex-row items-center gap-3">
@@ -55,12 +56,14 @@ const Header = ({ user }: { user: any }) => {
                     <div className="font-semibold">
                         {user.name}
                     </div>
-                    <div className="text-stone-500 text-sm">
-                        {user.createAt}
-                    </div>
                 </div>
             </div>
-            <div>
+            <div className="flex gap-2 items-center">
+                <div>
+                    <div className="text-stone-500 text-sm">
+                        {format(new Date(user.createdAt), 'yyyy-MM-dd HH:mm:ss')}
+                    </div>
+                </div>
                 <div className="rounded-full p-1 flex items-center hover:bg-secondary cursor-pointer">
                     <DropdownMenu>
                         <DropdownMenuTrigger>
