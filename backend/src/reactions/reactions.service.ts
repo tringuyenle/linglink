@@ -115,6 +115,17 @@ export class ReactionsService {
         // Ngược lại, nếu đã like rồi, không làm gì cả  
         return HttpStatus.OK; 
     }
+
+    async checkReactionStatus(userId: string, postId: string) {
+        const { ObjectId } = require('mongodb');
+        userId = new ObjectId(userId);
+        const existingReaction = await this.reactionModel.findOne({
+            post: postId,
+            user: userId,
+        });
+        if (existingReaction) return existingReaction.reactionType;
+        return null;
+    }
     
     async getReactionByPostId(postId: string): Promise<{likeUsers: Reaction[], dislikeUsers: Reaction[]}> {
         const userReaction = await this.reactionModel.find({ 'post': postId }).populate({ path: 'user', select: '-hashedPassword' }).exec();

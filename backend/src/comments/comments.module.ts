@@ -11,6 +11,8 @@ import { TagsService } from 'src/tags/tags.service';
 import { TopicSchema } from 'schemas/topic.schema';
 import { QuestionSchema } from 'schemas/question.schema';
 import { TagSchema } from 'schemas/tag.schema';
+import { ReactionsService } from 'src/reactions/reactions.service';
+import { ReactionSchema } from 'schemas/reaction.schema';
 
 @Module({
     imports: [
@@ -19,10 +21,11 @@ import { TagSchema } from 'schemas/tag.schema';
             {name: 'Post', schema: PostSchema},
             {name: 'Topic', schema: TopicSchema},
             {name: 'Question', schema: QuestionSchema},
-            {name: 'Tag', schema: TagSchema}
+            {name: 'Tag', schema: TagSchema},
+            {name: 'Reaction', schema: ReactionSchema}
         ])
     ],
-    providers: [CommentsService, PostsService, TopicsService, QuestionsService, TagsService],
+    providers: [CommentsService, PostsService, TopicsService, QuestionsService, TagsService, ReactionsService],
     controllers: [CommentsController],
 })
 export class CommentsModule {}

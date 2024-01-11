@@ -7,6 +7,7 @@ import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
 import { TopicsService } from '../topics/topics.service';
 import { QuestionsService } from 'src/questions/questions.service';
+import { ReactionsService } from 'src/reactions/reactions.service';
 
 @Injectable()
 export class PostsService {
@@ -14,6 +15,7 @@ export class PostsService {
         @InjectModel('Post') private readonly postModel: Model<Post>,
         private readonly topicsService: TopicsService,
         private readonly questionsService: QuestionsService,
+        private readonly reactionsService: ReactionsService,
     ) {}
 
     async createPost(user: User, postsData: CreatePostDTO) {
@@ -104,6 +106,43 @@ export class PostsService {
             .exec();
 
         return posts;
+    }
+
+    async getAllPostsByPagev2(lastPostId: string, userId: string, pageSize: number): Promise<{data: Post, like: boolean, dislike: boolean, numlikes: number, numdislike: number}[]> {
+        let query = {};
+
+        if (lastPostId) {
+            // Nếu có lastPostId, thêm điều kiện lọc để chỉ lấy bài viết có _id nhỏ hơn lastPostId
+            query['_id'] = { $lt: lastPostId };
+        }
+
+        const posts = await this.postModel
+            .find(query)
+            .sort({ _id: -1 })
+            .limit(pageSize)
+            .populate('author')
+            .populate('question')
+            .populate('topic')
+            .exec();
+        
+        // Sử dụng hàm map để chuyển đổi cấu trúc của mỗi phần tử trong mảng và cập nhật trạng thái reaction
+        const transformedPosts = await Promise.all(
+            posts.map(async (post) => {
+                const listReactions = await this.reactionsService.getReactionByPostId(post._id.toString());
+                const checkReactionStatus = await this.reactionsService.checkReactionStatus(userId, post._id.toString());
+                const like = (checkReactionStatus === 'like') ? true : false;
+                const dislike = (checkReactionStatus === 'dislike') ? true : false;
+                return {
+                    data: post,
+                    like: like,
+                    dislike: dislike,
+                    numlikes: listReactions.likeUsers.length,
+                    numdislike: listReactions.dislikeUsers.length,
+                };
+            })
+        );
+
+        return transformedPosts;
     }
 
     async changeNumComments(post: Post, changedCommentCount: number) {
