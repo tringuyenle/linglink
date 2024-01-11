@@ -14,14 +14,19 @@ export class CommentsController {
         return this.commentsService.createComment(req.user, createCommentDto);
     }
 
+    @Get('post/:id')
+    getCommentByPostId(@Param('id') postId: string, @Param('userId') userId: string = null) {
+        return this.commentsService.getCommentsWithReactByPostId(postId, userId);
+    }
+
     @Get(':id')
-    getCommentByPostId(@Param('id') post_id: string) {
-        return this.commentsService.getCommentsByPostId(post_id);
+    getCommentByCommentId(@Param('id') commentId: string, @Param('userId') userId: string = null) {
+        return this.commentsService.getCommentsWithReactByCommentId(commentId, userId);
     }
 
     // @Get(':id')
-    // getCommentByUserId(@Param('id') user_id: string) {
-    //     // return this.tagsService.getTagById(user_id);
+    // getCommentByUserId(@Param('id') userId: string) {
+    //     // return this.tagsService.getTagById(userId);
     // }
 
     @Put(':id')

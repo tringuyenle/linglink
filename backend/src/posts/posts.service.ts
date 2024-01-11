@@ -88,6 +88,7 @@ export class PostsService {
         }
         return new HttpException('The post has been deleted by the author', HttpStatus.UNAUTHORIZED)
     }
+
     async getAllPostsByPage(lastPostId: string, pageSize: number): Promise<Post[]> {
         let query = {};
 
@@ -108,7 +109,7 @@ export class PostsService {
         return posts;
     }
 
-    async getAllPostsByPagev2(lastPostId: string, userId: string, pageSize: number): Promise<{data: Post, like: boolean, dislike: boolean, numlikes: number, numdislike: number}[]> {
+    async getAllPostsByPagev2(lastPostId: string, userId: string, pageSize: number): Promise<{data: Post, like: boolean, dislike: boolean, numlikes: number, numdislikes: number}[]> {
         let query = {};
 
         if (lastPostId) {
@@ -129,7 +130,7 @@ export class PostsService {
         const transformedPosts = await Promise.all(
             posts.map(async (post) => {
                 const listReactions = await this.reactionsService.getReactionByPostId(post._id.toString());
-                const checkReactionStatus = await this.reactionsService.checkReactionStatus(userId, post._id.toString());
+                const checkReactionStatus = userId ? await this.reactionsService.checkPostReactionStatus(userId, post._id.toString()) : null;
                 const like = (checkReactionStatus === 'like') ? true : false;
                 const dislike = (checkReactionStatus === 'dislike') ? true : false;
                 return {
@@ -137,7 +138,7 @@ export class PostsService {
                     like: like,
                     dislike: dislike,
                     numlikes: listReactions.likeUsers.length,
-                    numdislike: listReactions.dislikeUsers.length,
+                    numdislikes: listReactions.dislikeUsers.length,
                 };
             })
         );

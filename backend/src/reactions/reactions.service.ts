@@ -116,11 +116,22 @@ export class ReactionsService {
         return HttpStatus.OK; 
     }
 
-    async checkReactionStatus(userId: string, postId: string) {
+    async checkPostReactionStatus(userId: string, postId: string) {
         const { ObjectId } = require('mongodb');
         userId = new ObjectId(userId);
         const existingReaction = await this.reactionModel.findOne({
             post: postId,
+            user: userId,
+        });
+        if (existingReaction) return existingReaction.reactionType;
+        return null;
+    }
+
+    async checkCommentReactionStatus(userId: string, commentId: string) {
+        const { ObjectId } = require('mongodb');
+        userId = new ObjectId(userId);
+        const existingReaction = await this.reactionModel.findOne({
+            comment: commentId,
             user: userId,
         });
         if (existingReaction) return existingReaction.reactionType;

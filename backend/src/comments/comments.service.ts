@@ -6,12 +6,14 @@ import { CreateCommentDTO } from './dto/createComment.dto';
 import { User } from 'schemas/user.schema';
 import { PostsService } from 'src/posts/posts.service';
 import { UpdateCommentDTO } from './dto/updateComment.dto';
+import { ReactionsService } from 'src/reactions/reactions.service';
 
 @Injectable()
 export class CommentsService {
     constructor(
         @InjectModel('Comment') private readonly commentModel: Model<Comment>,
         private readonly postsService: PostsService,
+        private readonly reactionsService: ReactionsService,
     ) {}
     
     async createComment(user: User, createCommentDto: CreateCommentDTO): Promise<Comment> {
@@ -60,7 +62,49 @@ export class CommentsService {
     }
     
     async getCommentsByPostId(postId: string): Promise<Comment[]> {
-        return this.commentModel.find({ 'post': postId }).populate('author').populate('comment').populate('post').exec();
+        return this.commentModel.find({ 'post': postId }).populate({ path: 'author', select: '-hashedPassword' }).populate('post').exec();
+    }
+
+    async getCommentsWithReactByPostId(postId: string, userId: string): Promise<{data: Comment, like: boolean, dislike: boolean, numlikes: number, numdislikes: number}[]> {
+        const comments = await this.commentModel.find({ 'post': postId }).populate({ path: 'author', select: '-hashedPassword' }).populate('post').exec();
+
+        const transformedPosts = await Promise.all(
+            comments.map(async (comment) => {
+                const listReactions = await this.reactionsService.getReactionByPostId(comment._id.toString());
+                const checkReactionStatus = userId ? await this.reactionsService.checkPostReactionStatus(userId, comment._id.toString()) : null;
+                const like = (checkReactionStatus === 'like') ? true : false;
+                const dislike = (checkReactionStatus === 'dislike') ? true : false;
+                return {
+                    data: comment,
+                    like: like,
+                    dislike: dislike,
+                    numlikes: listReactions.likeUsers.length,
+                    numdislikes: listReactions.dislikeUsers.length,
+                };
+            })
+        );
+        return transformedPosts;
+    }
+
+    async getCommentsWithReactByCommentId(commentId: string, userId: string): Promise<{data: Comment, like: boolean, dislike: boolean, numlikes: number, numdislikes: number}[]> {
+        const comments = await this.commentModel.find({ 'comment': commentId }).populate({ path: 'author', select: '-hashedPassword' }).populate('comment').populate('post').exec();
+
+        const transformedPosts = await Promise.all(
+            comments.map(async (comment) => {
+                const listReactions = await this.reactionsService.getReactionByPostId(comment._id.toString());
+                const checkReactionStatus = userId ? await this.reactionsService.checkCommentReactionStatus(userId, comment._id.toString()) : null;
+                const like = (checkReactionStatus === 'like') ? true : false;
+                const dislike = (checkReactionStatus === 'dislike') ? true : false;
+                return {
+                    data: comment,
+                    like: like,
+                    dislike: dislike,
+                    numlikes: listReactions.likeUsers.length,
+                    numdislikes: listReactions.dislikeUsers.length,
+                };
+            })
+        );
+        return transformedPosts;
     }
 
     async getCommentsByComment(comment: Comment): Promise<Comment[]> {
