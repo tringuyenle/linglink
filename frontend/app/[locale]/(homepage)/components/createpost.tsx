@@ -386,7 +386,7 @@ export default function CreatePost({ add }: { add: any }) {
                                     </div>
                                 </div>}
                             </div>
-                            <div className="text-md font-semibold">Hình Ảnh</div>
+                            <div className="text-md font-semibold mt-2">Hình Ảnh</div>
                             <div {...imageroot({ className: 'dropzone py-5 px-3 border border-ring flex justify-center border-dashed cursor-pointer rounded-md' })}>
                                 <input {...image_inputprops()} />
                                 <div className="flex flex-col gap-2 items-center justify-center">

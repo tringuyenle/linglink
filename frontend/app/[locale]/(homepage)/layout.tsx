@@ -10,12 +10,12 @@ export default function HomeLayout({
 }: {
   children: React.ReactNode
 }) {
-  
+
   return (
     <div className="w-full flex flex-col mb-10">
       <Header />
-      <div className="w-full flex flex-row gap-12 container" >
-        <div className="w-1/4" >
+      <div className="w-full flex flex-row gap-12 container h-full">
+        <div className="w-1/4 h-full sticky top-[100px]">
           <Goal />
         </div>
         <div className="w-1/2 flex flex-col gap-8">
@@ -25,6 +25,11 @@ export default function HomeLayout({
           <FlashCardCreate />
           <ChatWithGemini/>
           <Dictionary />
+        <div className="w-1/4 h-full sticky top-[100px] overflow-y-auto">
+          <div className="overflow-auto flex flex-col gap-4 max-h-screen">
+            <FlashCardCreate />
+            <Dictionary />
+          </div>
         </div>
       </div>
     </div>
