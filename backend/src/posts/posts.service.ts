@@ -85,6 +85,7 @@ export class PostsService {
         const currentPost = await this.getPostById(postId);
         if (user.email === currentPost.author.email) {
             await this.topicsService.deletePostInTopicById(currentPost.topic.toString(), currentPost);
+            await this.reactionsService.removeReactionByPostId(currentPost.id.toString()); 
             return await this.postModel.deleteOne({ _id: postId } as FilterQuery<Post>);
         }
         return new HttpException('The post has been deleted by the author', HttpStatus.UNAUTHORIZED)

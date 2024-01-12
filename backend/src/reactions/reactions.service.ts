@@ -151,4 +151,12 @@ export class ReactionsService {
         const dislikeUsers = userReaction.filter(user => user.reactionType === ReactionType.DISLIKE);
         return { likeUsers: likeUsers, dislikeUsers: dislikeUsers};
     }
+
+    async removeReactionByPostId(postId: string){
+        return await this.reactionModel.deleteMany({post: postId});
+    }
+
+    async removeReactionByCommentId(commentId: string){
+        return await this.reactionModel.deleteMany({comment: commentId});
+    }
 }
