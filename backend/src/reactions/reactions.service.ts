@@ -115,6 +115,28 @@ export class ReactionsService {
         // Ngược lại, nếu đã like rồi, không làm gì cả  
         return HttpStatus.OK; 
     }
+
+    async checkPostReactionStatus(userId: string, postId: string) {
+        const { ObjectId } = require('mongodb');
+        userId = new ObjectId(userId);
+        const existingReaction = await this.reactionModel.findOne({
+            post: postId,
+            user: userId,
+        });
+        if (existingReaction) return existingReaction.reactionType;
+        return null;
+    }
+
+    async checkCommentReactionStatus(userId: string, commentId: string) {
+        const { ObjectId } = require('mongodb');
+        userId = new ObjectId(userId);
+        const existingReaction = await this.reactionModel.findOne({
+            comment: commentId,
+            user: userId,
+        });
+        if (existingReaction) return existingReaction.reactionType;
+        return null;
+    }
     
     async getReactionByPostId(postId: string): Promise<{likeUsers: Reaction[], dislikeUsers: Reaction[]}> {
         const userReaction = await this.reactionModel.find({ 'post': postId }).populate({ path: 'user', select: '-hashedPassword' }).exec();
@@ -128,5 +150,13 @@ export class ReactionsService {
         const likeUsers = userReaction.filter(user => user.reactionType === ReactionType.LIKE);
         const dislikeUsers = userReaction.filter(user => user.reactionType === ReactionType.DISLIKE);
         return { likeUsers: likeUsers, dislikeUsers: dislikeUsers};
+    }
+
+    async removeReactionByPostId(postId: string){
+        return await this.reactionModel.deleteMany({post: postId});
+    }
+
+    async removeReactionByCommentId(commentId: string){
+        return await this.reactionModel.deleteMany({comment: commentId});
     }
 }

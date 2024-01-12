@@ -39,4 +39,9 @@ export class ReactionsController {
     getReactionByCommentId(@Param('id') comment_id: string) {
         return this.reactionsService.getReactionByCommentId(comment_id);
     }
+
+    // @Delete(':id')
+    // deleteReactionByPostId(@Param('id') post_id: string) {
+    //     return this.reactionsService.removeReactionByPostId(post_id);
+    // }
 }

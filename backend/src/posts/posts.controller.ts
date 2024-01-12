@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, Req, UseGuards, Version } from '@nestjs/common';
 import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
@@ -53,5 +53,11 @@ export class PostsController {
     @Get('page')
     getAllPostsByPage(@Query('lastPostId') lastPostId: string, @Query('pageSize') pageSize: number = 10) {
         return this.postsService.getAllPostsByPage(lastPostId, pageSize);
+    }
+
+    @Get('page')
+    @Version('2')
+    getAllPostsByPagev2(@Query('lastPostId') lastPostId: string, @Query('userId') userId: string = null, @Query('pageSize') pageSize: number = 10) {
+        return this.postsService.getAllPostsByPagev2(lastPostId, userId, pageSize);
     }
 }
