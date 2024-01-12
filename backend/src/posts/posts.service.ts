@@ -8,6 +8,7 @@ import { UpdatePostDTO } from './dto/updatePost.dto';
 import { TopicsService } from '../topics/topics.service';
 import { QuestionsService } from 'src/questions/questions.service';
 import { ReactionsService } from 'src/reactions/reactions.service';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Injectable()
 export class PostsService {

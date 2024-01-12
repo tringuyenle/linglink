@@ -67,11 +67,10 @@ export class CommentsService {
 
     async getCommentsWithReactByPostId(postId: string, userId: string): Promise<{data: Comment, like: boolean, dislike: boolean, numlikes: number, numdislikes: number}[]> {
         const comments = await this.commentModel.find({ 'post': postId }).populate({ path: 'author', select: '-hashedPassword' }).populate('post').exec();
-
-        const transformedPosts = await Promise.all(
+        const transformedComments = await Promise.all(
             comments.map(async (comment) => {
-                const listReactions = await this.reactionsService.getReactionByPostId(comment._id.toString());
-                const checkReactionStatus = userId ? await this.reactionsService.checkPostReactionStatus(userId, comment._id.toString()) : null;
+                const listReactions = await this.reactionsService.getReactionByCommentId(comment._id.toString());
+                const checkReactionStatus = userId ? await this.reactionsService.checkCommentReactionStatus(userId, comment._id.toString()) : null;
                 const like = (checkReactionStatus === 'like') ? true : false;
                 const dislike = (checkReactionStatus === 'dislike') ? true : false;
                 return {
@@ -83,7 +82,7 @@ export class CommentsService {
                 };
             })
         );
-        return transformedPosts;
+        return transformedComments;
     }
 
     async getCommentsWithReactByCommentId(commentId: string, userId: string): Promise<{data: Comment, like: boolean, dislike: boolean, numlikes: number, numdislikes: number}[]> {
@@ -91,7 +90,7 @@ export class CommentsService {
 
         const transformedPosts = await Promise.all(
             comments.map(async (comment) => {
-                const listReactions = await this.reactionsService.getReactionByPostId(comment._id.toString());
+                const listReactions = await this.reactionsService.getReactionByCommentId(comment._id.toString());
                 const checkReactionStatus = userId ? await this.reactionsService.checkCommentReactionStatus(userId, comment._id.toString()) : null;
                 const like = (checkReactionStatus === 'like') ? true : false;
                 const dislike = (checkReactionStatus === 'dislike') ? true : false;

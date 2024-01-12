@@ -20,7 +20,6 @@ import { ReactionSchema } from 'schemas/reaction.schema';
             {name: 'Question', schema: QuestionSchema},
             {name: 'Tag', schema: TagSchema},
             {name: 'Reaction', schema: ReactionSchema},
-            
         ]),
     ],
     providers: [PostsService, TopicsService, QuestionsService, TagsService, ReactionsService],

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards } from '@nestjs/common';
 import { CreateCommentDTO } from './dto/createComment.dto';
 import { UpdateCommentDTO } from './dto/updateComment.dto';
 import { CommentsService } from './comments.service';
@@ -14,13 +14,13 @@ export class CommentsController {
         return this.commentsService.createComment(req.user, createCommentDto);
     }
 
-    @Get('post/:id')
-    getCommentByPostId(@Param('id') postId: string, @Param('userId') userId: string = null) {
+    @Get('post')
+    getCommentByPostId(@Query('postId') postId: string, @Query('userId') userId: string = null) {
         return this.commentsService.getCommentsWithReactByPostId(postId, userId);
     }
 
     @Get(':id')
-    getCommentByCommentId(@Param('id') commentId: string, @Param('userId') userId: string = null) {
+    getCommentByCommentId(@Query('commentId') commentId: string, @Query('userId') userId: string = null) {
         return this.commentsService.getCommentsWithReactByCommentId(commentId, userId);
     }
 
