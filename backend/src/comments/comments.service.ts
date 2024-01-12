@@ -132,8 +132,7 @@ export class CommentsService {
             for (const eachComment of listComments) {
                 this.removeComment(eachComment);
             } 
-            const status = await this.reactionsService.removeReactionByCommentId(comment._id.toString());
-            console.log(status);
+            await this.reactionsService.removeReactionByCommentId(comment._id.toString());
             this.commentModel.findByIdAndRemove(comment._id).exec();
             return HttpStatus.OK;
         } catch (error) {
