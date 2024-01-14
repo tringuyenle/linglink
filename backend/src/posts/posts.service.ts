@@ -65,6 +65,25 @@ export class PostsService {
         throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
     }
 
+    async getPostWithReactById(userId: string, postId: string) {
+        const post = await this.postModel.findById(postId).populate({ path: 'author', select: '-hashedPassword' }).exec();
+        
+        if (post) {
+            const listReactions = await this.reactionsService.getReactionByPostId(post._id.toString());
+            const checkReactionStatus = userId ? await this.reactionsService.checkPostReactionStatus(userId, post._id.toString()) : null;
+            const like = (checkReactionStatus === 'like') ? true : false;
+            const dislike = (checkReactionStatus === 'dislike') ? true : false;
+            return {
+                data: post,
+                like: like,
+                dislike: dislike,
+                numlikes: listReactions.likeUsers.length,
+                numdislikes: listReactions.dislikeUsers.length,
+            };
+        }
+        throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
+    }
+
     async getPostByTopic(topicId: string) {
         const topic = await this.topicsService.getTopicById(topicId);
         if (topic) {

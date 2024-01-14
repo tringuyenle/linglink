@@ -29,8 +29,10 @@ export class PostsController {
     }
 
     @Get(':id')
-    getPostById(@Param('id') id: string) {
-        return this.postsService.getPostById(id);
+    @UseGuards(MyJwtGuard)
+    getPostById(@Req() req, @Query('postId') postId: string) {
+        const userId = req.user._id.toString();
+        return this.postsService.getPostWithReactById(userId, postId);
     }
 
     @Get('topic/:id')
