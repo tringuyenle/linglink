@@ -15,12 +15,16 @@ export class CommentsController {
     }
 
     @Get('post')
-    getCommentByPostId(@Query('postId') postId: string, @Query('userId') userId: string = null) {
+    @UseGuards(MyJwtGuard)
+    getCommentByPostId(@Req() req, @Query('postId') postId: string) {
+        const userId = req.user._id.toString();
         return this.commentsService.getCommentsWithReactByPostId(postId, userId);
     }
 
     @Get(':id')
-    getCommentByCommentId(@Query('commentId') commentId: string, @Query('userId') userId: string = null) {
+    @UseGuards(MyJwtGuard)
+    getCommentByCommentId(@Req() req, @Query('commentId') commentId: string) {
+        const userId = req.user._id.toString();
         return this.commentsService.getCommentsWithReactByCommentId(commentId, userId);
     }
 

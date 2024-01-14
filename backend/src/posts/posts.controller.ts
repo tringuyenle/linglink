@@ -57,7 +57,9 @@ export class PostsController {
 
     @Get('page')
     @Version('2')
-    getAllPostsByPagev2(@Query('lastPostId') lastPostId: string, @Query('userId') userId: string = null, @Query('pageSize') pageSize: number = 10) {
+    @UseGuards(MyJwtGuard)
+    getAllPostsByPagev2(@Req() req, @Query('lastPostId') lastPostId: string, @Query('pageSize') pageSize: number = 10) {
+        const userId = req.user._id.toString();
         return this.postsService.getAllPostsByPagev2(lastPostId, userId, pageSize);
     }
 }
