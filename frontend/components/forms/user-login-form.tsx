@@ -73,7 +73,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
             <form onSubmit={loginform.handleSubmit}>
                 <div className="grid gap-2">
                     <div className="grid gap-1">
-                        <Label className="" htmlFor="email">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="email">
                             Địa chỉ Email
                         </Label>
                         <Input
@@ -91,7 +91,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                         {loginform.touched.email && loginform.errors.email ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{loginform.errors.email}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
-                        <Label className="" htmlFor="password">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="password">
                             Mật khẩu
                         </Label>
                         <Input
@@ -120,7 +120,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                             <div className="text-red-600 ml-1 text-sm my-1">{loginform.errors.password}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
                     </div>
-                    <Button variant="outline" disabled={mutation.isPending} type="submit">
+                    <Button disabled={mutation.isPending} type="submit">
                         {mutation.isPending && (
                             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                         )}
@@ -138,7 +138,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                     </span>
                 </div>
             </div>
-            <Button variant="outline" type="button" disabled={mutation.isPending}>
+            <Button disabled={mutation.isPending}>
                 {mutation.isPending ? (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (

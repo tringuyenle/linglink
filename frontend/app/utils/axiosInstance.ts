@@ -1,6 +1,7 @@
 "use client"
 import axios, { AxiosInstance } from 'axios';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { toast } from "react-toastify"
 
 const createAxiosInstance = (): AxiosInstance => {
     let accessToken = getCookie('accessToken');
@@ -13,53 +14,47 @@ const createAxiosInstance = (): AxiosInstance => {
         },
     });
 
-    // Thêm interceptor cho yêu cầu
     instance.interceptors.request.use(
         async (config) => {
-            // Thêm accessToken vào headers của yêu cầu
             config.headers.Authorization = `Bearer ${accessToken}`;
             return config;
         },
         (error) => {
-            return Promise.reject(error);
+            throw error;
         }
     );
 
-    // Thêm interceptor cho phản hồi
     instance.interceptors.response.use(
         (response) => {
-            // Nếu muốn thêm xử lý cho phản hồi, bạn có thể thực hiện ở đây
             return response;
         },
         async (error) => {
             console.log(error)
-            // Nếu lỗi là do access token hết hạn (401 Unauthorized)
-            if (error.response && error.response.status === 401) {
-                // Thử làm mới access token
+            if (error?.response && error?.response?.status === 401) {
                 try {
-                    const refreshResponse = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refresh`, { refreshToken });
-                    const newAccessToken = refreshResponse.data.access_token;
+                    if (error.response.data) toast.error(error.response.data.message)
+                    else toast.error(error.message)
+                    const refreshResponse = await instance.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refreshToken`, { token: refreshToken });
+                    const newAccessToken = refreshResponse.data.accessToken;
 
-                    // Lưu access token mới vào headers và local storage
                     instance.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
                     setCookie("accessToken", newAccessToken)
-
-                    // Gửi lại yêu cầu gốc với access token mới
+                    setCookie("refreshToken", refreshResponse.data.refreshToken)
                     const originalRequest = error.config;
                     originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
                     return axios(originalRequest);
                 } catch (refreshError) {
-                    // Nếu làm mới token thất bại, chuyển người dùng đến trang đăng nhập hoặc thực hiện xử lý khác
-                    // Ví dụ: chuyển hướng đến trang đăng nhập
+                    console.log(refreshError)
                     deleteCookie("accessToken")
                     deleteCookie("refreshToken")
-                    // window.location.href = '/login';
-                    return Promise.reject(refreshError);
+                    window.location.href = '/login';
+                    toast.error("Phiên đăng nhập hết hạn, vui lòng đăng nhập lại")
+                    throw refreshError
                 }
             }
-
-            // Nếu không phải lỗi 401 hoặc không thể làm mới token, trả về lỗi nguyên thủy
-            return Promise.reject(error);
+            if (error.response.data) toast.error(error.response.data.message)
+            else toast.error(error.message)
+            throw error;
         }
     );
 

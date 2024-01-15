@@ -5,6 +5,8 @@ import educationAnimation from "@/app/assets/lotties/education.json"
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
 import UserSignInForm from "@/components/forms/user-register-form"
+import logo from "@/app/assets/images/linglink.png"
+import Image from "next/image"
 
 export default function SignIn() {
     return (
@@ -22,19 +24,10 @@ export default function SignIn() {
                 <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
                     <div className="absolute inset-0 bg-[#5f99e4]" />
                     <div className="relative z-20 flex items-center text-lg font-medium">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="mr-2 h-6 w-6"
-                        >
-                            <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-                        </svg>
-                        Acme Inc
+                        <div className="relative z-20 flex text-center justify-center w-full items-center text-[60px] gap-4 font-bold text-white">
+                            <Image src={logo} className="h-[100px] w-[100px]" alt="logo" />
+                            Ling Link
+                        </div>
                     </div>
                     <div className="relative z-20 mt-8">
                         <Lottie animationData={educationAnimation} loop={true} />

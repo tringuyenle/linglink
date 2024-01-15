@@ -12,16 +12,18 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { Button } from "@/components/ui/button";
-import axios from "axios";
+import { Icons } from "@/components/icons/icons"
 import { toast } from "react-toastify";
 import CreatePost from "./components/createpost";
+import createAxiosInstance from "@/app/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
 
 const TopicSelect: React.FC = () => {
   return (
     <div>
       <Select>
         <SelectTrigger className="w-[150px]">
-          <SelectValue placeholder="Chọn topic" />
+          <SelectValue placeholder="Chọn chủ đề" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
@@ -47,10 +49,10 @@ const Filter: React.FC = () => {
   }
   return (
     <div className="flex gap-2">
-      <Button onClick={() => handleClick(0)} className={`${active === 0 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(0)} className={`${active === 0 ? "bg-primary" : "bg-slate-200 text-black hover:bg-slate-300"}`}>
         Phổ biến nhất
       </Button>
-      <Button onClick={() => handleClick(1)} className={`${active === 1 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(1)} className={`${active === 1 ? "bg-primary" : "bg-slate-200 text-black hover:bg-slate-300"}`}>
         Mới nhất
       </Button>
     </div>
@@ -62,15 +64,17 @@ const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [end, setEnd] = useState<boolean>(false)
   const createpost = (post: any) => {
+    console.log("posts before:", posts)
     setPosts((prev) => [post, ...prev])
   }
+  const axiosJWT = createAxiosInstance()
   async function getPostByLastID() {
     try {
       if (!end) {
         setIsLoading(true);
         let lastId = "";
-        if (posts.length > 0) lastId = posts[posts.length - 1]._id;
-        const newData = await axios.get((`${process.env.NEXT_PUBLIC_BASE_URL}/posts/page`), {
+        if (posts.length > 0) lastId = posts[posts.length - 1].data._id;
+        const newData = await axiosJWT.get((`${process.env.NEXT_PUBLIC_BASE_URL_V2}/posts/page`), {
           params: {
             lastPostId: lastId,
             pageSize: 5
@@ -124,6 +128,12 @@ const Home: React.FC = () => {
       };
     }
   }, [posts]);
+
+  const deleteByPostId = async (id: any) => {
+    const newpost = posts.filter((item: any) => item.data._id !== id )
+    console.log("NewPost",newpost)
+    setPosts(newpost)
+  } 
   return (
     <div className="infinite-scroll-container w-full">
       <CreatePost add={createpost} />
@@ -136,18 +146,18 @@ const Home: React.FC = () => {
           if (index === posts.length - 1) return (
             <div key={index}>
               <li ref={elRef} className="w-full flex justify-center">
-                <Post data={post} />
+                <Post data={post} deletepost={deleteByPostId}/>
               </li>
               {
-                isLoading ? <div className="w-full my-4 justify-center flex shadow-md bg-background py-2">
-                  Đang tải bài viết mới
+                isLoading ? <div className="w-full my-4 justify-center items-center flex gap-2 shadow-md bg-background py-2 rounded-md">
+                  <Icons.spinner className="mr-2 h-5 w-5 animate-spin" /> Đang tải bài viết mới
                 </div> : ""
               }
             </div>
           )
           else return (
             <li key={index} className="w-full flex justify-center">
-              <Post data={post} />
+              <Post data={post} deletepost={deleteByPostId}/>
             </li>
           )
         })}

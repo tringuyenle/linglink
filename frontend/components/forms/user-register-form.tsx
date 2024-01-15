@@ -75,7 +75,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
             <form onSubmit={signinform.handleSubmit}>
                 <div className="grid gap-2">
                     <div className="grid gap-1">
-                        <Label className="" htmlFor="name">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="name">
                             Họ và tên
                         </Label>
                         <Input
@@ -92,7 +92,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                         {signinform.touched.name && signinform.errors.name ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.name}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
-                        <Label className="" htmlFor="email">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="email">
                             Địa chỉ email
                         </Label>
                         <Input
@@ -109,7 +109,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                         {signinform.touched.email && signinform.errors.email ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.email}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
-                        <Label className="" htmlFor="password">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="password">
                             Mật khẩu
                         </Label>
                         <Input
@@ -137,7 +137,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                         {signinform.touched.password && signinform.errors.password ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.password}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
-                        <Label className="" htmlFor="repassword">
+                        <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="repassword">
                             Nhập lại mật khẩu
                         </Label>
                         <Input
@@ -155,18 +155,18 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             <Checkbox id="terms" onCheckedChange={() => {
                                 setShowRePass(!showrepass)
                             }} />
-                            <label
+                            <Label
                                 htmlFor="terms"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
                                 Hiển thị mật khẩu
-                            </label>
+                            </Label>
                         </div>
                         {signinform.touched.repassword && signinform.errors.repassword ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.repassword}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
                     </div>
-                    <Button variant="outline" disabled={mutation.isPending}>
+                    <Button disabled={mutation.isPending}>
                         {mutation.isPending && (
                             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                         )}
@@ -184,7 +184,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                     </span>
                 </div>
             </div>
-            <Button variant="outline" type="button" disabled={mutation.isPending}>
+            <Button type="button" disabled={mutation.isPending}>
                 {mutation.isPending ? (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
