@@ -179,7 +179,7 @@ export default function Header() {
                     <DropdownMenuTrigger asChild>
                         <Avatar>
                             <AvatarImage className="cursor-pointer" src={user.avatar} alt="@shadcn" />
-                            <AvatarFallback>CN</AvatarFallback>
+                            <AvatarFallback>{user.name}</AvatarFallback>
                         </Avatar>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-56">

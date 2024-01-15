@@ -59,8 +59,52 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import AudioPlayer from 'react-h5-audio-player';
+import 'react-h5-audio-player/lib/styles.css';
+import { useFormik } from 'formik';
+import { PostService } from "@/app/services";
+
+// interface FormValues {
+//     topic: string;
+//     content: string;
+//     question: string;
+//     answers: string[];
+// }
 
 export default function CreatePost({ add }: { add: any }) {
+    // const formik = useFormik({
+    //     initialValues: {
+    //         topic: '',
+    //         content: '',
+    //         question: '',
+    //         answers: [],
+    //     },
+    //     validate: (values: FormValues) => {
+    //         const errors: Partial<FormValues> = {};
+
+    //         if (!values.topic) {
+    //             errors.topic = 'Chủ đề không được bỏ trống';
+    //         }
+
+    //         if (!values.content) {
+    //             errors.content = 'Nội dung không được bỏ trống';
+    //         }
+
+    //         if (values.answers && values.answers.length > 0 && !values.question) {
+    //             errors.question = 'Câu hỏi không được bỏ trống';
+    //         }
+
+    //         if (values.question && (!values.answers || values.answers.length === 0)) {
+    //             errors.answers = ['Ít nhất một câu trả lời'];
+    //         }
+
+    //         return errors;
+    //     },
+    //     onSubmit: (values: FormValues) => {
+    //         // Xử lý logic khi submit form
+    //         console.log('Submitted values:', values);
+    //     },
+    // });
     const [input, setInput] = useState<string>('')
     const onEmojiClick = (emojiObject: any, event: any) => {
         setInput((prevInput) => prevInput + emojiObject.emoji);
@@ -107,26 +151,37 @@ export default function CreatePost({ add }: { add: any }) {
 
     // Hàm xóa đáp án
     const removeAnswer = (index: any) => {
-        const newAnswers = [...answers];
-        newAnswers.splice(index, 1);
-        setAnswers(newAnswers);
+        if (answers.length > 2) {
+            const newAnswers = [...answers];
+            newAnswers.splice(index, 1);
+            setAnswers(newAnswers);
+        }
+        else toast.warn("Đáp án phải luôn lớn hơn 2")
     };
 
     // Hàm xử lý thay đổi giá trị của một ô điền đáp án
     const handleAnswerChange = (index: any, value: any) => {
         const newAnswers = [...answers];
-        console.log("OLD", newAnswers)
         newAnswers[index] = value;
-        console.log("NEW", newAnswers)
         setAnswers(newAnswers);
     };
     const listanswer = ['A', 'B', 'C', 'D'];
-    const [topic, setTopic] = useState<string>()
+    const [topic, setTopic] = useState<string>("")
     const [topics, setTopics] = useState<any>()
-    const [question, setQuestion] = useState<string>()
-    const [audio, setAudio] = useState<any>()
-    const [key, setKey] = useState<any>()
+    const [question, setQuestion] = useState<string>("")
+    const [audio, setAudio] = useState<any>("")
+    const [audioFile, setAudioFile] = useState<any>(null)
+    const [key, setKey] = useState<any>(null)
     const [previewquestion, setPreviewQuestion] = useState<any>(null);
+    const clearInput = async () => {
+        setTopic("")
+        setQuestion("")
+        setInput("")
+        setAudio("")
+        setAudioFile(null)
+        setKey(null)
+        setPreviewQuestion(null)
+    }
     const uploadFile = async (file: any) => {
         const formData = new FormData();
         formData.append('file', file);
@@ -135,7 +190,7 @@ export default function CreatePost({ add }: { add: any }) {
         formData.append('upload_preset', uploadPreset);
 
         const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`,
+            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/auto/upload`,
             formData
         );
 
@@ -143,26 +198,48 @@ export default function CreatePost({ add }: { add: any }) {
     }
     const createPost = async () => {
         try {
-            let uploadedImages = [];
-            if (myFile) {
-                uploadedImages = await Promise.all(
-                    myFile.map(async (file) => {
-                        return uploadFile(file)
-                    })
-                );
-                console.log('Uploaded Image URLs:', uploadedImages);
-            }
+            const fileUploadPromises = myFile
+                ? myFile.map(file => file ? uploadFile(file) : Promise.resolve(null))
+                : [Promise.resolve(null)];
+
+            const audioUploadPromise = audioFile ? uploadFile(audioFile) : Promise.resolve(null);
+
+            const [uploadedImages, audioUrl] = await Promise.all([
+                Promise.all(fileUploadPromises),
+                audioUploadPromise
+            ]);
+
+            console.log('Uploaded Image URLs:', uploadedImages);
+            console.log('Uploaded Audio URL:', audioUrl);
+            const updatedPreviewQuestion = { ...previewquestion, audio_url: audioUrl };
+
             const postreq = {
                 topicID: topic,
-                newQuestion: previewquestion,
+                ...(previewquestion !== null && { newQuestion: updatedPreviewQuestion }),
                 content: input,
-                img_url: uploadedImages
-            }
+                img_url: uploadedImages,
+            };
             // Tạo bài viết
-            const axiosJWT = createAxiosInstance()
-            const result = await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/posts`, postreq)
-            add(result.data)
-            toast.success("Thêm bài viết thành công")
+            // const axiosJWT = createAxiosInstance()
+            let errors = {
+                topic: "",
+                content: ""
+            }
+            if (postreq.topicID === "") errors.topic = "Chưa chọn topic"
+            if (postreq.content === "") errors.content = "Chưa nhập nội dung bài viết"
+            if (errors?.topic || errors?.content) {
+                toast.warn("Bạn chưa chọn topic hoặc chưa nhập nội dung bài viết")
+            }
+            else {
+                const result: any = await PostService.createPost(postreq)
+                const newdata = {
+                    data: result.data
+                }
+                console.log("Data", newdata)
+                add(newdata)
+                toast.success("Thêm bài viết thành công")
+                clearInput()
+            }
         }
         catch (err: any) {
             toast.error("Tạo bài viết thất bại")
@@ -170,29 +247,24 @@ export default function CreatePost({ add }: { add: any }) {
     }
     const addquestion = async () => {
         try {
-            let uploadedAudio = "";
-            if (audio) {
-                uploadedAudio = await uploadFile(audio)
-                console.log('Uploaded Audio URLs:', uploadedAudio);
-            }
             const questionreq = {
                 content: question,
                 answers: answers,
                 key: key,
-                audio_url: uploadedAudio
+                audio_url: audioFile
             }
-            console.log(questionreq)
-            setPreviewQuestion(questionreq)
-            setQuestion('')
-            setAnswers([])
-            setAudio(null)
+            console.log(questionreq.answers)
+            if (questionreq.content !== "" && !questionreq.answers.includes("") ) setPreviewQuestion(questionreq)
+            else toast.warn("Câu hỏi không hợp lệ")
+            // setQuestion('')
+            // setAnswers([])
+            // setAudio(null)
         }
         catch (err: any) {
             toast.error("Thêm thất bại")
         }
     }
     const deletequestion = () => {
-        console.log("RUN")
         setPreviewQuestion(null)
         setKey(null)
     }
@@ -228,31 +300,32 @@ export default function CreatePost({ add }: { add: any }) {
                                 Bạn muốn tạo bài viết gì ?
                             </SheetDescription>
                         </SheetHeader>
-                        <div className="">
-                            <div className="flex flex-col gap-3 my-4">
-                                <Select onValueChange={(value) => setTopic(value)}>
-                                    <Label htmlFor="topic" className="text-left">
-                                        Chủ đề
+                        <Dialog>
+                            <div className="">
+                                <div className="flex flex-col gap-3 my-4">
+                                    <Select value={topic} onValueChange={(value) => setTopic(value)}>
+                                        <Label htmlFor="topic" className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold text-left">
+                                            Chủ đề
+                                        </Label>
+                                        <SelectTrigger id="topic" className="w-[180px]">
+                                            <SelectValue placeholder="Chọn chủ đề" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectLabel>Chủ đề</SelectLabel>
+                                                {topics && topics.map((topic: any, index: any) => {
+                                                    return <SelectItem key={index} value={topic._id}>{topic.topicName}</SelectItem>
+                                                })}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                    <Label htmlFor="content" className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold text-left">
+                                        Nội dung
                                     </Label>
-                                    <SelectTrigger id="topic" className="w-[180px]">
-                                        <SelectValue placeholder="Chọn chủ đề" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Chủ đề</SelectLabel>
-                                            {topics && topics.map((topic: any, index: any) => {
-                                                return <SelectItem key={index} value={topic._id}>{topic.topicName}</SelectItem>
-                                            })}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                <Label htmlFor="content" className="text-left">
-                                    Nội dung
-                                </Label>
-                                <Textarea id="content" placeholder='' onChange={(event) => setInput(event.target.value)} value={input} className="col-span-3">
-                                </Textarea>
-                                <div className="w-full justify-between flex">
-                                    <Dialog>
+                                    <Textarea id="content" placeholder='Nhập nội dung bài viết' onChange={(event) => setInput(event.target.value)} value={input} className="col-span-3">
+                                    </Textarea>
+                                    <div className="w-full justify-between flex">
+                                        {/* <Dialog> */}
                                         <DialogTrigger asChild>
                                             <Button variant="outline">Thêm câu hỏi</Button>
                                         </DialogTrigger>
@@ -281,8 +354,8 @@ export default function CreatePost({ add }: { add: any }) {
                                                         File ghi âm (nếu có):
                                                     </Label>
                                                     <Input
-                                                        // value={audio}
-                                                        onChange={(e) => setAudio(e.target.files ? e.target.files[0] : null)}
+                                                        value={audio}
+                                                        onChange={(e) => setAudioFile(e.target.files ? e.target.files[0] : null)}
                                                         type="file"
                                                         id="audio"
                                                         placeholder="Chọn file ghi âm"
@@ -290,6 +363,20 @@ export default function CreatePost({ add }: { add: any }) {
                                                         accept=".mp3,audio/*"
                                                     />
                                                 </div>
+                                                {
+                                                    audioFile && (
+                                                        <div className="items-center w-full">
+                                                            <Label htmlFor="audio" className="text-right my-2">
+                                                                File ghi âm đã chọn:
+                                                            </Label>
+                                                            <AudioPlayer
+                                                                autoPlay={false}
+                                                                // onPlay={(e: any) => console.log("onPlay")}
+                                                                src={URL.createObjectURL(audioFile)} className="w-full my-2" />
+                                                            <Button onClick={() => { setAudio(""); setAudioFile(null) }}>Xóa</Button>
+                                                        </div>
+                                                    )
+                                                }
                                                 <div>
                                                     <Label>Chọn đáp án</Label>
                                                     <Select onValueChange={(value) => setKey(value)} >
@@ -334,72 +421,76 @@ export default function CreatePost({ add }: { add: any }) {
                                                 </DialogClose>
                                             </DialogFooter>
                                         </DialogContent>
-                                    </Dialog>
-                                    <Popover modal={true}>
-                                        <PopoverTrigger>
-                                            <Button variant="outline"><MdOutlineEmojiEmotions className="text-2xl" /></Button>
-                                        </PopoverTrigger>
-                                        <PopoverContent className="overflow-auto">
-                                            <EmojiPicker width="100%" onEmojiClick={onEmojiClick} />
-                                        </PopoverContent>
-                                    </Popover>
+                                        {/* </Dialog> */}
+                                        <Popover modal={true}>
+                                            <PopoverTrigger>
+                                                <Button variant="outline"><MdOutlineEmojiEmotions className="text-2xl" /></Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent className="overflow-auto">
+                                                <EmojiPicker width="100%" onEmojiClick={onEmojiClick} />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                {previewquestion !== null && <div>
-                                    <div>
-                                        <div className="px-6 text-lg font-semibold mb-4">
-                                            Câu hỏi: {previewquestion.content}
-                                        </div>
+                                <div>
+                                    {previewquestion !== null && <div>
                                         <div>
-                                            <Button className="ml-6 mb-4" onClick={deletequestion}>Xóa câu hỏi</Button>
+                                            <div className="px-6 text-lg font-semibold mb-4">
+                                                Câu hỏi: {previewquestion.content}
+                                            </div>
+                                            <div className="flex">
+                                                <DialogTrigger asChild>
+                                                    <Button className="ml-6 mb-4">Sửa câu hỏi</Button>
+                                                </DialogTrigger>
+                                                <Button className="ml-6 mb-4" onClick={deletequestion}>Xóa câu hỏi</Button>
+                                            </div>
+                                            <div className="px-6 grid grid-cols-2 gap-3">
+                                                {
+                                                    previewquestion.answers.map((answer: any, idx: any) => {
+                                                        return (
+                                                            <div className="w-full" key={idx}>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger asChild>
+                                                                        <div className="w-full transition duration-300 hover:scale-[1.02] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
+                                                                            {answer}
+                                                                        </div>
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>{`Đáp án câu hỏi là: ${previewquestion.answers[key]}`}</AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                {idx === key ? "Chúc mừng bạn trả lời đúng" : "Bạn đã trả lời sai, đừng nản chí, hãy thử lại"}
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Đóng</AlertDialogCancel>
+                                                                            {/* <AlertDialogAction>Continue</AlertDialogAction> */}
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
                                         </div>
-                                        <div className="px-6 grid grid-cols-2 gap-3">
-                                            {
-                                                previewquestion.answers.map((answer: any, idx: any) => {
-                                                    return (
-                                                        <div className="w-full" key={idx}>
-                                                            <AlertDialog>
-                                                                <AlertDialogTrigger asChild>
-                                                                    <div className="w-full transition duration-300 hover:scale-[1.02] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
-                                                                        {answer}
-                                                                    </div>
-                                                                </AlertDialogTrigger>
-                                                                <AlertDialogContent>
-                                                                    <AlertDialogHeader>
-                                                                        <AlertDialogTitle>{`Đáp án câu hỏi là: ${previewquestion.answers[key]}`}</AlertDialogTitle>
-                                                                        <AlertDialogDescription>
-                                                                            {idx === key ? "Chúc mừng bạn trả lời đúng" : "Bạn đã trả lời sai, đừng nản chí, hãy thử lại"}
-                                                                        </AlertDialogDescription>
-                                                                    </AlertDialogHeader>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Đóng</AlertDialogCancel>
-                                                                        {/* <AlertDialogAction>Continue</AlertDialogAction> */}
-                                                                    </AlertDialogFooter>
-                                                                </AlertDialogContent>
-                                                            </AlertDialog>
-                                                        </div>
-                                                    )
-                                                })
-                                            }
+                                    </div>}
+                                </div>
+                                <div className="text-md font-semibold mt-2">Hình Ảnh</div>
+                                <div {...imageroot({ className: 'dropzone py-5 px-3 border border-ring flex justify-center border-dashed cursor-pointer rounded-md' })}>
+                                    <input {...image_inputprops()} />
+                                    <div className="flex flex-col gap-2 items-center justify-center">
+                                        <p className="text-4xl font-medium">+</p>
+                                        <div>
+                                            Thêm ảnh bằng cách nhấn chọn hoặc kéo thả
                                         </div>
-                                    </div>
-                                </div>}
-                            </div>
-                            <div className="text-md font-semibold mt-2">Hình Ảnh</div>
-                            <div {...imageroot({ className: 'dropzone py-5 px-3 border border-ring flex justify-center border-dashed cursor-pointer rounded-md' })}>
-                                <input {...image_inputprops()} />
-                                <div className="flex flex-col gap-2 items-center justify-center">
-                                    <p className="text-4xl font-medium">+</p>
-                                    <div>
-                                        Thêm ảnh bằng cách nhấn chọn hoặc kéo thả
                                     </div>
                                 </div>
+                                <aside className="mt-2">
+                                    <ul className="grid grid-cols-6 gap-4">{files_image}</ul>
+                                </aside>
                             </div>
-                            <aside className="mt-2">
-                                <ul className="grid grid-cols-6 gap-4">{files_image}</ul>
-                            </aside>
-                        </div>
+                        </Dialog>
                         <SheetFooter>
                             <SheetClose asChild>
                                 <Button onClick={createPost} className="mt-2" type="submit">Tạo bài viết</Button>

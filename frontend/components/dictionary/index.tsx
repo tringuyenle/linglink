@@ -35,7 +35,7 @@ export default function Dictionary() {
         }
     };
     return (
-        <div className="rounded-md px-6 pt-2 pb-6 bg-background shadow-md flex flex-col gap-2">
+        <div className="rounded-md px-6 pt-2 pb-6 bg-background shadow-md flex flex-col gap-2 mb-12">
             <div className="font-semibold">
                 Từ điển
             </div>
