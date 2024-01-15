@@ -49,10 +49,10 @@ const Filter: React.FC = () => {
   }
   return (
     <div className="flex gap-2">
-      <Button onClick={() => handleClick(0)} className={`${active === 0 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(0)} className={`${active === 0 ? "bg-primary" : "bg-slate-200 text-black hover:bg-slate-300"}`}>
         Phổ biến nhất
       </Button>
-      <Button onClick={() => handleClick(1)} className={`${active === 1 ? "bg-black text-white" : "bg-white text-black hover:bg-slate-200"}`}>
+      <Button onClick={() => handleClick(1)} className={`${active === 1 ? "bg-primary" : "bg-slate-200 text-black hover:bg-slate-300"}`}>
         Mới nhất
       </Button>
     </div>
