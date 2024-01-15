@@ -47,7 +47,6 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { toast } from "react-toastify";
-import createAxiosInstance from "@/app/utils/axiosInstance";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -61,9 +60,9 @@ import {
 } from "@/components/ui/alert-dialog"
 import AudioPlayer from 'react-h5-audio-player';
 import 'react-h5-audio-player/lib/styles.css';
-import { useFormik } from 'formik';
 import { PostService } from "@/app/services";
-
+import { Icons } from "@/components/icons/icons";
+import { useAppSelector } from "@/app/redux/store";
 // interface FormValues {
 //     topic: string;
 //     content: string;
@@ -72,6 +71,7 @@ import { PostService } from "@/app/services";
 // }
 
 export default function CreatePost({ add }: { add: any }) {
+    const user = useAppSelector(state=>state.auth.userinfor)
     // const formik = useFormik({
     //     initialValues: {
     //         topic: '',
@@ -173,6 +173,7 @@ export default function CreatePost({ add }: { add: any }) {
     const [audioFile, setAudioFile] = useState<any>(null)
     const [key, setKey] = useState<any>(null)
     const [previewquestion, setPreviewQuestion] = useState<any>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false)
     const clearInput = async () => {
         setTopic("")
         setQuestion("")
@@ -198,6 +199,7 @@ export default function CreatePost({ add }: { add: any }) {
     }
     const createPost = async () => {
         try {
+            setIsLoading(true)
             const fileUploadPromises = myFile
                 ? myFile.map(file => file ? uploadFile(file) : Promise.resolve(null))
                 : [Promise.resolve(null)];
@@ -217,7 +219,7 @@ export default function CreatePost({ add }: { add: any }) {
                 topicID: topic,
                 ...(previewquestion !== null && { newQuestion: updatedPreviewQuestion }),
                 content: input,
-                img_url: uploadedImages,
+                imgs_url: uploadedImages,
             };
             // Tạo bài viết
             // const axiosJWT = createAxiosInstance()
@@ -240,8 +242,10 @@ export default function CreatePost({ add }: { add: any }) {
                 toast.success("Thêm bài viết thành công")
                 clearInput()
             }
+            setIsLoading(false)
         }
         catch (err: any) {
+            setIsLoading(false)
             toast.error("Tạo bài viết thất bại")
         }
     }
@@ -254,7 +258,7 @@ export default function CreatePost({ add }: { add: any }) {
                 audio_url: audioFile
             }
             console.log(questionreq.answers)
-            if (questionreq.content !== "" && !questionreq.answers.includes("") ) setPreviewQuestion(questionreq)
+            if (questionreq.content !== "" && !questionreq.answers.includes("")) setPreviewQuestion(questionreq)
             else toast.warn("Câu hỏi không hợp lệ")
             // setQuestion('')
             // setAnswers([])
@@ -281,18 +285,25 @@ export default function CreatePost({ add }: { add: any }) {
         fetchTopics()
     }, [])
     return (
-        <div className="bg-background rounded-md px-6 pt-3 py-6">
+        <div className="bg-background rounded-md px-6 pt-3 py-6 shadow-md">
             <div className="flex flex-row gap-3">
                 <Avatar>
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                    <AvatarImage src={user.avatar} alt="@shadcn" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <Sheet>
-                    <SheetTrigger asChild>
-                        <div className="bg-gray-100 hover:bg-slate-200 transition duration-300 cursor-pointer w-full rounded-2xl p-3 text-gray-400">
-                            A à, Bạn đang nghĩ gì thế ?
-                        </div>
-                    </SheetTrigger>
+                    {
+                        isLoading ?
+                            <div className="flex gap-2 justify-center items-center bg-gray-100 hover:bg-slate-200 transition duration-300 cursor-pointer w-full rounded-2xl p-3 text-gray-400">
+                                <Icons.spinner className="mr-2 h-5 w-5 animate-spin" /> Đang tạo bài viết
+                            </div>
+                            :
+                            <SheetTrigger asChild>
+                                <div className="bg-gray-100 hover:bg-slate-200 transition duration-300 cursor-pointer w-full rounded-2xl p-3 text-gray-400">
+                                    A à, Bạn đang nghĩ gì thế ?
+                                </div>
+                            </SheetTrigger>
+                    }
                     <SheetContent className="overflow-y-scroll max-h-screen" side="top">
                         <SheetHeader>
                             <SheetTitle>Tạo bài viết mới</SheetTitle>

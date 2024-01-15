@@ -166,7 +166,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.repassword}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
                     </div>
-                    <Button variant="outline" disabled={mutation.isPending}>
+                    <Button disabled={mutation.isPending}>
                         {mutation.isPending && (
                             <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                         )}
@@ -184,7 +184,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                     </span>
                 </div>
             </div>
-            <Button variant="outline" type="button" disabled={mutation.isPending}>
+            <Button type="button" disabled={mutation.isPending}>
                 {mutation.isPending ? (
                     <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
