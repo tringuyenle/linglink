@@ -21,13 +21,10 @@ export default function HomeLayout({
         <div className="w-1/2 flex flex-col gap-8">
           {children}
         </div>
-        <div className="w-1/4 flex flex-col gap-4">
-          <FlashCardCreate />
-          <ChatWithGemini/>
-          <Dictionary />
         <div className="w-1/4 h-full sticky top-[100px] overflow-y-auto">
-          <div className="overflow-auto flex flex-col gap-4 max-h-screen">
+          <div className="overflow-auto flex flex-col gap-4 max-h-[80vh]">
             <FlashCardCreate />
+            <ChatWithGemini />
             <Dictionary />
           </div>
         </div>

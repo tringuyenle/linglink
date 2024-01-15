@@ -52,7 +52,7 @@ export default async function RootLayout({
               <Suspense fallback={<Loading />}>
                 {children}
                 <ToastContainer
-                  position="top-right"
+                  position="bottom-center"
                   autoClose={5000}
                   hideProgressBar={false}
                   newestOnTop={false}
