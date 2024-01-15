@@ -1,10 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Reaction } from 'schemas/reaction.schema';
-import { User } from 'schemas/user.schema';
-import { ReactionType } from 'src/common/enums/reaction.enum';
-import { ReactionDTO } from './dto/reaction.dto';
+import { Reaction } from '../../schemas/reaction.schema';
+import { User } from '../../schemas/user.schema';
+import { ReactionType } from '../common/enums/reaction.enum';
 
 @Injectable()
 export class ReactionsService {

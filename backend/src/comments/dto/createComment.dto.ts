@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Post } from "schemas/post.schema";
-import { User } from "schemas/user.schema";
+import { Post } from "../../../schemas/post.schema";
+import { User } from "../../../schemas/user.schema";
 
 export class CreateCommentDTO {
     @IsNotEmpty()

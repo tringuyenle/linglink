@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Comment } from 'schemas/comment.schema';
+import { Comment } from '../../schemas/comment.schema';
 import { CreateCommentDTO } from './dto/createComment.dto';
-import { User } from 'schemas/user.schema';
-import { PostsService } from 'src/posts/posts.service';
+import { User } from '../../schemas/user.schema';
+import { PostsService } from '../posts/posts.service';
 import { UpdateCommentDTO } from './dto/updateComment.dto';
-import { ReactionsService } from 'src/reactions/reactions.service';
+import { ReactionsService } from '../reactions/reactions.service';
 
 @Injectable()
 export class CommentsService {

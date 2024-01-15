@@ -1,6 +1,6 @@
 import { IsNotEmpty } from "class-validator";
-import { Question } from "schemas/question.schema";
-import { User } from "schemas/user.schema";
+import { Question } from "../../../schemas/question.schema";
+import { User } from "../../../schemas/user.schema";
 
 export class UpdatePostDTO {
     topic: string;

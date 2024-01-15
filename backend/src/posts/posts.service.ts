@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { User } from 'schemas/user.schema';
+import { User } from '../../schemas/user.schema';
 import { Post } from '../../schemas/post.schema';
 import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
 import { TopicsService } from '../topics/topics.service';
-import { QuestionsService } from 'src/questions/questions.service';
-import { ReactionsService } from 'src/reactions/reactions.service';
-import { CommentsService } from 'src/comments/comments.service';
+import { QuestionsService } from '../questions/questions.service';
+import { ReactionsService } from '../reactions/reactions.service';
+import { CommentsService } from '../comments/comments.service';
 
 @Injectable()
 export class PostsService {

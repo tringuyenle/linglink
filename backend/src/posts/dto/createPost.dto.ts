@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { CreateQuestionDTO } from "src/questions/dto/createQuestion.dto";
+import { CreateQuestionDTO } from "../../questions/dto/createQuestion.dto";
 
 export class CreatePostDTO {
     topicID: string;

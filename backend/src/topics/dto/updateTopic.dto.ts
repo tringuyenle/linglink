@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty } from "class-validator";
-import { Post } from "schemas/post.schema";
+import { Post } from "../../../schemas/post.schema";
 
 export class UpdateTopicDTO {
     @IsNotEmpty()

@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEnum } from 'class-validator';
 import { ObjectId, Types } from 'mongoose';
-import { ReactionType } from 'src/common/enums/reaction.enum';
+import { ReactionType } from '../src/common/enums/reaction.enum';
 import { Post } from './post.schema';
 import { User } from './user.schema';
 import { Comment } from './comment.schema';

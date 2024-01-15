@@ -1,8 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Post } from 'schemas/post.schema';
-import { Topic } from 'schemas/topic.schema';
+import { Post } from '../../schemas/post.schema';
+import { Topic } from '../../schemas/topic.schema';
 import { CreateTopicDTO } from './dto/createTopic.dto';
 import { UpdateTopicDTO } from './dto/updateTopic.dto';
 

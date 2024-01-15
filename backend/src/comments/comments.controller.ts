@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UseGuards 
 import { CreateCommentDTO } from './dto/createComment.dto';
 import { UpdateCommentDTO } from './dto/updateComment.dto';
 import { CommentsService } from './comments.service';
-import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
+import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 
 @Controller('comments')
 export class CommentsController {
