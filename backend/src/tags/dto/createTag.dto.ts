@@ -1,5 +1,5 @@
 import { IsNotEmpty } from "class-validator";
-import { Question } from "schemas/question.schema";
+import { Question } from "../../../schemas/question.schema";
 
 export class CreateTagDTO {
     @IsNotEmpty()

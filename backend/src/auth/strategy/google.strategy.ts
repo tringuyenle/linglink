@@ -1,7 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
-import { UserRoles } from 'src/common/enums/user.enum';
+import { UserRoles } from '../../common/enums/user.enum';
 import { UserService } from '../../user/user.service';
 
 @Injectable()

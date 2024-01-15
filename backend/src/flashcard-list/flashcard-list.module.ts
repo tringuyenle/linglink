@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { FlashcardListController } from './flashcard-list.controller';
 import { FlashcardListService } from './flashcard-list.service';
-import { FlashcardList, FlashcardListSchema } from 'schemas/flashcard-list.schema';
+import { FlashcardList, FlashcardListSchema } from '../../schemas/flashcard-list.schema';
 
 @Module({
   imports: [

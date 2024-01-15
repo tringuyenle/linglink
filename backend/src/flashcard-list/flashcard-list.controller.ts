@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards, Req } from '@nestjs/common';
 import { FlashcardListService } from './flashcard-list.service';
-import { FlashcardList } from 'schemas/flashcard-list.schema';
-import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
+import { FlashcardList } from '../../schemas/flashcard-list.schema';
+import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 import { CreateFlashcardListDto } from './dto/create-flashcard-list.dto';
 
 @Controller('flashcard-list')

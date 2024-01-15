@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model, Types } from 'mongoose';
-import { User } from 'schemas/user.schema';
+import { User } from '../../schemas/user.schema';
 import { Post } from '../../schemas/post.schema';
 import { CreatePostDTO } from './dto/createPost.dto';
 import { UpdatePostDTO } from './dto/updatePost.dto';
 import { TopicsService } from '../topics/topics.service';
-import { QuestionsService } from 'src/questions/questions.service';
-import { ReactionsService } from 'src/reactions/reactions.service';
-import { CommentsService } from 'src/comments/comments.service';
+import { QuestionsService } from '../questions/questions.service';
+import { ReactionsService } from '../reactions/reactions.service';
+import { CommentsService } from '../comments/comments.service';
 
 @Injectable()
 export class PostsService {
@@ -61,6 +61,25 @@ export class PostsService {
         const post = await this.postModel.findById(postId).populate({ path: 'author', select: '-hashedPassword' }).exec();
         if (post) {
             return post;
+        }
+        throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
+    }
+
+    async getPostWithReactById(userId: string, postId: string) {
+        const post = await this.postModel.findById(postId).populate({ path: 'author', select: '-hashedPassword' }).exec();
+        
+        if (post) {
+            const listReactions = await this.reactionsService.getReactionByPostId(post._id.toString());
+            const checkReactionStatus = userId ? await this.reactionsService.checkPostReactionStatus(userId, post._id.toString()) : null;
+            const like = (checkReactionStatus === 'like') ? true : false;
+            const dislike = (checkReactionStatus === 'dislike') ? true : false;
+            return {
+                data: post,
+                like: like,
+                dislike: dislike,
+                numlikes: listReactions.likeUsers.length,
+                numdislikes: listReactions.dislikeUsers.length,
+            };
         }
         throw new HttpException('Post with this id does not exist', HttpStatus.NOT_FOUND);
     }

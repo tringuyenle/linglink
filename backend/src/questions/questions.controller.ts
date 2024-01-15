@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, 
 import { CreateQuestionDTO } from './dto/createQuestion.dto';
 import { UpdateQuestionDTO } from './dto/updateQuestion.dto';
 import { QuestionsService } from './questions.service';
-import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
+import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 
 @Controller('questions')
 export class QuestionsController {

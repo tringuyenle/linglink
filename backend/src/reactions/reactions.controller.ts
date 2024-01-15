@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
+import { MyJwtGuard } from '../auth/guard/myjwt.guard';
 import { ReactionsService } from './reactions.service';
 
 @Controller('reactions')

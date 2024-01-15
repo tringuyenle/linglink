@@ -1,9 +1,8 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Post } from 'schemas/post.schema';
-import { Question } from 'schemas/Question.schema';
-import { TagsService } from 'src/tags/tags.service';
+import { Question } from '../../schemas/question.schema';
+import { TagsService } from '../tags/tags.service';
 import { CreateQuestionDTO } from './dto/createQuestion.dto';
 import { UpdateQuestionDTO } from './dto/updateQuestion.dto';
 

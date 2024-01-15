@@ -1,10 +1,9 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
-import { Reaction } from 'schemas/reaction.schema';
-import { User } from 'schemas/user.schema';
-import { ReactionType } from 'src/common/enums/reaction.enum';
-import { ReactionDTO } from './dto/reaction.dto';
+import { Reaction } from '../../schemas/reaction.schema';
+import { User } from '../../schemas/user.schema';
+import { ReactionType } from '../common/enums/reaction.enum';
 
 @Injectable()
 export class ReactionsService {
@@ -33,8 +32,10 @@ export class ReactionsService {
                 { $set: { reactionType: ReactionType.LIKE } },
                 { new: true }
             );
+        } else if (existingReaction.reactionType === ReactionType.LIKE) {
+            // Ngược lại, nếu đã like rồi, xóa trạng thái like
+            await this.reactionModel.findByIdAndRemove(existingReaction._id);
         }
-        // Ngược lại, nếu đã like rồi, không làm gì cả  
         return HttpStatus.OK; 
     }
 
@@ -59,6 +60,9 @@ export class ReactionsService {
                 { $set: { reactionType: ReactionType.DISLIKE } },
                 { new: true }
             );
+        } else if (existingReaction.reactionType === ReactionType.DISLIKE) {
+            // Ngược lại, nếu đã like rồi, xóa trạng thái like
+            await this.reactionModel.findByIdAndRemove(existingReaction._id);
         }
         // Ngược lại, nếu đã like rồi, không làm gì cả  
         return HttpStatus.OK; 
@@ -85,8 +89,10 @@ export class ReactionsService {
                 { $set: { reactionType: ReactionType.LIKE } },
                 { new: true }
             );
+        } else if (existingReaction.reactionType === ReactionType.LIKE) {
+            // Ngược lại, nếu đã like rồi, xóa trạng thái like
+            await this.reactionModel.findByIdAndRemove(existingReaction._id);
         }
-        // Ngược lại, nếu đã like rồi, không làm gì cả  
         return HttpStatus.OK; 
     }
 
@@ -111,8 +117,11 @@ export class ReactionsService {
                 { $set: { reactionType: ReactionType.DISLIKE } },
                 { new: true }
             );
+        } else if (existingReaction.reactionType === ReactionType.DISLIKE) {
+            // Ngược lại, nếu đã like rồi, xóa trạng thái like
+            await this.reactionModel.findByIdAndRemove(existingReaction._id);
         }
-        // Ngược lại, nếu đã like rồi, không làm gì cả  
+
         return HttpStatus.OK; 
     }
 

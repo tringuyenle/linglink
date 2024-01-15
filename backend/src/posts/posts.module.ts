@@ -2,15 +2,15 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PostsService } from './posts.service';
 import { PostsController } from './posts.controller';
-import { PostSchema } from 'schemas/post.schema';
-import { TopicSchema } from 'schemas/topic.schema';
-import { TopicsService } from 'src/topics/topics.service';
-import { QuestionsService } from 'src/questions/questions.service';
-import { QuestionSchema } from 'schemas/question.schema';
-import { TagsService } from 'src/tags/tags.service';
-import { TagSchema } from 'schemas/tag.schema';
-import { ReactionsService } from 'src/reactions/reactions.service';
-import { ReactionSchema } from 'schemas/reaction.schema';
+import { PostSchema } from '../../schemas/post.schema';
+import { TopicSchema } from '../../schemas/topic.schema';
+import { TopicsService } from '../topics/topics.service';
+import { QuestionsService } from '../questions/questions.service';
+import { QuestionSchema } from '../../schemas/question.schema';
+import { TagsService } from '../tags/tags.service';
+import { TagSchema } from '../../schemas/tag.schema';
+import { ReactionsService } from '../reactions/reactions.service';
+import { ReactionSchema } from '../../schemas/reaction.schema';
 
 @Module({
     imports: [
