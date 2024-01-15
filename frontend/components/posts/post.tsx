@@ -399,7 +399,7 @@ const Body = ({ content }: { content: any }) => {
                                     <div className="w-full" key={idx}>
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
-                                                <div className="w-full transition duration-300 hover:scale-[1.05] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
+                                                <div className="w-full h-full transition duration-300 hover:scale-[1.05] hover:bg-slate-200 cursor-pointer rounded-md border border-ring p-2 flex justify-center" key={idx}>
                                                     {answer}
                                                 </div>
                                             </AlertDialogTrigger>
