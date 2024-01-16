@@ -2,10 +2,10 @@ import { Post } from "../../../schemas/post.schema";
 import { Comment } from "../../../schemas/comment.schema";
 import { ReactionType } from "../../common/enums/reaction.enum";
 
-export class ReactionDTO {
-    reactionType: ReactionType;
+export class ReactionPostDTO {
+    postId: string;
+}
 
-    post: Post;
-
-    comment: Comment;
+export class ReactionCommentDTO {
+    commentId: string;
 }

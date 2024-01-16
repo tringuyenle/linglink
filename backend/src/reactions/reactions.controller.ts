@@ -1,33 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { MyJwtGuard } from '../auth/guard/myjwt.guard';
+import { ReactionCommentDTO, ReactionPostDTO } from './dto/reaction.dto';
 import { ReactionsService } from './reactions.service';
 
 @Controller('reactions')
 export class ReactionsController {
     constructor(private readonly reactionsService: ReactionsService) {}
 
-    @Post('/likepost/:id')
+    @Post('/likepost')
     @UseGuards(MyJwtGuard)
-    likePost(@Req() req, @Param('id') postId: string) {
-        return this.reactionsService.likePost(req.user, postId);
+    likePost(@Req() req, @Body() react: ReactionPostDTO) {
+        return this.reactionsService.likePost(req.user, react.postId);
     }
 
-    @Post('/dislikepost/:id')
+    @Post('/dislikepost')
     @UseGuards(MyJwtGuard)
-    dislikePost(@Req() req, @Param('id') postId: string) {
-        return this.reactionsService.dislikePost(req.user, postId);
+    dislikePost(@Req() req, @Body()  react: ReactionPostDTO) {
+        return this.reactionsService.dislikePost(req.user, react.postId);
     }
 
-    @Post('/likecomment/:id')
+    @Post('/likecomment')
     @UseGuards(MyJwtGuard)
-    likeComment(@Req() req, @Param('id') commentId: string) {
-        return this.reactionsService.likeComment(req.user, commentId);
+    likeComment(@Req() req, @Body()  react: ReactionCommentDTO) {
+        return this.reactionsService.likeComment(req.user, react.commentId);
     }
 
-    @Post('/dislikecomment/:id')
+    @Post('/dislikecomment')
     @UseGuards(MyJwtGuard)
-    dislikeComment(@Req() req, @Param('id') commentId: string) {
-        return this.reactionsService.dislikeComment(req.user, commentId);
+    dislikeComment(@Req() req, @Body()  react: ReactionCommentDTO) {
+        return this.reactionsService.dislikeComment(req.user, react.commentId);
     }
 
     @Get('/post/:id')
