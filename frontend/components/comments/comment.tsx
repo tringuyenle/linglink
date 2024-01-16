@@ -20,7 +20,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { TfiMoreAlt } from 'react-icons/tfi';
 import { Button } from '../ui/button';
 
-function ChildComment({ props, id }: { props: any, id: any }) {
+function ChildComment({ props, id, addcomment, deletecomment }: { props: any, id: any, addcomment: any, deletecomment: any }) {
     const user = useAppSelector(state => state.auth.userinfor)
     const queryClient = useQueryClient();
     const [reaction, setReaction] = useState<string>("")
@@ -55,6 +55,7 @@ function ChildComment({ props, id }: { props: any, id: any }) {
             await CommentService.deleteById(props.data._id)
             toast.success("Xóa bình luận thành công")
             queryClient.invalidateQueries({ queryKey: ['childcomments', id] });
+            deletecomment()
         }
         else {
             toast.error("Không được quyền xóa bình luận này!")
@@ -126,7 +127,7 @@ function ChildComment({ props, id }: { props: any, id: any }) {
     )
 }
 
-export default function Comment({ props, id }: { props: any, id: any }) {
+export default function Comment({ props, id, addcomment, deletecomment }: { props: any, id: any, addcomment: any, deletecomment:any }) {
     const queryClient = useQueryClient();
     const user = useAppSelector(state => state.auth.userinfor)
     const [reaction, setReaction] = useState<string>("")
@@ -180,6 +181,7 @@ export default function Comment({ props, id }: { props: any, id: any }) {
             setIsLoading(false)
             setComment("")
             setIsComment(false)
+            addcomment()
             queryClient.invalidateQueries({ queryKey: ['childcomments', props.data._id] });
         } else toast.warn("Chưa nhập câu trả lời !")
     }
@@ -189,6 +191,7 @@ export default function Comment({ props, id }: { props: any, id: any }) {
             toast.success("Xóa bình luận thành công !")
             console.log("ID", id)
             queryClient.invalidateQueries({ queryKey: ['comments', id] });
+            deletecomment()
         }
         else {
             toast.error("Không được quyền xóa bình luận này!")
@@ -262,7 +265,7 @@ export default function Comment({ props, id }: { props: any, id: any }) {
                     </div>
                 </div>
                 <div onClick={() => setIsComment(!iscomment)} className="text-[12px] font-bold hover:underline flex items-center cursor-pointer text-gray-600">
-                    Bình luận
+                    Phản hồi
                 </div>
             </div>
             <div>
@@ -273,7 +276,7 @@ export default function Comment({ props, id }: { props: any, id: any }) {
                                 childcomments.map((item: any, key: any) => (
                                     <div className="flex gap-2 items-start w-full pl-4" key={key}>
                                         <TbArrowForward />
-                                        <ChildComment props={item} id={props.data._id} />
+                                        <ChildComment props={item} id={props.data._id} addcomment={addcomment} deletecomment={deletecomment}/>
                                     </div>
                                 ))
                             }

@@ -83,7 +83,7 @@ export default function Header() {
         }
     };
     return (
-        <div className={`mb-5 h-full rounded-md w-full relative z-10 shadow-md bg-background ${isSticky ? 'sticky top-0 animate-slide-down' : 'animate-slide-up'}`}>
+        <div className={`mb-5 h-full rounded-md w-full z-10 shadow-md bg-background sticky top-0`}>
             <div
                 className={`w-full container flex flex-row gap-12 justify-between items-center`}
             >
