@@ -435,6 +435,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
     const [reaction, setReaction] = useState<string>("")
     const [numlikes, setNumLikes] = useState<number>(data.numlikes)
     const [numdislikes, setNumDisLikes] = useState<number>(data.numdislikes)
+    const [numcomments, setNumComments] = useState<number>(data.data.numComments)
     const { data: comments, isFetching } = useQuery({
         queryKey: ['comments', id],
         queryFn: async () => {
@@ -463,6 +464,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
             console.log(commentToCreate)
             const response = await CommentService.createComment(commentToCreate);
             console.log('Comment đã được tạo thành công:', response);
+            setNumComments(numcomments + 1)
             setComment("")
             queryClient.invalidateQueries({ queryKey: ['comments', id] });
             setIsLoading(false)
@@ -507,6 +509,12 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
         if (data.like) setReaction("likepost")
         if (data.dislike) setReaction("dislikepost")
     }, [])
+    const addcomment = async () => {
+        setNumComments(numcomments + 1)
+    }
+    const deletecomment = async () => {
+        setNumComments(numcomments - 1)
+    }
     return (
         <div className="py-2 shadow-md rounded-md w-full bg-background flex flex-col gap-3">
             <Header data={data.data} deletepost={deletepost} />
@@ -528,7 +536,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                         </div>
                     </div>
                     <div className="flex items-center text-[14px] text-gray-400">
-                        {comments?.length} bình luận
+                        {numcomments} bình luận
                     </div>
                 </div>
                 <hr className="h-[1px] bg-slate-200" />
@@ -617,7 +625,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                                         {
                                             comments && comments.map((comment: any, index: any) => {
                                                 return (
-                                                    <Comment props={comment} key={index} id={data.data._id} />
+                                                    <Comment props={comment} key={index} id={data.data._id} addcomment={addcomment} deletecomment={deletecomment}/>
                                                 )
                                             })
                                         }
