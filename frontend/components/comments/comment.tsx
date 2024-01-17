@@ -127,7 +127,7 @@ function ChildComment({ props, id, addcomment, deletecomment }: { props: any, id
     )
 }
 
-export default function Comment({ props, id, addcomment, deletecomment }: { props: any, id: any, addcomment: any, deletecomment:any }) {
+export default function Comment({ props, id, addcomment, deletecomment }: { props: any, id: any, addcomment: any, deletecomment: any }) {
     const queryClient = useQueryClient();
     const user = useAppSelector(state => state.auth.userinfor)
     const [reaction, setReaction] = useState<string>("")
@@ -276,7 +276,7 @@ export default function Comment({ props, id, addcomment, deletecomment }: { prop
                                 childcomments.map((item: any, key: any) => (
                                     <div className="flex gap-2 items-start w-full pl-4" key={key}>
                                         <TbArrowForward />
-                                        <ChildComment props={item} id={props.data._id} addcomment={addcomment} deletecomment={deletecomment}/>
+                                        <ChildComment props={item} id={props.data._id} addcomment={addcomment} deletecomment={deletecomment} />
                                     </div>
                                 ))
                             }
@@ -320,7 +320,14 @@ export default function Comment({ props, id, addcomment, deletecomment }: { prop
                     </div>
                     <div className="flex flex-col items-end w-full border border-gray-400 rounded-md pb-2">
                         <div className="w-full h-fit justify-between flex flex-row items-center">
-                            <Input className="outline-0 border-0 w-[90%] focus-visible:ring-transparent my-1 mx-2" value={comment} onChange={(e: any) => setComment(e.target.value)} placeholder="Viết câu trả lời...">
+                            <Input className="outline-0 border-0 w-[90%] focus-visible:ring-transparent my-1 mx-2" value={comment} onChange={(e: any) => setComment(e.target.value)} placeholder="Viết câu trả lời..."
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleComment();
+                                    }
+                                }}
+                            >
                             </Input>
                             <div className="w-[10%] flex justify-center items-center gap-2">
                                 <Popover modal={true}>

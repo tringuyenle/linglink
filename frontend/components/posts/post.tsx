@@ -559,7 +559,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                                     Bình luận
                                 </div>
                             </DialogTrigger>
-                            <DialogContent className="overflow-y-scroll max-h-[600px] max-w-[600px] p-0">
+                            <DialogContent className="overflow-y-scroll max-h-[600px] max-w-[600px] p-0 scrollbar">
                                 <div className="flex flex-col gap-3 mt-8">
                                     <Header data={data.data} deletepost={deletepost} />
                                     <Body content={data.data} />
@@ -584,7 +584,13 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                                         </div>
                                         <div className="flex flex-col items-end w-full border border-gray-400 rounded-md pr-2 pb-2">
                                             <div className="w-full h-fit justify-between flex flex-row items-center">
-                                                <Input className="outline-0 border-0 w-[90%] focus-visible:ring-transparent my-1 mx-2" value={comment} onChange={(e: any) => setComment(e.target.value)} placeholder="Viết câu trả lời...">
+                                                <Input className="outline-0 border-0 w-[90%] focus-visible:ring-transparent my-1 mx-2" value={comment} onChange={(e: any) => setComment(e.target.value)} placeholder="Viết câu trả lời..."
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') {
+                                                            e.preventDefault();
+                                                            handleComment();
+                                                        }
+                                                    }}>
                                                 </Input>
                                                 <div className="w-[10%] flex justify-center items-center gap-2">
                                                     <Popover modal={true}>
@@ -625,7 +631,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                                         {
                                             comments && comments.map((comment: any, index: any) => {
                                                 return (
-                                                    <Comment props={comment} key={index} id={data.data._id} addcomment={addcomment} deletecomment={deletecomment}/>
+                                                    <Comment props={comment} key={index} id={data.data._id} addcomment={addcomment} deletecomment={deletecomment} />
                                                 )
                                             })
                                         }

@@ -100,11 +100,13 @@ export default function Header() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className={`flex justify-center h-full px-4 py-2 ${pathname === "/" ? "text-primary" : "text-slate-400"}  hover:bg-slate-200 rounded-md`}>
-                                        <Link href="/">
-                                            <ImHome className="text-2xl" />
-                                        </Link>
-                                    </div>
+                                    <Link href="/">
+                                        <div className={`flex justify-center h-full px-4 py-2 ${pathname === "/" ? "text-primary" : "text-slate-400"}  hover:bg-slate-200 rounded-md`}>
+                                            <Link href="/">
+                                                <ImHome className="text-2xl" />
+                                            </Link>
+                                        </div>
+                                    </Link>
                                     {
                                         pathname === "/" ? <div className="w-full border-b-4 border-primary"></div> : ""
                                     }
@@ -117,11 +119,11 @@ export default function Header() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/course" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
-                                        <Link href="/course">
+                                    <Link href="/course">
+                                        <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/course" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
                                             <GiBookshelf className="text-2xl" />
-                                        </Link>
-                                    </div>
+                                        </div>
+                                    </Link>
                                     {
                                         pathname === "/course" ? <div className="w-full border-b-4 border-primary"></div> : ""
                                     }
@@ -134,11 +136,11 @@ export default function Header() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/flashcard" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
-                                        <Link href="/flashcard">
+                                    <Link href="/flashcard">
+                                        <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/flashcard" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
                                             <GiCardExchange className="text-2xl" />
-                                        </Link>
-                                    </div>
+                                        </div>
+                                    </Link>
                                     {
                                         pathname === "/flashcard" ? <div className="w-full border-b-4 border-primary"></div> : ""
                                     }
@@ -151,11 +153,11 @@ export default function Header() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/exam" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
-                                        <Link href="/exam">
+                                    <Link href="/exam">
+                                        <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/exam" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
                                             <PiExam className="text-2xl" />
-                                        </Link>
-                                    </div>
+                                        </div>
+                                    </Link>
                                     {
                                         pathname === "/exam" ? <div className="w-full border-b-4 border-primary"></div> : ""
                                     }
@@ -168,11 +170,11 @@ export default function Header() {
                         <TooltipProvider>
                             <Tooltip>
                                 <TooltipTrigger>
-                                    <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/schedule" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
-                                        <Link href="/schedule">
+                                    <Link href="/schedule">
+                                        <div className={`flex justify-center h-full px-4 py-2 border-primary ${pathname === "/schedule" ? "text-primary" : "text-slate-400"} border-b-0 hover:bg-slate-200 rounded-md`}>
                                             <GrSchedules className="text-2xl" />
-                                        </Link>
-                                    </div>
+                                        </div>
+                                    </Link>
                                     {
                                         pathname === "/schedule" ? <div className="w-full border-b-4 border-primary"></div> : ""
                                     }

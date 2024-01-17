@@ -116,3 +116,28 @@
   height: fit-content;
 }
 
+.scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgb(192, 190, 190);
+  border-radius: 6px;
+}
+
+.scrollbar::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
+}
+
+.scrollbar::-moz-scrollbar {
+  width: 4px;
+}
+
+.scrollbar::-moz-scrollbar-thumb {
+  background-color: rgb(231, 231, 231);
+  border-radius: 6px;
+}
+
+.sidebar::-moz-scrollbar-track {
+  background-color: #f1f1f1;
+}

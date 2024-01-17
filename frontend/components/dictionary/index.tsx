@@ -40,7 +40,12 @@ export default function Dictionary() {
                 Từ điển
             </div>
             <div className="flex flex-row gap-2">
-                <Input onChange={(event) => setWord(event.target.value)} placeholder="Nhập từ cần tra" />
+                <Input onChange={(event) => setWord(event.target.value)} placeholder="Nhập từ cần tra" onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleSearch();
+                    }
+                }} />
                 <Button className="p-4" onClick={handleSearch} disabled={isLoading}>{
                     isLoading ?
                         <div className="w-5 h-5">
@@ -95,7 +100,7 @@ export default function Dictionary() {
                                                                 defitem.example && (
                                                                     <>
                                                                         <div className="font mb-1 flex items-center">
-                                                                        <div className="w-2 h-2 rounded-full bg-black mr-2" /> Example:
+                                                                            <div className="w-2 h-2 rounded-full bg-black mr-2" /> Example:
                                                                         </div>
                                                                         <div className="italic">
                                                                             {defitem.example}
