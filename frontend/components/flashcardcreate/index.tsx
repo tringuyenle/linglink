@@ -53,7 +53,7 @@ export default function FlashCardCreate() {
     const [flashcards, setFlashcards] = useState<any>([])
     const axiosJWT = createAxiosInstance()
     const getFlashList = async () => {
-        let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`)
+        let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list/user`)
         console.log(result.data, result.data[0].flashcards)
         setFlashList(result.data)
         // setFlashcards(result.data.flashcards)
@@ -70,7 +70,7 @@ export default function FlashCardCreate() {
     const [flashlistname, setFlashListName] = useState<string>("")
     const createFlashlist = async () => {
         try {
-            await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list/user`, {
+            await axiosJWT.post(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list`, {
                 name: flashlistname
             })
             toast.success("Tạo bộ từ vựng thành công")
