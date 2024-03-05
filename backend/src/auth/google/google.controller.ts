@@ -1,10 +1,12 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import { Controller, Get, Redirect, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { GoogleAuthGuard } from '../guard/google.guard';
 
 @Controller('auth/google')
 export class GoogleController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+    ) {}
     
     @Get('login')
     @UseGuards(GoogleAuthGuard)
@@ -15,8 +17,12 @@ export class GoogleController {
     // api/auth/google/redirect
     @Get('callback')
     @UseGuards(GoogleAuthGuard)
-    handleCallback(@Req() req, @Res({ passthrough: true }) res) {
-        return this.authService.generateTokens({userId: req.user._id});
-    }
+    @Redirect('http://localhost:3005/', 301)
+    async handleCallback(@Req() req, @Res({ passthrough: true }) res) {
 
+        // user data sẽ được lưu tự động vào database từ valida trong stategy
+
+        const token = await this.authService.generateTokens({userId: req.user._id});
+        return { url: 'http://localhost:3005/handle-extend-login/?accessToken=' + token.accessToken + '&refreshToken' + token.refreshToken};    
+    }
 }

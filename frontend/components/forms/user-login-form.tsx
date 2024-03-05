@@ -18,6 +18,7 @@ import { setInfor, setToken } from "@/app/redux/slices/authSlice"
 import createAxiosInstance from "@/app/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { Checkbox } from "@/components/ui/checkbox"
+import Link from "next/link";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -138,14 +139,16 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                     </span>
                 </div>
             </div>
-            <Button disabled={mutation.isPending}>
-                {mutation.isPending ? (
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                ) : (
-                    <Icons.gitHub className="mr-2 h-4 w-4" />
-                )}{" "}
-                Github
-            </Button>
+            <Link className="w-full" href={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/google/login`}>
+                <Button className="w-full" disabled={mutation.isPending}>
+                    {mutation.isPending ? (
+                        <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Icons.google className="mr-2 h-4 w-4" />
+                    )}{" "}
+                    Google
+                </Button>
+            </Link>
         </div>
     )
 }
