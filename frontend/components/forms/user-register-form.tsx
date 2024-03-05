@@ -157,7 +157,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             }} />
                             <Label
                                 htmlFor="terms"
-                                className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                className="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                             >
                                 Hiển thị mật khẩu
                             </Label>
@@ -174,7 +174,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                     </Button>
                 </div>
             </form>
-            <div className="relative">
+            {/* <div className="relative">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t" />
                 </div>
@@ -191,7 +191,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                     <Icons.gitHub className="mr-2 h-4 w-4" />
                 )}{" "}
                 Github
-            </Button>
+            </Button> */}
         </div>
     )
 }
