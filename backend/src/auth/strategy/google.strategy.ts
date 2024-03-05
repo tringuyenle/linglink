@@ -24,6 +24,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
         const user = await this.userService.findOrCreateByOauth({
             email: profile._json.email, 
             name: profile._json.name,
+            avatar: profile._json.picture,
             hashedPassword: undefined,
             role: UserRoles.STUDENT,
             createdAt: undefined,

@@ -4,7 +4,9 @@ import { GoogleAuthGuard } from '../guard/google.guard';
 
 @Controller('auth/google')
 export class GoogleController {
-    constructor(private authService: AuthService) {}
+    constructor(
+        private authService: AuthService,
+    ) {}
     
     @Get('login')
     @UseGuards(GoogleAuthGuard)
@@ -17,8 +19,10 @@ export class GoogleController {
     @UseGuards(GoogleAuthGuard)
     @Redirect('http://localhost:3005/', 301)
     async handleCallback(@Req() req, @Res({ passthrough: true }) res) {
-        const token = await this.authService.generateTokens({userId: req.user._id});
-        return { url: 'http://localhost:3005/handle-extend-login/?accessToken=' + token.accessToken + '&refreshToken' + token.refreshToken};
-    }
 
+        // user data sẽ được lưu tự động vào database từ valida trong stategy
+
+        const token = await this.authService.generateTokens({userId: req.user._id});
+        return { url: 'http://localhost:3005/handle-extend-login/?accessToken=' + token.accessToken + '&refreshToken' + token.refreshToken};    
+    }
 }

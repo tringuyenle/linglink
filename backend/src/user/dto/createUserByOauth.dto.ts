@@ -10,6 +10,8 @@ export class CreateUserByOauthDTO {
 
     name: string
 
+    avatar: string
+
     role: UserRoles
 
     createdAt: Date
