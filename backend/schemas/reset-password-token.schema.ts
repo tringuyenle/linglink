@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ObjectId, Types } from 'mongoose';
 import { User } from './user.schema';
 
-@Schema({timestamps: true, expireAfterSeconds: 5})
+@Schema({timestamps: true, expireAfterSeconds: 120})
 export class ReserPasswordToken {
     _id: ObjectId;
 

@@ -8,7 +8,7 @@ import { ConfigService } from '@nestjs/config';
 import { Token } from './models/token.model';
 import { SecurityConfig } from '../common/configs/config.interface';
 import { ReserPasswordToken } from 'schemas/reset-password-token.schema';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as path from 'path';
@@ -79,20 +79,11 @@ export class AuthService {
 
         await new this.reserPasswordTokenModel({
             user_id: user._id,
-          token: hash,
+            token: hash,
         }).save();
       
         const link = `${process.env.NEXT_PUBLIC_BASE_CLIENT_URL}/passwordReset?token=${resetToken}&id=${user._id}`;
       
-        // sendEmail(
-        //   user.email,
-        //   "Password Reset Request",
-        //   {
-        //     name: user.name,
-        //     link: link,
-        //   },
-        //   "./template/requestResetPassword.handlebars"
-        // );
         const templateFile = path.join(__dirname, '../../../utils/email/template/requestResetPassword.pug');
 
         const data = {
@@ -101,8 +92,7 @@ export class AuthService {
         };
 
         const render = pug.renderFile(templateFile, data );
-        console.log(user.email);
-        console.log(render);
+        
         await  this.mailerMain.sendMail({
             to: user.email,
             subject: "Password Reset Request",
@@ -119,44 +109,27 @@ export class AuthService {
         return { link };
     };
       
-    //   const resetPassword = async (userId, token, password) => {
-    //     let passwordResetToken = await Token.findOne({ userId });
+    async resetPassword (userId: string, token: string, password: string) {
+        const user_id = new Types.ObjectId(userId);
+        let passwordResetToken = await this.reserPasswordTokenModel.findOne({ user_id: user_id });
       
-    //     if (!passwordResetToken) {
-    //       throw new Error("Invalid or expired password reset token");
-    //     }
+        if (!passwordResetToken) {
+          throw new Error("Invalid or expired password reset token");
+        }
+            
+        const isValid = await argon.verify(passwordResetToken.token, token);
       
-    //     console.log(passwordResetToken.token, token);
+        if (!isValid) {
+          throw new Error("Invalid or expired password reset token 2");
+        }
       
-    //     const isValid = await bcrypt.compare(token, passwordResetToken.token);
+        const hash = await argon.hash(password);
       
-    //     if (!isValid) {
-    //       throw new Error("Invalid or expired password reset token");
-    //     }
+        await this.userService.updatePasswordForUser(userId, hash);
+        await passwordResetToken.deleteOne();
       
-    //     const hash = await bcrypt.hash(password, Number(bcryptSalt));
-      
-    //     await User.updateOne(
-    //       { _id: userId },
-    //       { $set: { password: hash } },
-    //       { new: true }
-    //     );
-      
-    //     const user = await User.findById({ _id: userId });
-      
-    //     sendEmail(
-    //       user.email,
-    //       "Password Reset Successfully",
-    //       {
-    //         name: user.name,
-    //       },
-    //       "./template/resetPassword.handlebars"
-    //     );
-      
-    //     await passwordResetToken.deleteOne();
-      
-    //     return { message: "Password reset was successful" };
-    //   };
+        return { message: "Password reset was successful" };
+    };
 
     async generateTokens(payload: { userId: string }): Promise<Token> {
         const [accessToken, refreshToken] = await Promise.all([
