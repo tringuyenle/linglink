@@ -7,13 +7,22 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Token } from './models/token.model';
 import { SecurityConfig } from '../common/configs/config.interface';
+import { ReserPasswordToken } from 'schemas/reset-password-token.schema';
+import { Model, Types } from 'mongoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { MailerService } from '@nestjs-modules/mailer';
+import * as path from 'path';
+import * as pug from 'pug';
+
 
 @Injectable({})
 export class AuthService {
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
-        private readonly configService: ConfigService
+        private readonly configService: ConfigService,
+        private readonly mailerMain: MailerService,
+        @InjectModel('ReserPasswordToken') private readonly reserPasswordTokenModel: Model<ReserPasswordToken>
     ) { }
 
     async register(registrationData: RegisterDTO) {
@@ -55,6 +64,72 @@ export class AuthService {
             return error;
         }
     }
+
+    async requestPasswordReset(email: string) {
+        const crypto = require('crypto');
+
+        const user = await this.userService.getByUserEmail(email);
+        if (!user) throw new Error("Email does not exist");
+      
+        let token = await this.reserPasswordTokenModel.findOne({ user_id: user._id });
+        if (token) await token.deleteOne();
+      
+        let resetToken = crypto.randomBytes(32).toString("hex");
+        const hash = await argon.hash(resetToken);
+
+        await new this.reserPasswordTokenModel({
+            user_id: user._id,
+            token: hash,
+        }).save();
+      
+        const link = `${process.env.NEXT_PUBLIC_BASE_CLIENT_URL}/passwordReset?token=${resetToken}&id=${user._id}`;
+      
+        const templateFile = path.join(__dirname, '../../../utils/email/template/requestResetPassword.pug');
+
+        const data = {
+            name: user.name,
+            link: link,
+        };
+
+        const render = pug.renderFile(templateFile, data );
+        
+        await  this.mailerMain.sendMail({
+            to: user.email,
+            subject: "Password Reset Request",
+            text: "acb",
+            html: render,
+        })
+        .then(() => {
+            console.log('Email sent');
+        })
+        .catch((e) => {
+            console.log('Error sending email', e);
+        });
+
+        return { link };
+    };
+      
+    async resetPassword (userId: string, token: string, password: string) {
+        const user_id = new Types.ObjectId(userId);
+        let passwordResetToken = await this.reserPasswordTokenModel.findOne({ user_id: user_id });
+      
+        if (!passwordResetToken) {
+          throw new Error("Invalid or expired password reset token");
+        }
+            
+        const isValid = await argon.verify(passwordResetToken.token, token);
+      
+        if (!isValid) {
+          throw new Error("Invalid or expired password reset token 2");
+        }
+      
+        const hash = await argon.hash(password);
+      
+        await this.userService.updatePasswordForUser(userId, hash);
+        await passwordResetToken.deleteOne();
+      
+        return { message: "Password reset was successful" };
+    };
 
     async generateTokens(payload: { userId: string }): Promise<Token> {
         const [accessToken, refreshToken] = await Promise.all([

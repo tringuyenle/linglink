@@ -31,6 +31,15 @@ export class UserService {
         return newUser;
     }
 
+    async updatePasswordForUser(userId: string, hashPassword: string) {
+      const updatedUser = await this.userModel.updateOne(
+        { _id: userId },
+        { $set: { hashedPassword: hashPassword } },
+        { new: true }
+      );
+      return updatedUser;
+    }
+
     async findOrCreateByOauth(userData: CreateUserByOauthDTO) {
       const user = await this.userModel.findOne({ email: userData.email }).exec();
       if (user) return user;
