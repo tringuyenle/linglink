@@ -73,7 +73,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
         <div className={cn("grid gap-6", className)} {...props}>
             <form onSubmit={loginform.handleSubmit}>
                 <div className="grid gap-2">
-                    <div className="grid gap-1">
+                    <div className="grid gap-1 mb-5">
                         <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="email">
                             Địa chỉ Email
                         </Label>
@@ -106,7 +106,7 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                             value={loginform.values.password}
                             disabled={mutation.isPending}
                         />
-                        <div className="flex flex-row gap-4 my-1">
+                        {/* <div className="flex flex-row gap-4 my-1">
                             <Checkbox id="terms" onCheckedChange={() => {
                                 setShowPass(!showpass)
                             }} />
@@ -116,10 +116,16 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                             >
                                 Hiển thị mật khẩu
                             </label>
+                        </div> */}
+                        <div className="flex justify-between">
+                            {loginform.touched.password && loginform.errors.password ? (
+                                <div className="text-red-600 ml-1 text-sm my-1">{loginform.errors.password}</div>
+                            ) : <div className="opacity-0 text-sm my-1">OK</div>}
+
+                            <Link href="/reset-password" className="text-right w-fit">
+                                <span className=" text-gray-400 text-xs underline">Quên mật khẩu</span>
+                            </Link>
                         </div>
-                        {loginform.touched.password && loginform.errors.password ? (
-                            <div className="text-red-600 ml-1 text-sm my-1">{loginform.errors.password}</div>
-                        ) : <div className="opacity-0 text-sm my-1">OK</div>}
                     </div>
                     <Button disabled={mutation.isPending} type="submit">
                         {mutation.isPending && (

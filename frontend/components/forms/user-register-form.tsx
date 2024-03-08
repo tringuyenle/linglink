@@ -123,7 +123,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             value={signinform.values.password}
                             disabled={mutation.isPending}
                         />
-                        <div className="flex flex-row gap-4 my-1">
+                        {/* <div className="flex flex-row gap-4 my-1">
                             <Checkbox id="terms" onCheckedChange={() => {
                                 setShowPass(!showpass)
                             }} />
@@ -133,7 +133,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             >
                                 Hiển thị mật khẩu
                             </label>
-                        </div>
+                        </div> */}
                         {signinform.touched.password && signinform.errors.password ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.password}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
@@ -151,7 +151,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             value={signinform.values.repassword}
                             disabled={mutation.isPending}
                         />
-                        <div className="flex flex-row gap-4 my-1">
+                        {/* <div className="flex flex-row gap-4 my-1">
                             <Checkbox id="terms" onCheckedChange={() => {
                                 setShowRePass(!showrepass)
                             }} />
@@ -161,7 +161,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                             >
                                 Hiển thị mật khẩu
                             </Label>
-                        </div>
+                        </div> */}
                         {signinform.touched.repassword && signinform.errors.repassword ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.repassword}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}

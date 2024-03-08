@@ -65,10 +65,10 @@ export class AuthService {
         }
     }
 
-    async requestPasswordReset(email: string) {
+    async requestPasswordReset(mail: {email: string}) {
         const crypto = require('crypto');
 
-        const user = await this.userService.getByUserEmail(email);
+        const user = await this.userService.getByUserEmail(mail.email);
         if (!user) throw new Error("Email does not exist");
       
         let token = await this.reserPasswordTokenModel.findOne({ user_id: user._id });
@@ -82,7 +82,7 @@ export class AuthService {
             token: hash,
         }).save();
       
-        const link = `${process.env.NEXT_PUBLIC_BASE_CLIENT_URL}/passwordReset?token=${resetToken}&id=${user._id}`;
+        const link = `${process.env.NEXT_PUBLIC_BASE_CLIENT_URL}/reset-password?token=${resetToken}&id=${user._id}`;
       
         const templateFile = path.join(__dirname, '../../../utils/email/template/requestResetPassword.pug');
 
