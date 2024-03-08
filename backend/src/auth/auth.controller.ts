@@ -20,8 +20,8 @@ export class AuthController {
     }
 
     @Post('requestPasswordReset')
-    async requestPasswordReset(@Body() email: string) {
-        return this.authService.requestPasswordReset(email);
+    async requestPasswordReset(@Body() body: {email: string}) {
+        return this.authService.requestPasswordReset(body);
     }
 
     @Post('resetPassword')
