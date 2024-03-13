@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import CreatePost from "./components/createpost";
 import createAxiosInstance from "@/app/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
+import { useLocale } from "next-intl";
 
 const TopicSelect: React.FC = () => {
   return (

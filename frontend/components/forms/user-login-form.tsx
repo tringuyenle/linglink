@@ -19,6 +19,7 @@ import createAxiosInstance from "@/app/utils/axiosInstance";
 import { toast } from "react-toastify";
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -95,28 +96,28 @@ export default function UserLoginForm({ className, ...props }: UserAuthFormProps
                         <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="password">
                             Mật khẩu
                         </Label>
-                        <Input
-                            id="password"
-                            placeholder="your password"
-                            type={showpass ? "text" : "password"}
-                            autoCapitalize="none"
-                            autoCorrect="off"
-                            onBlur={(event) => loginform.handleBlur(event)}
-                            onChange={(event) => loginform.handleChange(event)}
-                            value={loginform.values.password}
-                            disabled={mutation.isPending}
-                        />
-                        {/* <div className="flex flex-row gap-4 my-1">
-                            <Checkbox id="terms" onCheckedChange={() => {
-                                setShowPass(!showpass)
-                            }} />
-                            <label
-                                htmlFor="terms"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                Hiển thị mật khẩu
-                            </label>
-                        </div> */}
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                className="w-full pr-12"
+                                placeholder="your password"
+                                type={showpass ? "text" : "password"}
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                onBlur={(event) => loginform.handleBlur(event)}
+                                onChange={(event) => loginform.handleChange(event)}
+                                value={loginform.values.password}
+                                disabled={mutation.isPending}
+                            />
+                            <div onClick={() => setShowPass(!showpass)} className="cursor-pointer absolute right-3 top-1 translate-y-1/2">
+                                {
+                                    showpass ?
+                                        <FaEye />
+                                        :
+                                        <FaEyeSlash />
+                                }
+                            </div>
+                        </div>
                         <div className="flex justify-between">
                             {loginform.touched.password && loginform.errors.password ? (
                                 <div className="text-red-600 ml-1 text-sm my-1">{loginform.errors.password}</div>
