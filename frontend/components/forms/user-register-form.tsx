@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useFormik } from 'formik';
-import { Checkbox } from "@/components/ui/checkbox"
 import * as Yup from 'yup';
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useRouter } from 'next/navigation'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> { }
 
@@ -65,7 +65,7 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
             try {
                 mutation.mutate(values);
             } catch (error: any) {
-                
+
             }
         },
     });
@@ -112,56 +112,54 @@ export default function UserSignInForm({ className, ...props }: UserAuthFormProp
                         <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="password">
                             Mật khẩu
                         </Label>
-                        <Input
-                            id="password"
-                            placeholder="your password"
-                            type={showpass ? "text" : "password"}
-                            autoCapitalize="none"
-                            autoCorrect="off"
-                            onBlur={(event) => signinform.handleBlur(event)}
-                            onChange={(event) => signinform.handleChange(event)}
-                            value={signinform.values.password}
-                            disabled={mutation.isPending}
-                        />
-                        {/* <div className="flex flex-row gap-4 my-1">
-                            <Checkbox id="terms" onCheckedChange={() => {
-                                setShowPass(!showpass)
-                            }} />
-                            <label
-                                htmlFor="terms"
-                                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                Hiển thị mật khẩu
-                            </label>
-                        </div> */}
+                        <div className="relative">
+                            <Input
+                                id="password"
+                                placeholder="your password"
+                                type={showpass ? "text" : "password"}
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                onBlur={(event) => signinform.handleBlur(event)}
+                                onChange={(event) => signinform.handleChange(event)}
+                                value={signinform.values.password}
+                                disabled={mutation.isPending}
+                            />
+                            <div onClick={() => setShowPass(!showpass)} className="cursor-pointer absolute right-3 top-1 translate-y-1/2">
+                                {
+                                    showpass ?
+                                        <FaEye />
+                                        :
+                                        <FaEyeSlash />
+                                }
+                            </div>
+                        </div>
                         {signinform.touched.password && signinform.errors.password ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.password}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
                         <Label className="after:content-['*'] after:ml-0.5 after:text-red-500 font-semibold" htmlFor="repassword">
                             Nhập lại mật khẩu
                         </Label>
-                        <Input
-                            id="repassword"
-                            placeholder="your password"
-                            type={showrepass ? "text" : "password"}
-                            autoCapitalize="none"
-                            autoCorrect="off"
-                            onBlur={(event) => signinform.handleBlur(event)}
-                            onChange={(event) => signinform.handleChange(event)}
-                            value={signinform.values.repassword}
-                            disabled={mutation.isPending}
-                        />
-                        {/* <div className="flex flex-row gap-4 my-1">
-                            <Checkbox id="terms" onCheckedChange={() => {
-                                setShowRePass(!showrepass)
-                            }} />
-                            <Label
-                                htmlFor="terms"
-                                className="after:content-['*'] after:ml-0.5 after:text-red-500 text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                            >
-                                Hiển thị mật khẩu
-                            </Label>
-                        </div> */}
+                        <div className="relative">
+                            <Input
+                                id="repassword"
+                                placeholder="your password"
+                                type={showrepass ? "text" : "password"}
+                                autoCapitalize="none"
+                                autoCorrect="off"
+                                onBlur={(event) => signinform.handleBlur(event)}
+                                onChange={(event) => signinform.handleChange(event)}
+                                value={signinform.values.repassword}
+                                disabled={mutation.isPending}
+                            />
+                            <div onClick={() => setShowRePass(!showpass)} className="cursor-pointer absolute right-3 top-1 translate-y-1/2">
+                                {
+                                    showrepass ?
+                                        <FaEye />
+                                        :
+                                        <FaEyeSlash />
+                                }
+                            </div>
+                        </div>
                         {signinform.touched.repassword && signinform.errors.repassword ? (
                             <div className="text-red-600 ml-1 text-sm my-1">{signinform.errors.repassword}</div>
                         ) : <div className="opacity-0 text-sm my-1">OK</div>}
