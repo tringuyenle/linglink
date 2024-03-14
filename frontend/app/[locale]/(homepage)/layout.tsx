@@ -14,7 +14,7 @@ export default function HomeLayout({
   return (
     <div className="w-full flex flex-col mb-10">
       <Header />
-      <div className="w-full flex flex-row gap-12 container h-full">
+      <div className="w-full flex flex-row gap-12 container h-full mt-5">
         <div className="w-1/4 h-full sticky top-[100px]">
           <Goal />
         </div>
