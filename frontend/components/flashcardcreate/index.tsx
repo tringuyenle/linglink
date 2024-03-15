@@ -55,7 +55,7 @@ export default function FlashCardCreate() {
     const getFlashList = async () => {
         let result = await axiosJWT.get(`${process.env.NEXT_PUBLIC_BASE_URL}/flashcard-list/user`)
         setFlashList(result.data)
-        setFlashcards(result.data?.flashcards)
+        setFlashcards(result.data[0]?.flashcards)
     }
     useEffect(() => {
         const getFlashList = async () => {

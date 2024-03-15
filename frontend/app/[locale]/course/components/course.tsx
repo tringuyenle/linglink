@@ -1,17 +1,18 @@
+"use client"
+
 import Image from "next/image"
 import maleT from "@/app/assets/images/course/male_teacher.png"
 import femaleT from "@/app/assets/images/course/female_teacher.png"
 import stu from "@/app/assets/images/course/students.png"
 import date from "@/app/assets/images/course/schedule.png"
-import { format } from "date-fns"
 
 export type CourseCardProps = {
     name: string,
     student: number,
     teacher: string,
     teacher_genders?: string,
-    startTime: Date,
-    endTime: Date,
+    startTime: string,
+    endTime: string,
     img: string,
     price: number,
     downprice?: number,
@@ -53,7 +54,7 @@ export default function CourseCard({ course }: { course: CourseCardProps }) {
                         src={date}
                         alt={"illustration"}
                     />
-                    <span className="font-medium">Ngày bắt đầu: </span>{format(course.startTime, 'dd/MM/yyyy')}
+                    <span className="font-medium">Ngày bắt đầu: </span>{course.startTime}
                 </p>
                 <p className="text-gray-600 mb-2 flex items-center gap-2">
                     <Image
@@ -61,7 +62,7 @@ export default function CourseCard({ course }: { course: CourseCardProps }) {
                         src={date}
                         alt={"illustration"}
                     />
-                    <span className="font-medium">Ngày kết thúc: </span>{format(course.endTime, 'dd/MM/yyyy')}
+                    <span className="font-medium">Ngày kết thúc: </span>{course.endTime}
                 </p>
                 <div className="flex justify-between items-center font-bold">
                     <div>
