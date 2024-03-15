@@ -84,3 +84,39 @@ export class ReactionService {
         return response;
     }
 }
+export class CourseService {
+    static async createCourse(course: any): Promise<AxiosResponse<any>> {
+        const axiosInstance = createAxiosInstance();
+        const response: AxiosResponse<any> = await axiosInstance.post(`${process.env.NEXT_PUBLIC_BASE_URL}/courses`, course);
+        return response;
+    }
+
+    static async getCourse(courseId: string): Promise<AxiosResponse<any>> {
+        const axiosInstance = createAxiosInstance();
+        const response: AxiosResponse<any> = await axiosInstance.get(`${process.env.NEXT_PUBLIC_BASE_URL}/courses/${courseId}`);
+        return response;
+    }
+
+    static async updateCourse(courseId: string, updatedCourseData: any): Promise<AxiosResponse<any>> {
+        const axiosInstance = createAxiosInstance();
+        const response: AxiosResponse<any> = await axiosInstance.put(`${process.env.NEXT_PUBLIC_BASE_URL}/courses/${courseId}`, updatedCourseData);
+        return response;
+    }
+
+    static async deleteCourse(courseId: string): Promise<AxiosResponse<any>> {
+        const axiosInstance = createAxiosInstance();
+        const response: AxiosResponse<any> = await axiosInstance.delete(`${process.env.NEXT_PUBLIC_BASE_URL}/courses/${courseId}`);
+        return response;
+    }
+
+    static async getCourses(page: number, limit: number): Promise<AxiosResponse<any>> {
+        const axiosInstance = createAxiosInstance();
+        const response: AxiosResponse<any> = await axiosInstance.get(`${process.env.NEXT_PUBLIC_BASE_URL}/courses`, {
+            params: {
+                page: page,
+                limit: limit
+            }
+        });
+        return response;
+    }
+}

@@ -24,15 +24,6 @@ import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import CourseList from "./components/courseList"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from "@/components/ui/pagination"
 
 const Banner: React.FC = () => {
     return (
@@ -175,7 +166,7 @@ const Filter: React.FC = () => {
 
 const Course: React.FC = () => {
     return (
-        <div className="">
+        <div>
             <Banner />
             <Descrip />
             <div className="flex gap-6 container h-full">
@@ -184,32 +175,6 @@ const Course: React.FC = () => {
                 </div>
                 <div className="w-3/4 h-full">
                     <CourseList />
-                    <div className="mt-6">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious href="#" />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">1</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#" isActive>
-                                        2
-                                    </PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationLink href="#">3</PaginationLink>
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationEllipsis />
-                                </PaginationItem>
-                                <PaginationItem>
-                                    <PaginationNext href="#" />
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
                 </div>
             </div>
         </div>
