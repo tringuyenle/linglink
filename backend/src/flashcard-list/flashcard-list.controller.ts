@@ -33,7 +33,7 @@ export class FlashcardListController {
         return this.flashcardListService.remove(id);
     }
     @Get('user')
-    @UseGuards(MyJwtGuard) // Sử dụng MyJwtGuard để bảo vệ phương thức
+    @UseGuards(MyJwtGuard)
     getFlashCardList(@Req() req): Promise<FlashcardList[]> {
         return this.flashcardListService.getFlashCardListByUserId(req.user);
     }
