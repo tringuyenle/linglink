@@ -13,6 +13,7 @@ import { FlashcardModule } from './flashcards/flashcards.module';
 import { CommentsModule } from './comments/comments.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { CourseModule } from './courses/courses.module';
+import { ChatsModule } from './chat/chats.module';
 require("dotenv").config();
 
 @Module({
@@ -22,7 +23,7 @@ require("dotenv").config();
     AuthModule, UserModule, PostsModule, 
     TopicsModule, TagsModule, QuestionsModule, 
     FlashcardListModule, FlashcardModule, CommentsModule,
-    ReactionsModule, CourseModule
+    ReactionsModule, CourseModule, ChatsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
