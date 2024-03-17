@@ -3,7 +3,7 @@ import { ObjectId, Types } from 'mongoose';
 import { User } from './user.schema';
 
 @Schema({ timestamps: true })
-export class Chat {
+export class Message {
     _id: ObjectId;
 
     @Prop()
@@ -19,4 +19,4 @@ export class Chat {
     to: User;
 };
 
-export const ChatSchema = SchemaFactory.createForClass(Chat);
+export const MessageSchema = SchemaFactory.createForClass(Message);

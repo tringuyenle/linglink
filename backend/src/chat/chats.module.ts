@@ -2,19 +2,23 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ChatsService } from './chats.service';
 import { ChatsController } from './chats.controller';
-import { ChatSchema } from '../../schemas/chat.schema';
-import { TopicsService } from '../topics/topics.service';
-import { QuestionsService } from '../questions/questions.service';
-import { TagsService } from '../tags/tags.service';
-import { ReactionsService } from '../reactions/reactions.service';
+import { MessageSchema } from '../../schemas/message.schema';
+import { AuthService } from 'src/auth/auth.service';
+import { UserService } from 'src/user/user.service';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { ReserPasswordTokenSchema } from 'schemas/reset-password-token.schema';
+import { UserSchema } from 'schemas/user.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
-            {name: 'Chat', schema: ChatSchema},
+            {name: 'User', schema: UserSchema},
+            {name: 'Message', schema: MessageSchema},
+            { name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
         ]),
     ],
-    providers: [ChatsService],
+    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService],
     controllers: [ChatsController],
 })
 export class ChatsModule {}
