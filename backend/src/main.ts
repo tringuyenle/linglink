@@ -3,6 +3,8 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter } from '@nestjs/platform-fastify';
 import { AppModule } from './app.module';
 import { FastifyRequest } from 'fastify';
+import { ConfigService } from '@nestjs/config';
+import { SocketIOAdapter } from './chat/socket-oi-adapter';
 
 const DEFAULT_VERSION = '1';
 
@@ -19,6 +21,20 @@ const extractor = (request: FastifyRequest): string | string[] => {
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, new FastifyAdapter(), { cors: true });
+  // const app = await NestFactory.create(AppModule, new FastifyAdapter());
+
+  const configService = app.get(ConfigService);
+  const port = parseInt(configService.get('PORT'));
+  // const clientPort = parseInt(configService.get('CLIENT_PORT'));
+
+  // app.enableCors({
+  //   origin: [
+  //     `http://localhost:${clientPort}`,
+  //     new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
+  //   ],
+  // });
+  // app.useWebSocketAdapter(new SocketIOAdapter(app, configService));
+
 
   //fix for error of oauth2: setHeaders is not a function 
   let fastifyInstance = app.getHttpAdapter().getInstance();
@@ -43,6 +59,6 @@ async function bootstrap() {
 
   // add middleware to validation
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000, '0.0.0.0');
+  await app.listen(port, '0.0.0.0');
 }
 bootstrap();
