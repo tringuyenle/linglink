@@ -9,6 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ReserPasswordTokenSchema } from 'schemas/reset-password-token.schema';
 import { UserSchema } from 'schemas/user.schema';
+import { ChatsGateway } from './chats.gateway';
 
 @Module({
     imports: [
@@ -18,7 +19,7 @@ import { UserSchema } from 'schemas/user.schema';
             { name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
         ]),
     ],
-    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService],
+    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway],
     controllers: [ChatsController],
 })
 export class ChatsModule {}
