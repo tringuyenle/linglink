@@ -8,7 +8,7 @@ export class FlashcardList extends Document {
     @Prop()
     name: string;
 
-    @Prop({ type: [{ type: Types.ObjectId, ref: 'Flashcard' }] })
+    @Prop({ type: [Types.ObjectId], ref: 'Flashcard' })
     flashcards: Types.ObjectId[];
 
     @Prop({ type: Types.ObjectId, ref: 'User' })
