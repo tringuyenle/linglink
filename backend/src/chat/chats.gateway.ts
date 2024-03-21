@@ -1,18 +1,22 @@
 import { Logger } from '@nestjs/common';
 import {
-    OnGatewayInit,
-    WebSocketGateway,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
-    WebSocketServer,
+  OnGatewayInit,
+  WebSocketGateway,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
+  WebSocketServer,
 } from '@nestjs/websockets';
-import { Namespace, Socket } from 'socket.io';
+import { Namespace } from 'socket.io';
 import { ChatsService } from './chats.service';
+import { SocketWithAuth } from './types';
 
-@WebSocketGateway({ namespace: 'chats' })
-export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect{
-    private readonly logger = new Logger(ChatsGateway.name);
-    constructor(private readonly chatsService: ChatsService) {}
+@WebSocketGateway({namespace: 'chats',})
+
+export class ChatsGateway
+implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+private readonly logger = new Logger(ChatsGateway.name);
+constructor(private readonly chatsService: ChatsService) {}
 
 @WebSocketServer() io: Namespace;
 
@@ -21,8 +25,13 @@ afterInit(): void {
     this.logger.log(`Websocket Gateway initialized.`);
 }
 
-handleConnection(client: Socket) {
+handleConnection(client: SocketWithAuth) {
     const sockets = this.io.sockets;
+
+    this.logger.debug(
+        `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
+    );
+    // console.log(client);
 
     this.logger.log(`WS Client with id: ${client.id} connected!`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
@@ -30,12 +39,16 @@ handleConnection(client: Socket) {
     this.io.emit('hello', `from ${client.id}`);
 }
 
-handleDisconnect(client: Socket) {
+handleDisconnect(client: SocketWithAuth) {
     const sockets = this.io.sockets;
+
+    this.logger.debug(
+    `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
+    );
 
     this.logger.log(`Disconnected socket id: ${client.id}`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-    // TODO - remove client from poll and send `participants_updated` event to remaining clients
+    // TODO - remove client from chat and send `participants_updated` event to remaining clients
 }
 }
