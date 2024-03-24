@@ -18,10 +18,10 @@ export class SocketIOAdapter extends IoAdapter {
         const clientPort = parseInt(this.configService.get('CLIENT_PORT'));
 
         const cors = {
-        origin: [
-            `http://localhost:${clientPort}`,
-            new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
-        ],
+            origin: [
+                `http://localhost:${clientPort}`,
+                new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
+            ],
         };
 
         this.logger.log('Configuring SocketIO server with custom CORS options', {
@@ -51,10 +51,11 @@ export class SocketIOAdapter extends IoAdapter {
         logger.debug(`Validating auth token before connection: ${token}`);
     
         try {
-            const { userId } = await jwtService.verifyAsync(token, {
-                secret: this.configService.get('JWT_SECRET'),
+            const payload = await jwtService.verifyAsync(token, {
+                secret: this.configService.get('JWT_SOCKET_SECRET'),
             });
-            socket.userID = userId;
+            socket.from_user = payload.from_user;
+            socket.chatRoomId = payload.chatRoomId;
         next();
         } catch {
             next(new Error('FORBIDDEN'));

@@ -10,12 +10,14 @@ import { ConfigService } from '@nestjs/config';
 import { ReserPasswordTokenSchema } from 'schemas/reset-password-token.schema';
 import { UserSchema } from 'schemas/user.schema';
 import { ChatsGateway } from './chats.gateway';
+import { ChatRoomSchema } from 'schemas/chatroom.schema';
 
 @Module({
     imports: [
         MongooseModule.forFeature([
             {name: 'User', schema: UserSchema},
             {name: 'Message', schema: MessageSchema},
+            {name: 'ChatRoom', schema: ChatRoomSchema},
             { name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
         ]),
     ],

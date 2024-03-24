@@ -29,21 +29,21 @@ handleConnection(client: SocketWithAuth) {
     const sockets = this.io.sockets;
 
     this.logger.debug(
-        `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
+        `Socket connected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
     );
     // console.log(client);
 
     this.logger.log(`WS Client with id: ${client.id} connected!`);
     this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-    this.io.emit('hello', `from ${client.id}`);
+    this.io.emit('hello', `from ${client.from_user.name}`);
 }
 
 handleDisconnect(client: SocketWithAuth) {
     const sockets = this.io.sockets;
 
     this.logger.debug(
-    `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
+        `Socket disconnected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
     );
 
     this.logger.log(`Disconnected socket id: ${client.id}`);
