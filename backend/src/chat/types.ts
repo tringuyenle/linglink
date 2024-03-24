@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { User } from 'schemas/user.schema';
 import { Socket } from 'socket.io';
 
 // service types
@@ -35,9 +36,8 @@ export type AddParticipantData = {
 
 // guard types
 type AuthPayload = {
-  userID: string;
-  chatID: string;
-  name: string;
+  chatRoomId: string;
+  from_user: User;
 };
 
 export type RequestWithAuth = Request & AuthPayload;
