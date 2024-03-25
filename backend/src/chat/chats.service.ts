@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectModel } from '@nestjs/mongoose';
@@ -29,22 +29,28 @@ export class ChatsService {
         }
 
         try {
-            const newChatRoom = await this.chatRoomModel.create({
-                chatRoomId: chat_from_user._id.toString() + '--' + chat_to_user._id.toString(),
-                name: createChatRoom.name,
-                participant: [chat_from_user._id, chat_to_user._id],
-                createAt: Date.now()
-            });
-            await newChatRoom.save();
+            const chatRoomId_from_user = chat_from_user._id.toString() + '--' + chat_to_user._id.toString();
+            const chatRoomId_to_user = chat_to_user._id.toString() + '--' + chat_from_user._id.toString();
+            let chatRoom = await this.chatRoomModel.findOne({chatRoomId: { $in: [chatRoomId_from_user, chatRoomId_to_user]}});
+
+            if (!chatRoom) {
+                chatRoom = await this.chatRoomModel.create({
+                    chatRoomId: chatRoomId_to_user,
+                    name: createChatRoom.name,
+                    participant: [chat_from_user._id, chat_to_user._id],
+                    createAt: Date.now()
+                });
+                await chatRoom.save();
+            }
             
             const token = await this.jwtService.signAsync({
-                chatRoomId: newChatRoom.chatRoomId, 
+                chatRoomId: chatRoom.chatRoomId, 
                 from_user: chat_from_user}, 
             {secret: this.configService.get('JWT_SOCKET_SECRET'),})
 
             return {
                 token,
-                newChatRoom
+                chatRoom
             }
         } catch (err) {
             throw new HttpException('Failed to create chat room', HttpStatus.INTERNAL_SERVER_ERROR);
