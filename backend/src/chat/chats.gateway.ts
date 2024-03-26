@@ -24,7 +24,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         this.logger.log(`Websocket Gateway initialized.`);
     }
 
-    handleConnection(client: SocketWithAuth) {
+    async handleConnection(client: SocketWithAuth) {
         const sockets = this.io.sockets;
 
         this.logger.debug(
@@ -35,7 +35,8 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         this.logger.log(`WS Client with id: ${client.id} connected!`);
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-        this.io.emit(client.chatRoomId, `from ${client.from_user.name}`);
+        await client.join(client.chatRoomId);
+        this.io.to(client.chatRoomId).emit('start-chat', `from ${client.from_user.name}`);
     }
 
     handleDisconnect(client: SocketWithAuth) {
