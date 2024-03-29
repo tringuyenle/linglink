@@ -1,24 +1,24 @@
-import { IsEmail, IsNotEmpty } from "class-validator";
-import { Target } from "../../../schemas/user.schema";
-import { UserRoles } from "../../common/enums/user.enum";
+import { IsEmail, IsNotEmpty } from 'class-validator'
+import { Target } from '../../../schemas/user.schema'
+import { UserRoles } from '../../common/enums/user.enum'
 
 export class RegisterDTO {
-    @IsEmail()
-    @IsNotEmpty()
-    email: string
+  @IsEmail()
+  @IsNotEmpty()
+  email: string
 
-    @IsNotEmpty()
-    password: string
+  @IsNotEmpty()
+  password: string
 
-    name: string
+  name: string
 
-    avatar: string
+  avatar: string
 
-    role: UserRoles
+  role: UserRoles
 
-    target: Target
+  target: Target
 
-    createdAt: Date
+  createdAt: Date
 
-    updatedAt: Date
+  updatedAt: Date
 }
