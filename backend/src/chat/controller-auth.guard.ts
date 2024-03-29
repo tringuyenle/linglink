@@ -15,15 +15,14 @@ export class ControllerAuthGuard implements CanActivate {
 
     const { accessToken } = request.body
 
-    try {
-      const payload = this.jwtService.verify(accessToken)
-      // append user and chat to socket
-      request.userID = payload.sub
-      request.chatID = payload.chatID
-      request.name = payload.name
-      return true
-    } catch {
-      throw new ForbiddenException('Invalid authorization token')
+        try {
+            const payload = this.jwtService.verify(accessToken);
+            // append user and chat to socket
+            request.from_user = payload.sub;
+            request.chatRoomId = payload.chatRoomId;
+            return true;
+        } catch {
+            throw new ForbiddenException('Invalid authorization token');
+        }
     }
-  }
 }

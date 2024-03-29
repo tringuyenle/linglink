@@ -1,5 +1,6 @@
-import { Request } from 'express'
-import { Socket } from 'socket.io'
+import { Request } from 'express';
+import { User } from 'schemas/user.schema';
+import { Socket } from 'socket.io';
 
 // service types
 export type CreateChatFields = {
@@ -35,10 +36,9 @@ export type AddParticipantData = {
 
 // guard types
 type AuthPayload = {
-  userID: string
-  chatID: string
-  name: string
-}
+  chatRoomId: string;
+  from_user: User;
+};
 
 export type RequestWithAuth = Request & AuthPayload
 export type SocketWithAuth = Socket & AuthPayload

@@ -17,9 +17,12 @@ export class SocketIOAdapter extends IoAdapter {
   createIOServer(port: number, options?: ServerOptions) {
     const clientPort = parseInt(this.configService.get('CLIENT_PORT'))
 
-    const cors = {
-      origin: [`http://localhost:${clientPort}`, new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`)]
-    }
+        const cors = {
+            origin: [
+                `http://localhost:${clientPort}`,
+                new RegExp(`/^http:\/\/192\.168\.1\.([1-9]|[1-9]\d):${clientPort}$/`),
+            ],
+        };
 
     this.logger.log('Configuring SocketIO server with custom CORS options', {
       cors
@@ -40,20 +43,22 @@ export class SocketIOAdapter extends IoAdapter {
     return server
   }
 
-  createTokenMiddleware = (jwtService: JwtService, logger: Logger) => async (socket: SocketWithAuth, next) => {
-    // for Postman testing support, fallback to token header
-    const token = socket.handshake.auth.token || socket.handshake.headers['token']
-
-    logger.debug(`Validating auth token before connection: ${token}`)
-
-    try {
-      const { userId } = await jwtService.verifyAsync(token, {
-        secret: this.configService.get('JWT_SECRET')
-      })
-      socket.userID = userId
-      next()
-    } catch {
-      next(new Error('FORBIDDEN'))
-    }
-  }
+    createTokenMiddleware = (jwtService: JwtService, logger: Logger) => async (socket: SocketWithAuth, next) => {
+        // for Postman testing support, fallback to token header
+        const token = socket.handshake.auth.token || socket.handshake.headers['token'];
+    
+    
+        logger.debug(`Validating auth token before connection: ${token}`);
+    
+        try {
+            const payload = await jwtService.verifyAsync(token, {
+                secret: this.configService.get('JWT_SOCKET_SECRET'),
+            });
+            socket.from_user = payload.from_user;
+            socket.chatRoomId = payload.chatRoomId;
+        next();
+        } catch {
+            next(new Error('FORBIDDEN'));
+        }
+    };
 }
