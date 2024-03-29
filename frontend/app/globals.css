@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -122,7 +123,7 @@
 
 .scrollbar::-webkit-scrollbar-thumb {
   background-color: rgb(192, 190, 190);
-  border-radius: 6px;
+  border-radius   : 6px;
 }
 
 .scrollbar::-webkit-scrollbar-track {
@@ -135,9 +136,69 @@
 
 .scrollbar::-moz-scrollbar-thumb {
   background-color: rgb(231, 231, 231);
-  border-radius: 6px;
+  border-radius   : 6px;
 }
 
 .sidebar::-moz-scrollbar-track {
   background-color: #f1f1f1;
+}
+
+/* Calendar */
+
+.rbc-header {
+  background: #79b8e4;
+  color     : white;
+  padding   : 10px;
+  font-size : 12px;
+}
+
+.rbc-event {
+  padding         : 0px !important;
+  border-radius   : 0px !important;
+  border          : none !important;
+  background-color: transparent !important;
+}
+
+.rbc-background-event {
+  padding         : 0px !important;
+  border-radius   : 0px !important;
+  border          : none !important;
+  background-color: transparent !important;
+}
+
+.rbc-time-slot {
+  background-color: #eaf3fa;
+  color           : #74a4c3;
+  border-color    : aqua !important;
+}
+
+.rbc-event-label {
+  display: none !important;
+}
+
+.rbc-events-container {
+  width: 100% !important;
+}
+
+.rbc-timeslot-group {
+  min-height: 120px !important;
+}
+
+.rbc-time-header-cell {
+  height : 100% !important;
+  padding: 8px 2px 8px 2px;
+}
+
+.rbc-btn-group button {
+  background: #8dc9f7 !important;
+  color     : white !important;
+}
+
+.rbc-event-content {
+  background-color: #8dc9f7 !important;
+  font-size       : 12px !important;
+}
+
+.rbc-show-more {
+  font-size: 12px !important;
 }

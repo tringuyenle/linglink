@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import React, { useState } from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import banner from "@/app/assets/images/course/courses_banner.png"
 import { Input } from "@/components/ui/input"
 import { FcSearch } from "react-icons/fc";
@@ -24,6 +24,7 @@ import { format } from "date-fns"
 import { Calendar } from "@/components/ui/calendar"
 import CourseList from "./components/courseList"
 import { Checkbox } from "@/components/ui/checkbox"
+import { debounce } from 'lodash';
 
 const Banner: React.FC = () => {
     return (
@@ -47,26 +48,53 @@ const Descrip: React.FC = () => {
 }
 
 const Filter: React.FC = () => {
+    const { filter, setFilter } = useContext<any>(FilterContext);
     const [range, setRange] = useState<any>([20, 80]);
-    const [date, setDate] = useState<Date>()
+    const [date, setDate] = useState<any>(null);
+
+    // Debounce function with 500ms delay
+    const debounceSetFilter = debounce((newFilter: any) => {
+        setFilter(newFilter);
+    }, 500);
+
+    const handleNameChange = (event: any) => {
+        debounceSetFilter({ ...filter, name: event.target.value });
+    };
+
+    const handleSortChange = (value: any) => {
+        debounceSetFilter({ ...filter, sort: value });
+    };
+
+    const handleCheckboxChange = (id: any, checked: any) => {
+        let type = { ...(filter.type || {}), [id]: checked }
+        debounceSetFilter({ ...filter, type: type });
+    };
+
+    const handleDateSelect = (selectedDate: any) => {
+        setDate(selectedDate);
+        debounceSetFilter({ ...filter, startDate: selectedDate });
+    };
+
     const handleRangeChange = (newRange: any) => {
         setRange(newRange);
+        debounceSetFilter({ ...filter, priceRange: newRange });
     };
+
     return (
         <div className="mt-8 w-full bg-white rounded-md p-4 pb-8 shadow-lg sticky top-[100px]">
             <div className="w-full flex flex-col gap-6 justify-center items-center">
                 <div className="w-full">
                     <div className="flex gap-3 items-center w-full relative">
-                        <Input className="w-full" placeholder="Nhập tên khóa học muốn tìm" />
-                        <FcSearch className="absolute right-2 -translate-y-1/2 top-1/2 cursor-pointer text-3xl hover:scale-125 transition duration-300" />
+                        <Input onChange={handleNameChange} className="w-full" placeholder="Nhập tên khóa học muốn tìm" />
+                        {/* <FcSearch className="absolute right-2 -translate-y-1/2 top-1/2 cursor-pointer text-3xl hover:scale-125 transition duration-300" /> */}
                     </div>
                 </div>
                 <div className="flex gap-3 items-center w-full justify-center">
-                    <div className="flex items-center gap-2 font-medium">
+                    <div className="flex items-center gap-2 font-medium text-nowrap">
                         <FaFilter />
                         Xếp theo
                     </div>
-                    <Select>
+                    <Select value={filter?.sort} onValueChange={handleSortChange}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue placeholder="Chọn cách sắp xếp" />
                         </SelectTrigger>
@@ -81,7 +109,7 @@ const Filter: React.FC = () => {
                         </SelectContent>
                     </Select>
                 </div>
-                <div className="w-[100%] flex items-center gap-4">
+                {/* <div className="w-[100%] flex items-center gap-4">
                     <div className="text-nowrap font-medium">
                         Lọc theo giá
                     </div>
@@ -89,7 +117,7 @@ const Filter: React.FC = () => {
                         <Slider
                             min={0}
                             max={100}
-                            defaultValue={[20, 80]}
+                            value={range}
                             range
                             onChange={handleRangeChange}
                         />
@@ -102,7 +130,7 @@ const Filter: React.FC = () => {
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> */}
             </div>
             <div className="mt-4">
                 <div className="w-fit">
@@ -123,60 +151,69 @@ const Filter: React.FC = () => {
                             <Calendar
                                 mode="single"
                                 selected={date}
-                                onSelect={setDate}
+                                onSelect={handleDateSelect}
                                 initialFocus
                             />
                         </PopoverContent>
                     </Popover>
                 </div>
             </div>
-            <div className="flex flex-col gap-3 mt-4">
+            {/* <div className="flex flex-col gap-3 mt-4">
                 <h3 className="font-medium">Loại khóa học</h3>
                 <div className="flex gap-3 items-center">
-                    <Checkbox id="1" />
+                    <Checkbox id="TOEIC" checked={filter?.TOEIC} onCheckedChange={(value: any) => handleCheckboxChange("TOEIC", value)} />
                     <label
-                        htmlFor="1"
+                        htmlFor="TOEIC"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                         TOEIC
                     </label>
                 </div>
                 <div className="flex gap-3 items-center">
-                    <Checkbox id="2" />
+                    <Checkbox id="IELTS" checked={filter?.IELTS} onCheckedChange={(value: any) => handleCheckboxChange("IELTS", value)} />
                     <label
-                        htmlFor="2"
+                        htmlFor="IELTS"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                         IELTS
                     </label>
                 </div>
                 <div className="flex gap-3 items-center">
-                    <Checkbox id="3" />
+                    <Checkbox id="TOEFL" checked={filter?.TOEFL} onCheckedChange={(value: any) => handleCheckboxChange("TOEFL", value)} />
                     <label
-                        htmlFor="3"
+                        htmlFor="TOEFL"
                         className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                     >
                         TOEFL
                     </label>
                 </div>
             </div>
+            <Button className="mt-2 mr-2" onClick={(event) => { event.preventDefault(); console.log("==filter==", filter) }}>
+                Lọc
+            </Button> */}
         </div>
     )
 }
 
+export const FilterContext = React.createContext<any>({})
+
 const Course: React.FC = () => {
+    const [filter, setFilter] = useState<any>({})
+
     return (
         <div>
-            <Banner />
-            <Descrip />
-            <div className="flex gap-6 container h-full">
-                <div className="w-1/4 flex-1">
-                    <Filter />
+            <FilterContext.Provider value={{ filter, setFilter }}>
+                <Banner />
+                <Descrip />
+                <div className="flex gap-6 container h-full">
+                    <div className="w-1/4 flex-1">
+                        <Filter />
+                    </div>
+                    <div className="w-3/4 h-full">
+                        <CourseList />
+                    </div>
                 </div>
-                <div className="w-3/4 h-full">
-                    <CourseList />
-                </div>
-            </div>
+            </FilterContext.Provider>
         </div>
     )
 }
