@@ -10,14 +10,12 @@ type PaginationProps = {
 };
 
 export const CustomPagination: React.FC<PaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
-    // Tạo mảng các trang để hiển thị trên thanh pagination
-    const pages = Array.from({ length: totalPages }, (_, index) => index + 1);
 
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
-                    <Button variant="outline" onClick={() => onPageChange(currentPage - 1)}>
+                    <Button variant="outline" disabled={currentPage === 1} onClick={() => onPageChange(currentPage - 1)}>
                         <MdOutlineArrowBackIosNew />
                     </Button>
                 </PaginationItem>
@@ -71,8 +69,8 @@ export const CustomPagination: React.FC<PaginationProps> = ({ currentPage, total
                 }
 
                 <PaginationItem>
-                    <Button variant="outline">
-                        <MdOutlineArrowForwardIos onClick={() => onPageChange(currentPage + 1)} />
+                    <Button disabled={currentPage >= totalPages} variant="outline" onClick={() => onPageChange(currentPage + 1)}>
+                        <MdOutlineArrowForwardIos />
                     </Button>
                 </PaginationItem>
             </PaginationContent>

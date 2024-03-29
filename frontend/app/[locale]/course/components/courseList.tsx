@@ -1,18 +1,20 @@
 "use client"
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CourseCard, { CourseCardProps } from "./course";
 import { CourseService } from "@/app/services";
 import { CustomPagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
+import { FilterContext } from "../page";
 
 const CourseList: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize] = useState(9);
-    const { data, isPending, error } = useQuery({
-        queryKey: ["courses", currentPage, pageSize],
+    const { filter } = useContext(FilterContext)
+    const [pageSize] = useState(6);
+    const { data, isPending } = useQuery({
+        queryKey: ["courses", currentPage, pageSize, filter],
         queryFn: async () => {
-            let result = await CourseService.getCourses(currentPage, pageSize)
+            let result = await CourseService.getCourses(currentPage, pageSize, filter)
             return result.data
         }
     }) as { data: any, isPending: boolean, error: any };
@@ -33,7 +35,6 @@ const CourseList: React.FC = () => {
     };
     return (
         <>
-            {error && <p>Error fetching courses</p>}
             {isPending &&
                 <div className="mt-8 grid grid-cols-3 gap-x-4 gap-y-8">
                     {renderSkeletons()}
@@ -45,7 +46,6 @@ const CourseList: React.FC = () => {
                         {data.courses.map((item: CourseCardProps, idx: number) => (
                             <CourseCard course={item} key={idx} />
                         ))}
-                        { }
                     </div>
                     <div className="mt-6">
                         <CustomPagination currentPage={currentPage} totalPages={data.totalPage} onPageChange={handlePageChange} />

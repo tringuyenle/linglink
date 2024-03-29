@@ -279,7 +279,6 @@ import { Textarea } from "../ui/textarea";
 // }
 
 const Header = ({ data, deletepost }: { data: any, deletepost: any }) => {
-    console.log("data", data)
     const user = useAppSelector(state => state.auth.userinfor)
     const handleDeletePost = async () => {
         if (user._id === data.author._id) {
@@ -429,7 +428,6 @@ const Body = ({ content }: { content: any }) => {
 
 export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
     const user = useAppSelector(state => state.auth.userinfor)
-    console.log("user", user)
     const queryClient = useQueryClient();
     const [id] = useState<string>(data?.data?._id ?? "")
     const [reaction, setReaction] = useState<string>("")
@@ -440,7 +438,6 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
         queryKey: ['comments', id],
         queryFn: async () => {
             const response = await CommentService.getComments(data.data._id);
-            console.log(response)
             return response.data;
         },
         // keepPreviousData: true,
@@ -461,9 +458,7 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                 content: comment,
                 post: data.data._id,
             };
-            console.log(commentToCreate)
             const response = await CommentService.createComment(commentToCreate);
-            console.log('Comment đã được tạo thành công:', response);
             setNumComments(numcomments + 1)
             setComment("")
             queryClient.invalidateQueries({ queryKey: ['comments', id] });
@@ -499,7 +494,6 @@ export const Post = ({ data, deletepost }: { data: any, deletepost: any }) => {
                 }
             }
             const response = await ReactionService.reactionPost(type, id);
-            console.log('Reaction đã được tạo thành công:', response);
             // queryClient.invalidateQueries({ queryKey: ['reactions', id] });
         } catch (error: any) {
             console.error('Failed to reaction:', error.message);

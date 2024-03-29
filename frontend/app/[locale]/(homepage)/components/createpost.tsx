@@ -63,48 +63,11 @@ import 'react-h5-audio-player/lib/styles.css';
 import { PostService } from "@/app/services";
 import { Icons } from "@/components/icons/icons";
 import { useAppSelector } from "@/app/redux/store";
-// interface FormValues {
-//     topic: string;
-//     content: string;
-//     question: string;
-//     answers: string[];
-// }
+import { uploadFile } from "@/utils";
 
 export default function CreatePost({ add }: { add: any }) {
     const user = useAppSelector(state=>state.auth.userinfor)
-    // const formik = useFormik({
-    //     initialValues: {
-    //         topic: '',
-    //         content: '',
-    //         question: '',
-    //         answers: [],
-    //     },
-    //     validate: (values: FormValues) => {
-    //         const errors: Partial<FormValues> = {};
 
-    //         if (!values.topic) {
-    //             errors.topic = 'Chủ đề không được bỏ trống';
-    //         }
-
-    //         if (!values.content) {
-    //             errors.content = 'Nội dung không được bỏ trống';
-    //         }
-
-    //         if (values.answers && values.answers.length > 0 && !values.question) {
-    //             errors.question = 'Câu hỏi không được bỏ trống';
-    //         }
-
-    //         if (values.question && (!values.answers || values.answers.length === 0)) {
-    //             errors.answers = ['Ít nhất một câu trả lời'];
-    //         }
-
-    //         return errors;
-    //     },
-    //     onSubmit: (values: FormValues) => {
-    //         // Xử lý logic khi submit form
-    //         console.log('Submitted values:', values);
-    //     },
-    // });
     const [input, setInput] = useState<string>('')
     const onEmojiClick = (emojiObject: any, event: any) => {
         setInput((prevInput) => prevInput + emojiObject.emoji);
@@ -183,20 +146,6 @@ export default function CreatePost({ add }: { add: any }) {
         setKey(null)
         setPreviewQuestion(null)
     }
-    const uploadFile = async (file: any) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        let uploadPreset = process.env.NEXT_PUBLIC_UPLOAD_PRESET;
-        if (uploadPreset === undefined) uploadPreset = ""
-        formData.append('upload_preset', uploadPreset);
-
-        const response = await axios.post(
-            `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUD_NAME}/auto/upload`,
-            formData
-        );
-
-        return response.data.secure_url;
-    }
     const createPost = async () => {
         try {
             setIsLoading(true)
@@ -211,8 +160,6 @@ export default function CreatePost({ add }: { add: any }) {
                 audioUploadPromise
             ]);
 
-            console.log('Uploaded Image URLs:', uploadedImages);
-            console.log('Uploaded Audio URL:', audioUrl);
             const updatedPreviewQuestion = { ...previewquestion, audio_url: audioUrl };
 
             const postreq = {
@@ -237,7 +184,6 @@ export default function CreatePost({ add }: { add: any }) {
                 const newdata = {
                     data: result.data
                 }
-                console.log("Data", newdata)
                 add(newdata)
                 toast.success("Thêm bài viết thành công")
                 clearInput()
@@ -257,7 +203,6 @@ export default function CreatePost({ add }: { add: any }) {
                 key: key,
                 audio_url: audioFile
             }
-            console.log(questionreq.answers)
             if (questionreq.content !== "" && !questionreq.answers.includes("")) setPreviewQuestion(questionreq)
             else toast.warn("Câu hỏi không hợp lệ")
             // setQuestion('')
@@ -382,7 +327,6 @@ export default function CreatePost({ add }: { add: any }) {
                                                             </Label>
                                                             <AudioPlayer
                                                                 autoPlay={false}
-                                                                // onPlay={(e: any) => console.log("onPlay")}
                                                                 src={URL.createObjectURL(audioFile)} className="w-full my-2" />
                                                             <Button onClick={() => { setAudio(""); setAudioFile(null) }}>Xóa</Button>
                                                         </div>
