@@ -1,17 +1,17 @@
-import { IsNotEmpty } from "class-validator";
-import { CreateQuestionDTO } from "../../questions/dto/createQuestion.dto";
+import { IsNotEmpty } from 'class-validator'
+import { CreateQuestionDTO } from '../../questions/dto/createQuestion.dto'
 
 export class CreatePostDTO {
-    topicID: string;
+  topicID: string
 
-    @IsNotEmpty()
-    content: string;
+  @IsNotEmpty()
+  content: string
 
-    question: string;
-    
-    newQuestion: CreateQuestionDTO;
+  question: string
 
-    imgs_url: [string];
+  newQuestion: CreateQuestionDTO
 
-    audio_url: string;
+  imgs_url: [string]
+
+  audio_url: string
 }

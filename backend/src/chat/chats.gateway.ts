@@ -1,54 +1,51 @@
-import { Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common'
 import {
   OnGatewayInit,
   WebSocketGateway,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  WebSocketServer,
-} from '@nestjs/websockets';
-import { Namespace } from 'socket.io';
-import { ChatsService } from './chats.service';
-import { SocketWithAuth } from './types';
+  WebSocketServer
+} from '@nestjs/websockets'
+import { Namespace } from 'socket.io'
+import { ChatsService } from './chats.service'
+import { SocketWithAuth } from './types'
 
-@WebSocketGateway({namespace: 'chats',})
+@WebSocketGateway({ namespace: 'chats' })
+export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  private readonly logger = new Logger(ChatsGateway.name)
+  constructor(private readonly chatsService: ChatsService) {}
 
-export class ChatsGateway
-implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
-private readonly logger = new Logger(ChatsGateway.name);
-constructor(private readonly chatsService: ChatsService) {}
+  @WebSocketServer() io: Namespace
 
-@WebSocketServer() io: Namespace;
+  // Gateway initialized (provided in module and instantiated)
+  afterInit(): void {
+    this.logger.log(`Websocket Gateway initialized.`)
+  }
 
-// Gateway initialized (provided in module and instantiated)
-afterInit(): void {
-    this.logger.log(`Websocket Gateway initialized.`);
-}
-
-handleConnection(client: SocketWithAuth) {
-    const sockets = this.io.sockets;
+  handleConnection(client: SocketWithAuth) {
+    const sockets = this.io.sockets
 
     this.logger.debug(
-        `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
-    );
+      `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`
+    )
     // console.log(client);
 
-    this.logger.log(`WS Client with id: ${client.id} connected!`);
-    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+    this.logger.log(`WS Client with id: ${client.id} connected!`)
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`)
 
-    this.io.emit('hello', `from ${client.id}`);
-}
+    this.io.emit('hello', `from ${client.id}`)
+  }
 
-handleDisconnect(client: SocketWithAuth) {
-    const sockets = this.io.sockets;
+  handleDisconnect(client: SocketWithAuth) {
+    const sockets = this.io.sockets
 
     this.logger.debug(
-    `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`,
-    );
+      `Socket connected with userID: ${client.userID}, chatID: ${client.chatID}, and name: "${client.name}"`
+    )
 
-    this.logger.log(`Disconnected socket id: ${client.id}`);
-    this.logger.debug(`Number of connected sockets: ${sockets.size}`);
+    this.logger.log(`Disconnected socket id: ${client.id}`)
+    this.logger.debug(`Number of connected sockets: ${sockets.size}`)
 
     // TODO - remove client from chat and send `participants_updated` event to remaining clients
-}
+  }
 }

@@ -17,6 +17,9 @@ export class Flashcard extends Document {
 
     @Prop({ type: Types.ObjectId, ref: 'User' })
     author: Types.ObjectId;
+
+    @Prop()
+    status: string;
 }
 
 export const FlashcardSchema = SchemaFactory.createForClass(Flashcard);

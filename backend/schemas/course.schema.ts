@@ -32,6 +32,21 @@ export class Course extends Document {
 
   @Prop()
   downrate?: number;
+
+  @Prop()
+  type?: string[];
+
+  @Prop()
+  descrip?: string;
+
+  @Prop()
+  target?: string;
+
+  @Prop()
+  information?: string;
+
+  @Prop()
+  contact?: string;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
@@ -47,5 +62,10 @@ export type CourseProps = {
     price: number;
     downprice?: number;
     downrate?: number;
+    type?: string[];
+    descrip?: string;
+    target?: string;
+    information?: string;
+    contact?: string;
   };
   

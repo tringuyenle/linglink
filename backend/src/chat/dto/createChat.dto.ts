@@ -1,11 +1,11 @@
-import { User } from "schemas/user.schema";
+import { User } from 'schemas/user.schema'
 
 export class CreateChatDTO {
-    content: string;
-    
-    imgs_url: [string];
+  content: string
 
-    from: User;
+  imgs_url: [string]
 
-    to: User;
+  from: User
+
+  to: User
 }
