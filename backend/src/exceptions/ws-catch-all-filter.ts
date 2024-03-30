@@ -23,6 +23,6 @@ export class WsCatchAllFilter implements ExceptionFilter {
     }
 
     const wsException = new WsUnknownException(exception.message);
-    socket.emit('exception', wsException.getError());
+        socket.emit('exception', wsException.getError());
     }
 }

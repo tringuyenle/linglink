@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, UseFilters } from '@nestjs/common'
 import {
   OnGatewayInit,
   WebSocketGateway,
@@ -6,14 +6,19 @@ import {
   OnGatewayDisconnect,
   WebSocketServer,
   SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
+import { Message } from 'schemas/message.schema';
 import { Namespace } from 'socket.io';
+import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
 import { ChatsService } from './chats.service';
+import { CreateMessageDTO } from './dto/createMessage.dto';
 import { SocketWithAuth } from './types';
 
+@UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({namespace: 'chats',})
-
 export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly logger = new Logger(ChatsGateway.name);
     constructor(private readonly chatsService: ChatsService) {}
@@ -36,7 +41,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
         await client.join(client.chatRoomId);
-        this.io.to(client.chatRoomId).emit('start-chat', `from ${client.from_user.name}`);
+        this.io.to(client.chatRoomId).emit('enter-chat-room', `from ${client.from_user.name}`);
     }
 
     handleDisconnect(client: SocketWithAuth) {
@@ -55,5 +60,24 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     @SubscribeMessage('test')
     async test() {
         throw new WsBadRequestException('error message');
+    }
+
+    @SubscribeMessage('chat')
+    async nominate(
+        @MessageBody() message: CreateMessageDTO,
+        @ConnectedSocket() client: SocketWithAuth,
+    ): Promise<void> {
+        this.logger.debug(
+          `Attempting to add chat from user ${client.from_user._id} to room ${client.chatRoomId}\n${message.content}`,
+        );
+
+        const newMessage = {
+            content: message.content,
+            imgs_url: message.imgs_url,
+            from: client.from_user,
+            chatRoomId: client.chatRoomId
+        }
+    
+        this.io.to(client.chatRoomId).emit('chat', newMessage);
     }
 }
