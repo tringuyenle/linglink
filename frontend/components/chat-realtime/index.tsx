@@ -39,8 +39,7 @@ export default function ChatWithAnother() {
     const [question, setQuestion] = useState<string>("")
     const [frend, setFrend] = useState<string>("")
     const [mes, setMes] = useState<Message[]>([]);
-    const [ctoken, setCtoken] = useState<string>("");
-    const [answer, setAnswer] = useState<string>("")
+    const [socket, setSocket] = useState<null | Socket>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [myFile, setMyFile] = useState([]);
     const user = useAppSelector(state => state.auth.userinfor)
@@ -87,7 +86,7 @@ export default function ChatWithAnother() {
 
     const connectFrend = async () => {
         console.log("is open");
-        const createSocketWithHandlers = async () : Promise<Socket> => {
+        const createSocketWithHandlers = async () => {
             const axiosInstance = createAxiosInstance();
             const response: AxiosResponse<{token: string, chatRoom: {_id: string,
                 chatRoomId: string,
@@ -100,22 +99,33 @@ export default function ChatWithAnother() {
             }
             )
             console.log("get room jwt success");
-            setCtoken(response.data.token);
             console.log(`Creating socket with accessToken: ${response.data.token}`);
-            const socket = io("http://localhost:3000/chats", {
+            const sk = io("http://localhost:3000/chats", {
                 auth: {
-                    token: ctoken,
+                    token: response.data.token,
                 },
                 transports: ['websocket', 'polling'],
             });
         
-            socket.on('enter-chat-room', () => {
+            sk.on('enter-chat-room', () => {
                 console.log(
-                    `Connected with socket ID: ${socket.id}. UserID: will join room`
+                    `Connected with socket ID: ${sk.id}. UserID: will join room`
                 );
             });
-    
-            return socket;
+
+            sk.on('chat', (data) => {
+                console.log(data.content)
+                setMes(prevMes => [
+                    {
+                        author: { name: data.from.name, avatar: data.from.avatar },
+                        content: data.content,
+                        image: myFile.length > 0 ? URL.createObjectURL(myFile[0]) : undefined,
+                    },
+                    ...prevMes
+                ]);
+            })
+
+            setSocket(sk);
         }
 
         createSocketWithHandlers();
@@ -125,14 +135,8 @@ export default function ChatWithAnother() {
         // For text-and-image input, use the gemini-pro-vision model
         setIsLoading(true);
 
-        const socket = io("http://localhost:3000/chats", {
-            auth: {
-                token: ctoken,
-            },
-            transports: ['websocket', 'polling'],
-        });
-
-        socket.emit('chat', {content: question});
+        if (socket) socket.emit('chat', {content: question});
+        else console.log("socket not found");
 
         const imageParts = await Promise.all(
             myFile.map(async (file) => {
@@ -143,28 +147,7 @@ export default function ChatWithAnother() {
         let text = '';
         setIsLoading(false);
         setQuestion("");
-        setMyFile([])
-        socket.on('chat', (data) => {
-            if (data.from.name != user.name) {
-                setMes(prevMes => [
-                    ...prevMes,
-                    {
-                        author: { name: data.from.name, avatar: data.from.avatar },
-                        content: data.content,
-                        image: myFile.length > 0 ? URL.createObjectURL(myFile[0]) : undefined,
-                    },
-                ]);
-            }
-        })
-
-        // setMes(prevMes => [
-        //     ...prevMes,
-        //     {
-        //         author: { name: user.name, avatar: user.avatar },
-        //         content: question,
-        //         image: myFile.length > 0 ? URL.createObjectURL(myFile[0]) : undefined,
-        //     },
-        // ]);
+        setMyFile([]);
     }
 
     return (
@@ -186,7 +169,7 @@ export default function ChatWithAnother() {
                                 }} />
                             </SheetDescription>
                         </SheetHeader>
-                        <div className="rounded-md border min-h-[200px] border-black p-4 my-2 bg-slate-50 overflow-y-auto max-h-[300px]">
+                        <div className="rounded-md border min-h-[200px] border-black p-4 my-2 bg-slate-50 overflow-y-auto flex flex-col-reverse max-h-[300px]">
                             {mes.map((message: any, index: any) => (
                                 <div key={index} className={`mt-2 mb-8`}>
                                     <div className="flex flex-row gap-4 items-center">
