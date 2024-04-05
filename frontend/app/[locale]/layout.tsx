@@ -1,33 +1,34 @@
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation';
-import { Inter as FontSans } from "next/font/google"
-import { cn } from "@/lib/utils"
-import TanstackProvider from '@/components/providers/TanstackProvider'
-import { StoreProvider } from '../redux/StoreProvider';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { NextIntlClientProvider } from 'next-intl';
-import '../globals.css'
-import { Suspense } from 'react';
-import Loading from './loading';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { Inter as FontSans } from "next/font/google";
+import { cn } from "@/lib/utils";
+import TanstackProvider from "@/components/providers/TanstackProvider";
+import { StoreProvider } from "../redux/StoreProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { NextIntlClientProvider } from "next-intl";
+import "../globals.css";
+import { Suspense } from "react";
+import Loading from "./loading";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
-})
+});
 
-const locales = ['en', 'vi'];
+const locales = ["en", "vi"];
 
 export const metadata: Metadata = {
-  title: 'Ling Link',
-  description: 'Ứng dụng học tiếng Anh',
-}
+  title: "Ling Link",
+  description: "Ứng dụng học tiếng Anh",
+};
 
 export default async function RootLayout({
-  children, params: { locale }
+  children,
+  params: { locale },
 }: {
-  children: React.ReactNode,
-  params: any
+  children: React.ReactNode;
+  params: any;
 }) {
   if (!locales.includes(locale as any)) notFound();
   let messages;
@@ -38,8 +39,7 @@ export default async function RootLayout({
   }
   return (
     <html lang={locale}>
-      <head >
-      </head>
+      <head></head>
       <body
         className={cn(
           "min-h-screen bg-secondary font-sans antialiased",
@@ -61,12 +61,13 @@ export default async function RootLayout({
                   pauseOnFocusLoss
                   draggable
                   pauseOnHover
-                  theme="light" />
+                  theme="light"
+                />
               </Suspense>
             </NextIntlClientProvider>
           </TanstackProvider>
         </StoreProvider>
       </body>
-    </html >
-  )
+    </html>
+  );
 }
