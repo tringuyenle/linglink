@@ -24,6 +24,7 @@ import { io, Socket } from 'socket.io-client';
 import { useCookies } from 'next-client-cookies';
 import axios, { AxiosResponse } from 'axios';
 import createAxiosInstance from '@/app/utils/axiosInstance';
+import { getSocket } from '@/app/services/socketService';
 
 interface Message {
     author: {
@@ -87,25 +88,27 @@ export default function ChatWithAnother() {
     const connectFrend = async () => {
         console.log("is open");
         const createSocketWithHandlers = async () => {
-            const axiosInstance = createAxiosInstance();
-            const response: AxiosResponse<{token: string, chatRoom: {_id: string,
-                chatRoomId: string,
-                name: string,
-                participant: string[]}}> = await axiosInstance.post(
-                `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-chat-room`,
-                {
-                    email: frend,
-                    name: "test"
-            }
-            )
+            // const axiosInstance = createAxiosInstance();
+            // const response: AxiosResponse<{token: string, chatRoom: {_id: string,
+            //     chatRoomId: string,
+            //     name: string,
+            //     participant: string[]}}> = await axiosInstance.post(
+            //     `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-chat-room`,
+            //     {
+            //         email: frend,
+            //         name: "test"
+            // }
+            // )
             console.log("get room jwt success");
-            console.log(`Creating socket with accessToken: ${response.data.token}`);
-            const sk = io("http://localhost:3000/chats", {
-                auth: {
-                    token: response.data.token,
-                },
-                transports: ['websocket', 'polling'],
-            });
+            // const sk = io("http://localhost:3000/chats", {
+            //     auth: {
+            //         token: response.data.token,
+            //     },
+            //     transports: ['websocket', 'polling'],
+            // });
+
+            const sk = getSocket();
+            console.log(sk.id);
         
             sk.on('enter-chat-room', () => {
                 console.log(

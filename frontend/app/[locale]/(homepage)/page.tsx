@@ -16,6 +16,8 @@ import { Icons } from "@/components/icons/icons";
 import { toast } from "react-toastify";
 import CreatePost from "./components/createpost";
 import createAxiosInstance from "@/app/utils/axiosInstance";
+import { AxiosResponse } from "axios";
+import { connectSocket } from "@/app/services/socketService";
 
 const TopicSelect: React.FC = () => {
   return (
@@ -72,7 +74,7 @@ const Filter: React.FC = () => {
   );
 };
 
-const Home: React.FC = () => {
+const Home: React.FC = async () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [end, setEnd] = useState<boolean>(false);
@@ -81,6 +83,7 @@ const Home: React.FC = () => {
     setPosts((prev) => [post, ...prev]);
   };
   const axiosJWT = createAxiosInstance();
+
   async function getPostByLastID() {
     try {
       if (!end) {
@@ -118,6 +121,8 @@ const Home: React.FC = () => {
   }
   useEffect(() => {
     getPostByLastID();
+    // create socket connection to server
+    connectSocket("lamdienchinh@gmail.com");
   }, []);
 
   const elRef = useCallback(

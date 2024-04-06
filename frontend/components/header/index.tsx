@@ -44,6 +44,7 @@ import { deleteCookie } from "cookies-next";
 import { deleteInfor } from "@/app/redux/slices/authSlice";
 import { useAppDispatch, useAppSelector } from "@/app/redux/store";
 import { toast } from "react-toastify";
+import { disconnectSocket } from "@/app/services/socketService";
 
 export default function Header() {
     const [isSticky, setIsSticky] = useState(false);
@@ -75,6 +76,7 @@ export default function Header() {
             dispatch(deleteInfor());
             deleteCookie("accessToken");
             deleteCookie("refreshToken");
+            disconnectSocket();
             toast.success("Đăng xuất thành công")
             router.push("/login")
         }
