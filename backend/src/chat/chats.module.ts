@@ -18,7 +18,7 @@ import { ChatRoomSchema } from 'schemas/chatroom.schema';
             {name: 'User', schema: UserSchema},
             {name: 'Message', schema: MessageSchema},
             {name: 'ChatRoom', schema: ChatRoomSchema},
-            { name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
+            {name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
         ]),
     ],
     providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway],

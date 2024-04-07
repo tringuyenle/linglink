@@ -33,26 +33,25 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         const sockets = this.io.sockets;
 
         this.logger.debug(
-            `Socket connected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
+            `Socket connected with userID: ${client.user._id}, and name: "${client.user.name}"`,
         );
-        // console.log(client);
 
         this.logger.log(`WS Client with id: ${client.id} connected!`);
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-        await client.join(client.chatRoomId);
-        this.io.to(client.chatRoomId).emit('enter-chat-room', `from ${client.from_user.name}`);
+        
+        this.io.emit('enter-chat-room', `from ${client.user.name}`);
     }
 
     handleDisconnect(client: SocketWithAuth) {
         const sockets = this.io.sockets;
 
         this.logger.debug(
-            `Socket disconnected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
+            `Socket disconnected with userID: ${client.user._id}, and name: "${client.user.name}"`,
         );
 
         this.logger.log(`Disconnected socket id: ${client.id}`);
-        this.logger.debug(`Number of connected sockets in chatroom ${client.chatRoomId} is: ${sockets.size}`);
+        this.logger.debug(`Number of connected sockets in system is: ${sockets.size}`);
 
         // TODO - remove client from chat and send `participants_updated` event to remaining clients
     }
@@ -62,22 +61,31 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         throw new WsBadRequestException('error message');
     }
 
+    @SubscribeMessage('start-chat')
+    async startchat(
+        @MessageBody() chatRoomID: string,
+        @ConnectedSocket() client: SocketWithAuth,
+    ) {
+        await client.join(chatRoomID);
+        throw new WsBadRequestException('error message');
+    }
+
     @SubscribeMessage('chat')
     async nominate(
         @MessageBody() message: CreateMessageDTO,
         @ConnectedSocket() client: SocketWithAuth,
     ): Promise<void> {
         this.logger.debug(
-          `Attempting to add chat from user ${client.from_user._id} to room ${client.chatRoomId}\n${message.content}`,
+          `Attempting to add chat from user ${client.user._id} to room ${message.chatRoomId}\n${message.content}`,
         );
 
         const newMessage = {
             content: message.content,
             imgs_url: message.imgs_url,
-            from: client.from_user,
-            chatRoomId: client.chatRoomId
+            from: client.user,
+            chatRoomId: message.chatRoomId
         }
     
-        this.io.to(client.chatRoomId).emit('chat', newMessage);
+        this.io.to(message.chatRoomId).emit('chat', newMessage);
     }
 }

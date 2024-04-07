@@ -42,6 +42,7 @@ export function Sidebar({ links, onClick }: SidebarProps) {
                 <span className="text-zinc-500 text-xs">
                   {link.messages[link.messages.length - 1].name.split(" ")[0]}:{" "}
                   {link.messages[link.messages.length - 1].message}
+                  aaaa
                 </span>
               )}
             </div>

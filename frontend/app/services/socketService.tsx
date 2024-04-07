@@ -8,19 +8,12 @@ let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 export async function connectSocket(email: string) {
     console.log(email);
     const axiosInstance = createAxiosInstance();
-    const response: AxiosResponse<{token: string, chatRoom: {_id: string,
-        chatRoomId: string,
-        name: string,
-        participant: string[]}}> = await axiosInstance.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-chat-room`,
-        {
-            email: email,
-            name: "test"
-        }
-      )
+    const response: AxiosResponse<any> = await axiosInstance.get(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-socket-token`
+    )
     socket = io("http://localhost:3000/chats", {
         auth: {
-            token: response.data.token,
+            token: response.data,
         },
         transports: ['websocket', 'polling'],
     });

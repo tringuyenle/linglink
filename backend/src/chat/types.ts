@@ -9,35 +9,9 @@ export type CreateChatFields = {
   name: string
 }
 
-export type JoinChatFields = {
-  chatID: string
-  name: string
-}
-
-export type RejoinChatFields = {
-  chatID: string
-  userID: string
-  name: string
-}
-
-// repository types
-export type CreateChatData = {
-  chatID: string
-  topic: string
-  votesPerVoter: number
-  userID: string
-}
-
-export type AddParticipantData = {
-  chatID: string
-  userID: string
-  name: string
-}
-
 // guard types
 type AuthPayload = {
-  chatRoomId: string;
-  from_user: User;
+  user: User;
 };
 
 export type RequestWithAuth = Request & AuthPayload
