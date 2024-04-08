@@ -1,3 +1,4 @@
+import { ChatService } from "./chatService";
 import { CommentService } from "./commentService";
 import { CourseService } from "./courseService";
 import { FlashcardService } from "./flashcardService";
@@ -10,4 +11,5 @@ export {
   FlashcardService,
   PostService,
   ReactionService,
+  ChatService
 };

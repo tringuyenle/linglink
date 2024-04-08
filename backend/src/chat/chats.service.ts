@@ -44,9 +44,15 @@ export class ChatsService {
         return token;
     }
 
-    getChatRoom(user: User) {
-        const listChatRooms = this.chatRoomModel.find({ participant: { $in: [user._id] } }).populate('participant').exec();
+    async getChatRoom(user: User) {
+        const listChatRooms = await this.chatRoomModel.find({ participant: { $in: [user._id] } }).populate('participant').exec();
 
-        return listChatRooms;
+        return listChatRooms.map(chatRoom => {
+            // Filter the participant array to remove the current user
+            const friends = (chatRoom.participant[0]._id.toString() !== user._id.toString()) ? chatRoom.participant[0] : chatRoom.participant[1];
+
+            // Return a new object with the transformed participant array
+            return { ...chatRoom.toObject(), friends };
+        });
     }
 }

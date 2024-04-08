@@ -1,11 +1,11 @@
-import { Message, UserData } from "@/app/constants/data";
+import { Message, User, UserData } from "@/app/constants/data";
 import ChatTopbar from "./chat-topbar";
 import { ChatList } from "./chat-list";
 import React from "react";
 
 interface ChatProps {
   messages?: Message[];
-  selectedUser: UserData;
+  selectedUser: User;
   isMobile: boolean;
 }
 

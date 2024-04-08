@@ -61,7 +61,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         throw new WsBadRequestException('error message');
     }
 
-    @SubscribeMessage('start-chat')
+    @SubscribeMessage('join-room')
     async startchat(
         @MessageBody() chatRoomID: string,
         @ConnectedSocket() client: SocketWithAuth,

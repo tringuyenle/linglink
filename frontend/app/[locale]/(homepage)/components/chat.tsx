@@ -10,17 +10,33 @@ import {
 } from "@/components/ui/sheet";
 import chat from "@/app/assets/images/chat.png";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { Sidebar } from "@/components/chat/sidebar";
-import { userData } from "@/app/constants/data";
+import { Room, roomsData, userData } from "@/app/constants/data";
+import { ChatService } from "@/app/services";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 export default function Chat() {
   const [openFriend, setOpenFriend] = useState(false);
-  const handleChooseFriend = () => {
+  const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
+  const [rooms, setRooms] = useState(roomsData);
+  const handleChooseFriend = (room: Room) => {
     // Xử lý chọn user để chat ở đây
+    setSelectedRoom(room);
     setOpenFriend(false);
   };
+  
+  useEffect(() => {
+    // Lấy danh sách room chat
+    async function setChatRoom() {
+      const roomchats = await ChatService.getChatRoom();
+      setRooms(roomchats);
+      console.log(roomchats);
+    }
+    setChatRoom();
+  }, []);
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -47,21 +63,37 @@ export default function Chat() {
             />
           )}
           {openFriend && (
-            <Sidebar
-              links={userData.map((user) => ({
-                name: user.name,
-                messages: user.messages ?? [],
-                avatar: user.avatar,
-                variant: "grey",
-              }))}
-              onClick={handleChooseFriend}
-            />
+            <div className="relative group flex flex-col h-full gap-4 p-2 data-[collapsed=true]:p-2 ">
+              <nav className="grid gap-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 w-full">
+                {rooms.map((room, index) => (
+                  <div
+                    onClick={() => handleChooseFriend(room)}
+                    key={index}
+                    className="bg-gray-100 p-2 w-full rounded-lg cursor-pointer"
+                  >
+                    <Avatar className="flex justify-center items-center">
+                      <AvatarImage
+                        src={room.friends.avatar}
+                        alt={room.friends.avatar}
+                        width={6}
+                        height={6}
+                        className="w-10 h-10 "
+                      />
+                    </Avatar>
+                    <div className="flex flex-col w-full">
+                      <span>{room.friends.name}</span>
+                    </div>
+                  </div>
+                ))}
+              </nav>
+            </div>
           )}
           <div className="z-10 border rounded-lg max-w-5xl w-full h-full text-sm lg:flex">
-            {!openFriend && <ChatLayout />}
+            {!openFriend && <ChatLayout chatRoomId={selectedRoom.chatRoomId} name={selectedRoom.name} participant={selectedRoom.participant} friends={selectedRoom.friends}  />}
           </div>
         </div>
       </SheetContent>
     </Sheet>
   );
 }
+

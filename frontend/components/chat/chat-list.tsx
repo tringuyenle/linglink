@@ -1,4 +1,4 @@
-import { Message, UserData } from "@/app/constants/data";
+import { Message, User, UserData } from "@/app/constants/data";
 import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 interface ChatListProps {
   messages?: Message[];
-  selectedUser: UserData;
+  selectedUser: User;
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
 }

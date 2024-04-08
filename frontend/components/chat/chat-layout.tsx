@@ -1,10 +1,10 @@
 "use client";
 
-import { userData } from "@/app/constants/data";
+import { Room, userData } from "@/app/constants/data";
 import React, { useEffect, useState } from "react";
 import { Chat } from "./chat";
 
-export function ChatLayout({}) {
+export const ChatLayout: React.FC<Room> = ({ chatRoomId, name, participant, friends }) => {
   const [selectedUser] = React.useState(userData[0]);
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -28,7 +28,7 @@ export function ChatLayout({}) {
     <div className="scroll-auto">
       <Chat
         messages={selectedUser.messages}
-        selectedUser={selectedUser}
+        selectedUser={friends}
         isMobile={isMobile}
       />
     </div>
