@@ -27,7 +27,8 @@ export const ChatLayout: React.FC<Room> = ({ chatRoomId, name, participant, frie
   return (
     <div className="scroll-auto">
       <Chat
-        messages={selectedUser.messages}
+        chatRoomId = {chatRoomId}
+        messages={[]}
         selectedUser={friends}
         isMobile={isMobile}
       />

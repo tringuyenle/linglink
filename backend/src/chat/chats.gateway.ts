@@ -63,11 +63,13 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
 
     @SubscribeMessage('join-room')
     async startchat(
-        @MessageBody() chatRoomID: string,
+        @MessageBody() room: {chatRoomID: string},
         @ConnectedSocket() client: SocketWithAuth,
     ) {
-        await client.join(chatRoomID);
-        throw new WsBadRequestException('error message');
+        await client.join(room.chatRoomID);
+        this.logger.debug(
+            `user ${client.user._id} join to room ${room.chatRoomID}`,
+        );
     }
 
     @SubscribeMessage('chat')
@@ -86,6 +88,6 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
             chatRoomId: message.chatRoomId
         }
     
-        this.io.to(message.chatRoomId).emit('chat', newMessage);
+        this.io.to(message.chatRoomId).emit('getmessage', newMessage);
     }
 }

@@ -16,6 +16,7 @@ import { Sidebar } from "@/components/chat/sidebar";
 import { Room, roomsData, userData } from "@/app/constants/data";
 import { ChatService } from "@/app/services";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { getSocket } from "@/app/services/socketService";
 
 export default function Chat() {
   const [openFriend, setOpenFriend] = useState(false);
@@ -32,7 +33,11 @@ export default function Chat() {
     async function setChatRoom() {
       const roomchats = await ChatService.getChatRoom();
       setRooms(roomchats);
-      console.log(roomchats);
+      const sk = getSocket();
+      roomchats.forEach((element: Room) => {
+            console.log(element.chatRoomId);
+            sk.emit('join-room', { chatRoomID: element.chatRoomId });
+      });
     }
     setChatRoom();
   }, []);

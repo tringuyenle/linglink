@@ -9,6 +9,7 @@ export interface TokenPayload {
 export interface UserInfor {
     avatar: string,
     name: string,
+    email: string,
     _id: string,
 }
 
@@ -22,6 +23,7 @@ const initialState: IAuthState = {
     userinfor: {
         avatar: "",
         name: "",
+        email: "",
         _id: ""
     },
     accessToken: "",
@@ -43,6 +45,7 @@ export const authSlice = createSlice({
             state.userinfor = {
                 avatar: "",
                 name: "",
+                email: "",
                 _id: ""
             };
         },

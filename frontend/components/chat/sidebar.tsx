@@ -38,12 +38,12 @@ export function Sidebar({ links, onClick }: SidebarProps) {
             </Avatar>
             <div className="flex flex-col w-full">
               <span>{link.name}</span>
-              {link.messages.length > 0 && (
+              {/* {link.messages.length > 0 && (
                 <span className="text-zinc-500 text-xs">
                   {link.messages[link.messages.length - 1].name.split(" ")[0]}:{" "}
                   {link.messages[link.messages.length - 1].message}
                 </span>
-              )}
+              )} */}
             </div>
           </div>
         ))}
