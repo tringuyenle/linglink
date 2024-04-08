@@ -19,4 +19,10 @@ export class RequestAddFriendController {
     acceptRequest(@Req() req, @Body() requestDto: RequestDto) {
         return this.requestAddFriendService.acceptRequest(req.user, requestDto);
     }
+
+    @Post('deny')
+    @UseGuards(MyJwtGuard)
+    denyRequest(@Req() req, @Body() requestDto: RequestDto) {
+        return this.requestAddFriendService.denyRequest(req.user, requestDto);
+    }
 }
