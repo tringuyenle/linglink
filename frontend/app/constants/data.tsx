@@ -135,3 +135,10 @@ export interface Room {
   participant: User[],
   friends: User
 }
+
+export interface Request {
+  _id: string,
+  sender: User,
+  receiver: User,
+  status: string
+}

@@ -91,4 +91,8 @@ export class RequestAddFriendService {
         
         }
     }
+
+    getRequestList(user: User) {
+        return this.requestAddFriendModel.find({ receiver: user._id, status: 'PENDING' }, {createdAt: 0, updatedAt: 0, __v: 0}).populate('sender', '-role -createdAt -updatedAt -hashedPassword -__v');
+    }
 }

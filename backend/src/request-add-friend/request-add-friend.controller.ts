@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
 import { NewRequestDto } from './dto/newRequest.dto';
 import { RequestAddFriendService } from './request-add-friend.service';
@@ -24,5 +24,11 @@ export class RequestAddFriendController {
     @UseGuards(MyJwtGuard)
     denyRequest(@Req() req, @Body() requestDto: RequestDto) {
         return this.requestAddFriendService.denyRequest(req.user, requestDto);
+    }
+
+    @Get()
+    @UseGuards(MyJwtGuard)
+    getRequestList(@Req() req) {
+        return this.requestAddFriendService.getRequestList(req.user);
     }
 }
