@@ -33,7 +33,7 @@ require('dotenv').config();
     ReactionsModule,
     CourseModule,
     ChatsModule,
-    RequestAddFriendModule
+    RequestAddFriendModule,
     CalendarModule,
   ],
   controllers: [AppController],

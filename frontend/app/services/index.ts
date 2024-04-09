@@ -12,6 +12,6 @@ export {
   FlashcardService,
   PostService,
   ReactionService,
-  ChatService
+  ChatService,
   CalendarService,
 };

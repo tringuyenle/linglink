@@ -68,6 +68,7 @@
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
+    "@types/react-big-calendar": "^1.8.9",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
     "bufferutil": "^4.0.7",
