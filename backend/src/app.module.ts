@@ -1,21 +1,22 @@
-import { Module } from '@nestjs/common'
-import { AppController } from './app.controller'
-import { AppService } from './app.service'
-import { AuthModule } from './auth/auth.module'
-import { UserModule } from './user/user.module'
-import { MongooseModule } from '@nestjs/mongoose'
-import { PostsModule } from './posts/posts.module'
-import { TopicsModule } from './topics/topics.module'
-import { TagsModule } from './tags/tags.module'
-import { QuestionsModule } from './questions/questions.module'
-import { FlashcardListModule } from './flashcard-list/flashcard-list.module'
-import { FlashcardModule } from './flashcards/flashcards.module'
-import { CommentsModule } from './comments/comments.module'
-import { ReactionsModule } from './reactions/reactions.module'
-import { CourseModule } from './courses/courses.module'
-import { ChatsModule } from './chat/chats.module'
+import { Module } from '@nestjs/common';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { PostsModule } from './posts/posts.module';
+import { TopicsModule } from './topics/topics.module';
+import { TagsModule } from './tags/tags.module';
+import { QuestionsModule } from './questions/questions.module';
+import { FlashcardListModule } from './flashcard-list/flashcard-list.module';
+import { FlashcardModule } from './flashcards/flashcards.module';
+import { CommentsModule } from './comments/comments.module';
+import { ReactionsModule } from './reactions/reactions.module';
+import { CourseModule } from './courses/courses.module';
+import { ChatsModule } from './chat/chats.module';
+import { CalendarModule } from './calendar/calendar.module';
 import { RequestAddFriendModule } from './request-add-friend/request-add-friend.module';
-require('dotenv').config()
+require('dotenv').config();
 
 @Module({
   imports: [
@@ -33,8 +34,9 @@ require('dotenv').config()
     CourseModule,
     ChatsModule,
     RequestAddFriendModule
+    CalendarModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule {}

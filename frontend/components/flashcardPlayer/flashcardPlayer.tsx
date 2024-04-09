@@ -12,7 +12,7 @@ import "swiper/css/scrollbar";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const FlashcardPlayer = ({ flashcards }: { flashcards: any }) => {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const sliderRef = useRef<any>(null);
 
   const handlePrev = useCallback(() => {
@@ -30,6 +30,7 @@ export const FlashcardPlayer = ({ flashcards }: { flashcards: any }) => {
     queryClient.invalidateQueries({ queryKey: ["flashcardDetail"] });
     return result.data;
   };
+  console.log(flashcards);
   return (
     <div>
       <Swiper
@@ -39,7 +40,9 @@ export const FlashcardPlayer = ({ flashcards }: { flashcards: any }) => {
         slidesPerView={1}
         ref={sliderRef}
       >
-        {flashcards && flashcards.length > 0 ? (
+        {flashcards &&
+        flashcards.filter((item: any) => item.status !== "learned")
+          .length > 0 ? (
           flashcards
             .filter((item: any) => item.status !== "learned")
             .map((item: any, index: any) => {
@@ -70,19 +73,21 @@ export const FlashcardPlayer = ({ flashcards }: { flashcards: any }) => {
               );
             })
         ) : (
-          <SwiperSlide>
-            <div className="">Chưa tạo flashcard, nhấn + để tạo</div>
-          </SwiperSlide>
+          <div className="">Chưa tạo flashcard, hãy tạo flashcard để ôn tập từ vựng</div>
         )}
       </Swiper>
-      <div className="flex justify-end gap-2 mt-2">
-        <Button className="" onClick={handlePrev}>
-          <FaArrowLeft />
-        </Button>
-        <Button className="" onClick={handleNext}>
-          <FaArrowRight />
-        </Button>
-      </div>
+      {flashcards &&
+        flashcards.filter((item: any) => item.status !== "learned")
+          .length > 0 && (
+          <div className="flex justify-end gap-2 mt-2">
+            <Button className="" onClick={handlePrev}>
+              <FaArrowLeft />
+            </Button>
+            <Button className="" onClick={handleNext}>
+              <FaArrowRight />
+            </Button>
+          </div>
+        )}
     </div>
   );
 };

@@ -9,7 +9,7 @@ import Image from "next/image"
 export default function LoginIn() {
     return (
         <>
-            <div className="container relative hidden h-[800px] bg-background flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
+            <div className="container relative hidden h-screen bg-background flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
                 <div className="relative hidden h-full flex-col bg-muted p-10 text-white dark:border-r lg:flex">
                     <div className="absolute inset-0 bg-[#5f99e4]" />
                     <div className="relative z-20 flex text-center justify-center w-full items-center text-[60px] gap-4 font-bold text-white">
