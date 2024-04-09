@@ -1,13 +1,13 @@
 import React from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
-import { UserData } from "@/app/constants/data";
+import { User, UserData } from "@/app/constants/data";
 import { Info, Phone, Video } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "../ui/button";
 
 interface ChatTopbarProps {
-  selectedUser: UserData;
+  selectedUser: User;
 }
 
 export const TopbarIcons = [{ icon: Phone }, { icon: Video }, { icon: Info }];

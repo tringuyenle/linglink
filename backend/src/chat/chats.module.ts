@@ -11,6 +11,7 @@ import { ReserPasswordTokenSchema } from 'schemas/reset-password-token.schema';
 import { UserSchema } from 'schemas/user.schema';
 import { ChatsGateway } from './chats.gateway';
 import { ChatRoomSchema } from 'schemas/chatroom.schema';
+import { MessageService } from 'src/message/message.service';
 
 @Module({
     imports: [
@@ -18,10 +19,10 @@ import { ChatRoomSchema } from 'schemas/chatroom.schema';
             {name: 'User', schema: UserSchema},
             {name: 'Message', schema: MessageSchema},
             {name: 'ChatRoom', schema: ChatRoomSchema},
-            { name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
+            {name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
         ]),
     ],
-    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway],
+    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway, MessageService],
     controllers: [ChatsController],
 })
 export class ChatsModule {}

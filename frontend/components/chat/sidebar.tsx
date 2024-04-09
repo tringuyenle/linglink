@@ -14,7 +14,7 @@ interface SidebarProps {
     avatar: string;
     variant: "grey" | "ghost";
   }[];
-  onClick?: () => void;
+  onClick?: (Room: any) => void;
 }
 
 export function Sidebar({ links, onClick }: SidebarProps) {
@@ -23,7 +23,7 @@ export function Sidebar({ links, onClick }: SidebarProps) {
       <nav className="grid gap-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2 w-full">
         {links.map((link, index) => (
           <div
-            onClick={onClick}
+            onClick={(link) => onClick && onClick(link)}
             key={index}
             className="bg-gray-100 p-2 w-full rounded-lg cursor-pointer"
           >
@@ -38,12 +38,12 @@ export function Sidebar({ links, onClick }: SidebarProps) {
             </Avatar>
             <div className="flex flex-col w-full">
               <span>{link.name}</span>
-              {link.messages.length > 0 && (
+              {/* {link.messages.length > 0 && (
                 <span className="text-zinc-500 text-xs">
                   {link.messages[link.messages.length - 1].name.split(" ")[0]}:{" "}
                   {link.messages[link.messages.length - 1].message}
                 </span>
-              )}
+              )} */}
             </div>
           </div>
         ))}

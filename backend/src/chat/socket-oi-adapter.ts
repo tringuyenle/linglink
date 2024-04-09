@@ -54,8 +54,7 @@ export class SocketIOAdapter extends IoAdapter {
             const payload = await jwtService.verifyAsync(token, {
                 secret: this.configService.get('JWT_SOCKET_SECRET'),
             });
-            socket.from_user = payload.from_user;
-            socket.chatRoomId = payload.chatRoomId;
+            socket.user = payload.user;
         next();
         } catch {
             next(new Error('FORBIDDEN'));

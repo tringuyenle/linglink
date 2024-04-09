@@ -16,6 +16,7 @@ import { Message, loggedInUserData } from "@/app/constants/data";
 import { Textarea } from "../ui/textarea";
 import { EmojiPicker } from "./emoji-picker";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { useAppSelector } from "@/app/redux/store";
 
 interface ChatBottombarProps {
   sendMessage: (newMessage: Message) => void;
@@ -35,12 +36,15 @@ export default function ChatBottombar({
     setMessage(event.target.value);
   };
 
+  const user = useAppSelector(state => state.auth.userinfor)
+
+
   const handleThumbsUp = () => {
     const newMessage: Message = {
-      id: message.length + 1,
-      name: loggedInUserData.name,
-      avatar: loggedInUserData.avatar,
-      message: "👍",
+      from: user,
+      content: "👍",
+      imgs_url: [],
+      chatRoomId: ""
     };
     sendMessage(newMessage);
     setMessage("");
@@ -49,10 +53,10 @@ export default function ChatBottombar({
   const handleSend = () => {
     if (message.trim()) {
       const newMessage: Message = {
-        id: message.length + 1,
-        name: loggedInUserData.name,
-        avatar: loggedInUserData.avatar,
-        message: message.trim(),
+        from: user,
+        content: message.trim(),
+        imgs_url: [],
+        chatRoomId: ""
       };
       sendMessage(newMessage);
       setMessage("");

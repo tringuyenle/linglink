@@ -1,4 +1,4 @@
-import { Logger } from '@nestjs/common'
+import { Logger, UseFilters } from '@nestjs/common'
 import {
   OnGatewayInit,
   WebSocketGateway,
@@ -6,17 +6,26 @@ import {
   OnGatewayDisconnect,
   WebSocketServer,
   SubscribeMessage,
+  MessageBody,
+  ConnectedSocket,
 } from '@nestjs/websockets';
+import { Message } from 'schemas/message.schema';
 import { Namespace } from 'socket.io';
+import { WsCatchAllFilter } from 'src/exceptions/ws-catch-all-filter';
 import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
 import { ChatsService } from './chats.service';
+import { CreateMessageDTO } from './dto/createMessage.dto';
 import { SocketWithAuth } from './types';
+import { MessageService } from 'src/message/message.service';
 
+@UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({namespace: 'chats',})
-
 export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly logger = new Logger(ChatsGateway.name);
-    constructor(private readonly chatsService: ChatsService) {}
+    constructor(
+        private readonly chatsService: ChatsService,
+        private readonly messageService: MessageService
+    ) {}
 
     @WebSocketServer() io: Namespace;
         // Gateway initialized (provided in module and instantiated)
@@ -28,26 +37,25 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         const sockets = this.io.sockets;
 
         this.logger.debug(
-            `Socket connected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
+            `Socket connected with userID: ${client.user._id}, and name: "${client.user.name}"`,
         );
-        // console.log(client);
 
         this.logger.log(`WS Client with id: ${client.id} connected!`);
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-        await client.join(client.chatRoomId);
-        this.io.to(client.chatRoomId).emit('start-chat', `from ${client.from_user.name}`);
+        
+        this.io.emit('enter-chat-room', `from ${client.user.name}`);
     }
 
     handleDisconnect(client: SocketWithAuth) {
         const sockets = this.io.sockets;
 
         this.logger.debug(
-            `Socket disconnected with userID: ${client.from_user._id}, chatID: ${client.chatRoomId}, and name: "${client.from_user.name}"`,
+            `Socket disconnected with userID: ${client.user._id}, and name: "${client.user.name}"`,
         );
 
         this.logger.log(`Disconnected socket id: ${client.id}`);
-        this.logger.debug(`Number of connected sockets in chatroom ${client.chatRoomId} is: ${sockets.size}`);
+        this.logger.debug(`Number of connected sockets in system is: ${sockets.size}`);
 
         // TODO - remove client from chat and send `participants_updated` event to remaining clients
     }
@@ -55,5 +63,36 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     @SubscribeMessage('test')
     async test() {
         throw new WsBadRequestException('error message');
+    }
+
+    @SubscribeMessage('join-room')
+    async startchat(
+        @MessageBody() room: {chatRoomID: string},
+        @ConnectedSocket() client: SocketWithAuth,
+    ) {
+        await client.join(room.chatRoomID);
+        this.logger.debug(
+            `user ${client.user._id} join to room ${room.chatRoomID}`,
+        );
+    }
+
+    @SubscribeMessage('chat')
+    async nominate(
+        @MessageBody() message: CreateMessageDTO,
+        @ConnectedSocket() client: SocketWithAuth,
+    ): Promise<void> {
+        this.logger.debug(
+          `Attempting to add chat from user ${client.user._id} to room ${message.chatRoomId}\n${message.content}`,
+        );
+
+        const newMessage = {
+            content: message.content,
+            imgs_url: message.imgs_url,
+            from: client.user,
+            chatRoomId: message.chatRoomId
+        }
+        
+        this.messageService.sendMessage(newMessage);
+        this.io.to(message.chatRoomId).emit('getmessage', newMessage);
     }
 }

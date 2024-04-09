@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { MyJwtGuard } from 'src/auth/guard/myjwt.guard';
 import { ChatsService } from './chats.service';
 import { CreateChatRoomDTO } from './dto/createChatRoom.dto';
@@ -10,9 +10,15 @@ export class ChatsController {
         private readonly chatsService: ChatsService,
     ) { }
 
-    @Post('create-chat-room')
+    @Get('create-socket-token')
     @UseGuards(MyJwtGuard)
-    async createChatRoom(@Req() req, @Body() createChatRoomDto: CreateChatRoomDTO) {
-        return await this.chatsService.createChatRoom(req.user, createChatRoomDto)
+    async createSocketToken(@Req() req) {
+        return await this.chatsService.createSocketToken(req.user)
+    }
+
+    @Get()
+    @UseGuards(MyJwtGuard)
+    async getChatRoom(@Req() req) {
+        return await this.chatsService.getChatRoom(req.user)
     }
 }

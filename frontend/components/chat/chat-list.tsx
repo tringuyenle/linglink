@@ -1,4 +1,4 @@
-import { Message, UserData } from "@/app/constants/data";
+import { Message, User, UserData } from "@/app/constants/data";
 import { cn } from "@/lib/utils";
 import React, { useRef } from "react";
 import { Avatar, AvatarImage } from "../ui/avatar";
@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 interface ChatListProps {
   messages?: Message[];
-  selectedUser: UserData;
+  selectedUser: User;
   sendMessage: (newMessage: Message) => void;
   isMobile: boolean;
 }
@@ -55,28 +55,28 @@ export function ChatList({
               }}
               className={cn(
                 "flex flex-col gap-2 p-4 whitespace-pre-wrap",
-                message.name !== selectedUser.name ? "items-end" : "items-start"
+                message.from.name !== selectedUser.name ? "items-end" : "items-start"
               )}
             >
               <div className="flex gap-3 items-center">
-                {message.name === selectedUser.name && (
+                {message.from.name === selectedUser.name && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                      src={message.avatar}
-                      alt={message.name}
+                      src={message.from.avatar}
+                      alt={message.from.name}
                       width={6}
                       height={6}
                     />
                   </Avatar>
                 )}
                 <span className=" bg-accent p-3 rounded-md max-w-xs">
-                  {message.message}
+                  {message.content}
                 </span>
-                {message.name !== selectedUser.name && (
+                {message.from.name !== selectedUser.name && (
                   <Avatar className="flex justify-center items-center">
                     <AvatarImage
-                      src={message.avatar}
-                      alt={message.name}
+                      src={message.from.avatar}
+                      alt={message.from.name}
                       width={6}
                       height={6}
                     />
