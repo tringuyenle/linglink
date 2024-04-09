@@ -1,9 +1,10 @@
 import { Message, User, UserData } from "@/app/constants/data";
 import ChatTopbar from "./chat-topbar";
 import { ChatList } from "./chat-list";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { getSocket } from "@/app/services/socketService";
 import { useAppSelector } from "@/app/redux/store";
+import createAxiosInstance from "@/app/utils/axiosInstance";
 
 interface ChatProps {
   messages?: Message[];
@@ -12,15 +13,31 @@ interface ChatProps {
   chatRoomId: string;
 }
 
-export function Chat({ messages, selectedUser, isMobile, chatRoomId }: ChatProps) {
-  const [messagesState, setMessages] = React.useState<Message[]>(
-    messages ?? []
-  );
+export function Chat({ selectedUser, isMobile, chatRoomId }: ChatProps) {
 
-  const user = useAppSelector(state => state.auth.userinfor)
   const sk = getSocket();
-
+  const [messagesState, setMessages] = React.useState<Message[]>([]);
+  const axiosInstance = createAxiosInstance();
+  
   useEffect(() => {
+    const getMessages = async () => {
+      try {
+        const response = await axiosInstance.get(`${process.env.NEXT_PUBLIC_BASE_URL}/message`, 
+        {
+          params: {
+            chatRoomId: chatRoomId,
+          },
+        });
+
+        setMessages(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    // get messages history for chat room
+    getMessages();
+
     sk.on('getmessage', (newMessage) => {
       if (newMessage.chatRoomId == chatRoomId) 
         setMessages((prevMessages) => [...prevMessages, newMessage]);

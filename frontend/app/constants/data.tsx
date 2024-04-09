@@ -90,7 +90,7 @@ export type LoggedInUserData = typeof loggedInUserData;
 
 export interface Message {
   content: string,
-  imgs_url: string,
+  imgs_url: string[],
   from: User,
   chatRoomId: string
 }

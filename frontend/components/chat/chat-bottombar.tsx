@@ -43,7 +43,7 @@ export default function ChatBottombar({
     const newMessage: Message = {
       from: user,
       content: "👍",
-      imgs_url: "",
+      imgs_url: [],
       chatRoomId: ""
     };
     sendMessage(newMessage);
@@ -55,7 +55,7 @@ export default function ChatBottombar({
       const newMessage: Message = {
         from: user,
         content: message.trim(),
-        imgs_url: "",
+        imgs_url: [],
         chatRoomId: ""
       };
       sendMessage(newMessage);

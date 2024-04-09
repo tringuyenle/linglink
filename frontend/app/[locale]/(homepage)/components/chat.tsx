@@ -19,7 +19,7 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { getSocket } from "@/app/services/socketService";
 
 export default function Chat() {
-  const [openFriend, setOpenFriend] = useState(false);
+  const [openFriend, setOpenFriend] = useState(true);
   const [selectedRoom, setSelectedRoom] = useState(roomsData[0]);
   const [rooms, setRooms] = useState(roomsData);
   const handleChooseFriend = (room: Room) => {

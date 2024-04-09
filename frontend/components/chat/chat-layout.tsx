@@ -1,12 +1,13 @@
 "use client";
 
-import { Room, userData } from "@/app/constants/data";
+import { Message, Room, userData } from "@/app/constants/data";
 import React, { useEffect, useState } from "react";
 import { Chat } from "./chat";
+import createAxiosInstance from "@/app/utils/axiosInstance";
 
 export const ChatLayout: React.FC<Room> = ({ chatRoomId, name, participant, friends }) => {
-  const [selectedUser] = React.useState(userData[0]);
   const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
     const checkScreenWidth = () => {
       setIsMobile(window.innerWidth <= 768);
@@ -28,7 +29,6 @@ export const ChatLayout: React.FC<Room> = ({ chatRoomId, name, participant, frie
     <div className="scroll-auto">
       <Chat
         chatRoomId = {chatRoomId}
-        messages={[]}
         selectedUser={friends}
         isMobile={isMobile}
       />

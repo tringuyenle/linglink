@@ -16,12 +16,16 @@ import { WsBadRequestException } from 'src/exceptions/ws-exceptions';
 import { ChatsService } from './chats.service';
 import { CreateMessageDTO } from './dto/createMessage.dto';
 import { SocketWithAuth } from './types';
+import { MessageService } from 'src/message/message.service';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({namespace: 'chats',})
 export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     private readonly logger = new Logger(ChatsGateway.name);
-    constructor(private readonly chatsService: ChatsService) {}
+    constructor(
+        private readonly chatsService: ChatsService,
+        private readonly messageService: MessageService
+    ) {}
 
     @WebSocketServer() io: Namespace;
         // Gateway initialized (provided in module and instantiated)
@@ -87,7 +91,8 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
             from: client.user,
             chatRoomId: message.chatRoomId
         }
-    
+        
+        this.messageService.sendMessage(newMessage);
         this.io.to(message.chatRoomId).emit('getmessage', newMessage);
     }
 }

@@ -55,4 +55,12 @@ export class ChatsService {
             return { ...chatRoom.toObject(), friends };
         });
     }
+
+    async checkChatRoom(user: User, chatRoomId: string) {
+        const chatRoom = await this.chatRoomModel.findOne({ chatRoomId: chatRoomId }).populate('participant').exec();
+        if (chatRoom.participant[0]._id.toString() === user._id.toString() 
+            || chatRoom.participant[1]._id.toString() === user._id.toString()) 
+            return chatRoom;
+        return null; 
+    }
 }

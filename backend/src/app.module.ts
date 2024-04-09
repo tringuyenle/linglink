@@ -16,6 +16,7 @@ import { CourseModule } from './courses/courses.module';
 import { ChatsModule } from './chat/chats.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { RequestAddFriendModule } from './request-add-friend/request-add-friend.module';
+import { MessageModule } from './message/message.module';
 require('dotenv').config();
 
 @Module({
@@ -35,6 +36,7 @@ require('dotenv').config();
     ChatsModule,
     RequestAddFriendModule,
     CalendarModule,
+    MessageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
