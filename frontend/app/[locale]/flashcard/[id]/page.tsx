@@ -59,7 +59,7 @@ const FlashcardThumbnail = ({
       flashcardList,
       data._id
     );
-    toast.success("Xóa flashcard thành công")
+    toast.success("Xóa flashcard thành công");
     queryClient.invalidateQueries({ queryKey: ["flashcardDetail"] });
   };
   return (
@@ -86,6 +86,49 @@ const FlashcardThumbnail = ({
         <button onClick={() => handleRemove()}>
           <MdDelete />
         </button>
+      </div>
+    </div>
+  );
+};
+
+const FlashcardShowAll = ({ data }: { data: any }) => {
+  const queryClient = useQueryClient();
+  const handleChangeState = async (course: any, status = "") => {
+    let result = await FlashcardService.changeStatus(course, status);
+    queryClient.invalidateQueries({ queryKey: ["flashcardDetail"] });
+    return result.data;
+  };
+  return (
+    <div className="w-full">
+      <h2 className="text-center uppercase mb-6 font-semibold">Danh sách Flashcard</h2>
+      <div className="flex flex-col gap-4">
+        {data.map((item: any, index: number) => (
+          <div
+            className="border rounded-lg p-3 flex flex-col gap-4"
+            key={index}
+          >
+            <div>{item.word}</div>
+            <div>Định nghĩa: {item.answer}</div>
+            {item?.status && item.status === "learned" ? (
+              <div className="p-2 rounded-full bg-green-200 w-fit text-[10px] font-bold text-green-500">
+                Đã thuộc
+              </div>
+            ) : (
+              <div className="p-2 rounded-full bg-red-200 w-fit text-[10px] font-bold text-red-500">
+                Chưa thuộc
+              </div>
+            )}
+            {item?.status && item.status === "learned" && (
+              <Button
+                onClick={() => handleChangeState(item)}
+                size="sm"
+                className="w-fit"
+              >
+                Chuyển về danh sách ôn tập
+              </Button>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -195,6 +238,16 @@ const FlashcardListDetail = ({
                     </Button>
                   </DialogClose>
                 </DialogFooter>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="my-4">Xem thống kê</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[600px] flex items-center justify-center">
+                <div className="w-full px-6">
+                  <FlashcardShowAll data={data?.flashcards} />
+                </div>
               </DialogContent>
             </Dialog>
           </div>

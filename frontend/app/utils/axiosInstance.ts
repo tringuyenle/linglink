@@ -32,8 +32,6 @@ const createAxiosInstance = (): AxiosInstance => {
             console.log(error)
             if (error?.response && error?.response?.status === 401) {
                 try {
-                    if (error.response.data) toast.error(error.response.data.message)
-                    else toast.error(error.message)
                     const refreshResponse = await instance.post(`${process.env.NEXT_PUBLIC_BASE_URL}/auth/refreshToken`, { token: refreshToken });
                     const newAccessToken = refreshResponse.data.accessToken;
 
@@ -52,7 +50,7 @@ const createAxiosInstance = (): AxiosInstance => {
                     throw refreshError
                 }
             }
-            if (error.response.data) toast.error(error.response.data.message)
+            if (error.response?.data) toast.error(error.response.data.message)
             else toast.error(error.message)
             throw error;
         }
