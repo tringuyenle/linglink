@@ -17,6 +17,7 @@ import { ChatsService } from './chats.service';
 import { CreateMessageDTO } from './dto/createMessage.dto';
 import { SocketWithAuth } from './types';
 import { MessageService } from 'src/message/message.service';
+import { RequestAddFriendService } from 'src/request-add-friend/request-add-friend.service';
 
 @UseFilters(new WsCatchAllFilter())
 @WebSocketGateway({namespace: 'chats',})
@@ -24,7 +25,8 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     private readonly logger = new Logger(ChatsGateway.name);
     constructor(
         private readonly chatsService: ChatsService,
-        private readonly messageService: MessageService
+        private readonly messageService: MessageService,
+        private readonly requestAddFriendService: RequestAddFriendService
     ) {}
 
     @WebSocketServer() io: Namespace;
@@ -43,7 +45,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         this.logger.log(`WS Client with id: ${client.id} connected!`);
         this.logger.debug(`Number of connected sockets: ${sockets.size}`);
 
-        
+        client.join(client.user._id.toString())
         this.io.emit('enter-chat-room', `from ${client.user.name}`);
     }
 
@@ -77,7 +79,7 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
     }
 
     @SubscribeMessage('chat')
-    async nominate(
+    async chat(
         @MessageBody() message: CreateMessageDTO,
         @ConnectedSocket() client: SocketWithAuth,
     ): Promise<void> {
@@ -94,5 +96,38 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
         
         this.messageService.sendMessage(newMessage);
         this.io.to(message.chatRoomId).emit('getmessage', newMessage);
+    }
+
+    @SubscribeMessage('request-add-friend')
+    async request_friend(
+        @MessageBody() request: {request: string, receiver: string, type: string},
+        @ConnectedSocket() client: SocketWithAuth,
+    ): Promise<void> {
+
+        if (request.type === 'ADD') {
+            const requestDto = {receiver: request.receiver}
+            const newRequest = await this.requestAddFriendService.createRequest(client.user, requestDto)
+            if (newRequest === 'PENDING') {
+                let receiver = client.user._id.toString()
+                this.io.to(receiver).emit('request', {type: 'NOTI', content: 'You have already sent request', receiver: receiver});
+            } else if (newRequest === 'DONE') {
+                let receiver = client.user._id.toString()
+                this.io.to(receiver).emit('request', {type: 'NOTI', content: 'You have already been friend with him', receiver: receiver});
+            } else
+                this.io.to(request.receiver).emit('request', {type: 'ADD', request: newRequest, receiver: request.receiver});
+        }
+        else if (request.type === 'ACCEPT') {
+            const requestDto = {request: request.request}
+            const newChatRoom = await this.requestAddFriendService.acceptRequest(client.user, requestDto)
+            this.io.to(request.request).emit('request', {type: 'ACCEPT', chatRoom: newChatRoom, receiver: request.receiver});
+        }
+        else if (request.type === 'DENY') {
+            const requestDto = {request: request.request}
+            await this.requestAddFriendService.denyRequest(client.user, requestDto)
+        }
+        this.logger.debug(
+            ` user ${client.user.name} sent ${request} to ${request.receiver}`,
+        );
+        // this.io.to(message.chatRoomId).emit('getmessage', newMessage);
     }
 }

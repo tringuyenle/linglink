@@ -17,6 +17,7 @@ import { Request, Room, User, roomsData, userData } from "@/app/constants/data";
 import { ChatService } from "@/app/services";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { getSocket } from "@/app/services/socketService";
+import { useAppSelector } from "@/app/redux/store";
 
 export default function Chat() {
   const [openFriend, setOpenFriend] = useState(true);
@@ -37,16 +38,37 @@ export default function Chat() {
     const result = await ChatService.searchFriendsByEmail(search);
     setSearchResult(result);
   };
+
+  const user = useAppSelector(state => state.auth.userinfor)
+  const sk = getSocket();
+  const handleRequestFriend = async (request: {type: string, request: string, receiver: string}) => {
+    sk.emit('request-add-friend', { type: request.type, request: request.request, receiver: request.receiver})
+    if (request.type === 'ADD') {
+      setSearchResult({ _id: "", email: "", name: "", avatar: ""})
+    } else if (request.type === 'DENY' || request.type === 'ACCEPT') {
+      console.log(request.receiver)
+      setFriendRequests(prevRequests => prevRequests.filter(req => req._id.toString() !== request.request))
+    }
+  }
   
   useEffect(() => {
     // Lấy danh sách room chat
     async function setChatRoom() {
+      
       const roomchats = await ChatService.getChatRoom();
       setRooms(roomchats);
-      const sk = getSocket();
-      roomchats.forEach((element: Room) => {
-            sk.emit('join-room', { chatRoomID: element.chatRoomId });
-      });
+      if (sk) {
+        roomchats.forEach((element: Room) => {
+          sk.emit('join-room', { chatRoomID: element.chatRoomId });
+        });
+        sk.on('request', (request) => {
+          if (request.receiver === user._id.toString()) {
+            if (request.type === 'ADD') {
+              setFriendRequests((prevRequests) => [...prevRequests, request.request]);
+            } else if (request.type === 'NOTI') console.log('here' + request.content)
+          }
+        });
+      }
     }
     async function getFriendRequests() {
       const requests = await ChatService.getListRequest();
@@ -54,7 +76,7 @@ export default function Chat() {
     }
     getFriendRequests();
     setChatRoom();
-  }, []);
+  }, [sk]);
 
   return (
     <Sheet>
@@ -106,7 +128,7 @@ export default function Chat() {
                   
                   <div className="flex flex-col w-full">
                     <span>{searchResult.name}</span>
-                    <button className="text-left" onClick={() => (ChatService.requestAddFriend(searchResult._id.toString()))}>Add Friend</button>
+                    <button className="text-left" onClick={() => (handleRequestFriend({type: 'ADD', receiver: searchResult._id.toString(), request: ""}))}>Add Friend</button>
                   </div>
                 </div>
               )}
@@ -120,8 +142,8 @@ export default function Chat() {
                     <div className="flex flex-col justify-center">
                       <p>{request.sender.name}</p>
                       <div className="flex gap-x-2">
-                        <button onClick={() => (ChatService.acceptFriend(request._id.toString()))}>Accept</button>
-                        <button onClick={() => (ChatService.denyFriend(request._id.toString()))}>Deny</button>
+                        <button onClick={() => (handleRequestFriend({type: 'ACCEPT', request: request._id.toString(), receiver: request.sender._id.toString()}))}>Accept</button>
+                        <button onClick={() => (handleRequestFriend({type: 'DENY', request: request._id.toString(), receiver: request.sender._id.toString()}))}>Deny</button>
                       </div>
                     </div>
                   </div>

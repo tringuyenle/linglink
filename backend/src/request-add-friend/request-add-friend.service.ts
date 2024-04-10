@@ -19,24 +19,29 @@ export class RequestAddFriendService {
     async createRequest(user: User, newRequestDto: NewRequestDto) {
         try {
             const receiver = await this.userService.getByUserId(newRequestDto.receiver)
-
+            const sender = await this.userService.getByUserId(user._id.toString());
             if (!receiver) {
                 throw new Error(`User with id ${newRequestDto.receiver} not found`);
             }
 
             // Check if a request with the same sender and receiver already exists
             const existingRequest = await this.requestAddFriendModel.findOne({
-                sender: user._id,
+                sender: sender._id,
                 receiver: receiver._id
             });
 
+            const anotheEexistingRequest = await this.requestAddFriendModel.findOne({
+                sender: receiver._id,
+                receiver: sender._id
+            });
+
             if (existingRequest) {
-                throw new Error('A request with the same sender and receiver already exists');
-            }
+                return existingRequest.status;
+            } else if (anotheEexistingRequest) return anotheEexistingRequest.status;
 
             const newRequest = await this.requestAddFriendModel.create({
                 receiver: receiver,
-                sender: user,
+                sender: sender,
                 status: 'PENDING'
             });
     
