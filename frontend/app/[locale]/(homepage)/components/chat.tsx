@@ -45,7 +45,6 @@ export default function Chat() {
       setRooms(roomchats);
       const sk = getSocket();
       roomchats.forEach((element: Room) => {
-            console.log(element.chatRoomId);
             sk.emit('join-room', { chatRoomID: element.chatRoomId });
       });
     }

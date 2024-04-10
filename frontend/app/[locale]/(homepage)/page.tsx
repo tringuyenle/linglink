@@ -122,7 +122,7 @@ const Home: React.FC = async () => {
   useEffect(() => {
     getPostByLastID();
     // create socket connection to server
-    connectSocket("lamdienchinh@gmail.com");
+    connectSocket();
   }, []);
 
   const elRef = useCallback(

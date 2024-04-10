@@ -4,7 +4,6 @@ import Dictionary from "@/components/dictionary";
 import FlashCardCreate from "@/components/flashcardcreate";
 import Header from "@/components/header";
 import ChatWithGemini from "@/components/geminiAI";
-import ChatWithAnother from "@/components/chat-realtime";
 import Chat from "./components/chat";
 
 export default function HomeLayout({
@@ -24,7 +23,6 @@ export default function HomeLayout({
           <div className="scrollbar overflow-auto flex flex-col gap-4 max-h-[80vh]">
             <FlashCardCreate />
             <ChatWithGemini />
-            <ChatWithAnother />
             <Dictionary />
           </div>
         </div>
