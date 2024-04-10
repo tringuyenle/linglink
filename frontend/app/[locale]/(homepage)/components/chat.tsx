@@ -18,6 +18,7 @@ import { ChatService } from "@/app/services";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { getSocket } from "@/app/services/socketService";
 import { useAppSelector } from "@/app/redux/store";
+import { toast } from "sonner";
 
 export default function Chat() {
   const [openFriend, setOpenFriend] = useState(true);
@@ -41,12 +42,16 @@ export default function Chat() {
 
   const user = useAppSelector(state => state.auth.userinfor)
   const sk = getSocket();
-  const handleRequestFriend = async (request: {type: string, request: string, receiver: string}) => {
+  const handleRequestFriend = async (request: {type: string, request: string, receiver: string, sender: string}) => {
     sk.emit('request-add-friend', { type: request.type, request: request.request, receiver: request.receiver})
     if (request.type === 'ADD') {
+      toast("bạn đã gửi yêu cầu kết bạn đến " + request.sender)
       setSearchResult({ _id: "", email: "", name: "", avatar: ""})
-    } else if (request.type === 'DENY' || request.type === 'ACCEPT') {
-      console.log(request.receiver)
+    } else if (request.type === 'DENY') {
+      toast("Bạn đã từ chối yêu cầu kết bạn từ " + request.sender);
+      setFriendRequests(prevRequests => prevRequests.filter(req => req._id.toString() !== request.request))
+    } else if (request.type === 'ACCEPT') {
+      toast("Bạn đã đồng ý yêu cầu kết bạn từ " + request.sender + ". Bạn cần reload trang web để lấy thông tin kết bạn mới cập nhật!");
       setFriendRequests(prevRequests => prevRequests.filter(req => req._id.toString() !== request.request))
     }
   }
@@ -65,8 +70,11 @@ export default function Chat() {
           if (request.receiver === user._id.toString()) {
             if (request.type === 'ADD') {
               setFriendRequests((prevRequests) => [...prevRequests, request.request]);
-            } else if (request.type === 'NOTI') console.log('here' + request.content)
+            } else if (request.type === 'NOTI') toast(request.content)
           }
+        });
+        sk.on('notification', (noti) => {
+          toast(noti.sender + noti.content);
         });
       }
     }
@@ -128,7 +136,7 @@ export default function Chat() {
                   
                   <div className="flex flex-col w-full">
                     <span>{searchResult.name}</span>
-                    <button className="text-left" onClick={() => (handleRequestFriend({type: 'ADD', receiver: searchResult._id.toString(), request: ""}))}>Add Friend</button>
+                    <button className="text-left" onClick={() => (handleRequestFriend({type: 'ADD', receiver: searchResult._id.toString(), request: "", sender: searchResult.name}))}>Add Friend</button>
                   </div>
                 </div>
               )}
@@ -142,8 +150,8 @@ export default function Chat() {
                     <div className="flex flex-col justify-center">
                       <p>{request.sender.name}</p>
                       <div className="flex gap-x-2">
-                        <button onClick={() => (handleRequestFriend({type: 'ACCEPT', request: request._id.toString(), receiver: request.sender._id.toString()}))}>Accept</button>
-                        <button onClick={() => (handleRequestFriend({type: 'DENY', request: request._id.toString(), receiver: request.sender._id.toString()}))}>Deny</button>
+                        <button onClick={() => (handleRequestFriend({type: 'ACCEPT', request: request._id.toString(), receiver: request.sender._id.toString(), sender: request.sender.name}))}>Accept</button>
+                        <button onClick={() => (handleRequestFriend({type: 'DENY', request: request._id.toString(), receiver: request.sender._id.toString(), sender: request.sender.name}))}>Deny</button>
                       </div>
                     </div>
                   </div>

@@ -115,15 +115,18 @@ export class ChatsGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
                 this.io.to(receiver).emit('request', {type: 'NOTI', content: 'You have already been friend with him', receiver: receiver});
             } else
                 this.io.to(request.receiver).emit('request', {type: 'ADD', request: newRequest, receiver: request.receiver});
+                this.io.to(request.receiver).emit('notification', {content: ' đã gửi lời mời kết bạn đến bạn', sender: client.user.name});
         }
         else if (request.type === 'ACCEPT') {
             const requestDto = {request: request.request}
             const newChatRoom = await this.requestAddFriendService.acceptRequest(client.user, requestDto)
-            this.io.to(request.request).emit('request', {type: 'ACCEPT', chatRoom: newChatRoom, receiver: request.receiver});
+            this.io.to(request.receiver).emit('request', {type: 'ACCEPT', chatRoom: newChatRoom, receiver: request.receiver});
+            this.io.to(request.receiver).emit('notification', {content: ' đã chấp nhận lời mời kết bạn. Hãy tải lại trang để nhắn tin!', sender: client.user.name});
         }
         else if (request.type === 'DENY') {
             const requestDto = {request: request.request}
             await this.requestAddFriendService.denyRequest(client.user, requestDto)
+            this.io.to(request.receiver).emit('notification', {content: ' đã từ chối lời mời kết bạn', sender: client.user.name});
         }
         this.logger.debug(
             ` user ${client.user.name} sent ${request} to ${request.receiver}`,
