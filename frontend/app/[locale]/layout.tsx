@@ -10,6 +10,7 @@ import { NextIntlClientProvider } from "next-intl";
 import "../globals.css";
 import { Suspense } from "react";
 import Loading from "./loading";
+import { Toaster } from "@/components/ui/sonner";
 
 export const fontSans = FontSans({
   subsets: ["latin"],
@@ -64,6 +65,7 @@ export default async function RootLayout({
                   theme="light"
                 />
               </Suspense>
+              <Toaster />
             </NextIntlClientProvider>
           </TanstackProvider>
         </StoreProvider>

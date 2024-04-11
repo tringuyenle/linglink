@@ -5,8 +5,7 @@ import createAxiosInstance from '../utils/axiosInstance';
 
 let socket: Socket<DefaultEventsMap, DefaultEventsMap>;
 
-export async function connectSocket(email: string) {
-    console.log(email);
+export async function connectSocket() {
     const axiosInstance = createAxiosInstance();
     const response: AxiosResponse<any> = await axiosInstance.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-socket-token`

@@ -12,6 +12,8 @@ import { UserSchema } from 'schemas/user.schema';
 import { ChatsGateway } from './chats.gateway';
 import { ChatRoomSchema } from 'schemas/chatroom.schema';
 import { MessageService } from 'src/message/message.service';
+import { RequestAddFriendService } from 'src/request-add-friend/request-add-friend.service';
+import { RequestAddFriendSchema } from 'schemas/request-add-friend.schema';
 
 @Module({
     imports: [
@@ -20,9 +22,10 @@ import { MessageService } from 'src/message/message.service';
             {name: 'Message', schema: MessageSchema},
             {name: 'ChatRoom', schema: ChatRoomSchema},
             {name: 'ReserPasswordToken', schema: ReserPasswordTokenSchema },
+            {name: 'RequestAddFriend', schema: RequestAddFriendSchema },
         ]),
     ],
-    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway, MessageService],
+    providers: [ChatsService, AuthService, UserService, JwtService, ConfigService, ChatsGateway, MessageService, RequestAddFriendService],
     controllers: [ChatsController],
 })
 export class ChatsModule {}
