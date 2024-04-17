@@ -1,5 +1,6 @@
 import React from "react"
 import Header from "@/components/header";
+import Chat from "../(homepage)/components/chat";
 
 export default function ExamLayout({
   children,
@@ -11,6 +12,7 @@ export default function ExamLayout({
     <div className="w-full flex flex-col mb-10">
       <Header />
       {children}
+      <Chat />
     </div>
-  )
+  );
 }

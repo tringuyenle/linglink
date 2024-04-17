@@ -10,11 +10,11 @@ export async function connectSocket() {
     const response: AxiosResponse<any> = await axiosInstance.get(
         `${process.env.NEXT_PUBLIC_BASE_URL}/chats/create-socket-token`
     )
-    socket = io("http://localhost:3000/chats", {
-        auth: {
-            token: response.data,
-        },
-        transports: ['websocket', 'polling'],
+    socket = io(`${process.env.NEXT_PUBLIC_API_URL}/chats`, {
+      auth: {
+        token: response.data,
+      },
+      transports: ["websocket", "polling"],
     });
 }
 
