@@ -78,7 +78,6 @@ export default function Chat() {
         prevRequests.filter((req) => req._id.toString() !== request.request)
       );
     }
-    fetchChatRoom();
   };
   // Lấy danh sách room chat
   async function fetchChatRoom() {
@@ -105,6 +104,10 @@ export default function Chat() {
       });
       sk.on("notification", (noti) => {
         toast(noti.sender + noti.content);
+        fetchChatRoom();
+      });
+      sk.on("accept_status", (noti) => {
+        fetchChatRoom();
       });
     }
   }

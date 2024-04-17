@@ -16,7 +16,6 @@ import { Icons } from "@/components/icons/icons";
 import { toast } from "react-toastify";
 import CreatePost from "./components/createpost";
 import createAxiosInstance from "@/app/utils/axiosInstance";
-import { AxiosResponse } from "axios";
 import { connectSocket } from "@/app/services/socketService";
 
 const TopicSelect: React.FC = () => {
@@ -74,7 +73,7 @@ const Filter: React.FC = () => {
   );
 };
 
-const Home: React.FC = async () => {
+const Home: React.FC = () => {
   const [posts, setPosts] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [end, setEnd] = useState<boolean>(false);
