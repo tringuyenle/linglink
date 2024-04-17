@@ -7,18 +7,15 @@ import { setInfor, setToken, TokenPayload } from "@/app/redux/slices/authSlice";
 import createAxiosInstance from "@/app/utils/axiosInstance";
 import { connectSocket } from "@/app/services/socketService";
 
-const HandleExtendLogin = () => {
-  const dispatch = useAppDispatch();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const accessToken = searchParams.get("accessToken") ?? "";
-  const refreshToken = searchParams.get("refreshToken") ?? "";
-
-  if (!accessToken || !refreshToken) router.push("/login", { scroll: false });
-  const token: TokenPayload = {
-    accessToken: accessToken,
-    refreshToken: refreshToken,
-  };
+export default async function HandleExtendLogin() {
+  const dispatch = useAppDispatch()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const accessToken = searchParams.get('accessToken') ?? ""
+  const refreshToken = searchParams.get('refreshToken') ?? ""
+    
+  if (!accessToken || !refreshToken) router.push('/login', { scroll: false })
+  const token: TokenPayload = {accessToken: accessToken, refreshToken: refreshToken}
 
   setCookie("accessToken", accessToken);
   setCookie("refreshToken", refreshToken);
@@ -29,8 +26,6 @@ const HandleExtendLogin = () => {
   dispatch(setInfor(userinfor.data));
   connectSocket();
   router.push("/", { scroll: false });
-
   return <div>Loading . . .</div>;
 };
 
-export default HandleExtendLogin;
