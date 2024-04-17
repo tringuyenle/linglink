@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Query,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { User } from '../../schemas/user.schema';
@@ -29,7 +30,11 @@ export class UserController {
   }
 
   @Get('search')
-  async searchUsersByName(@Query('name') name: string): Promise<User[]> {
-    return this.userService.searchByName(name);
+  @UseGuards(MyJwtGuard)
+  async searchUsersByName(
+    @Req() req,
+    @Query('name') name: string,
+  ): Promise<User[]> {
+    return this.userService.searchByName(req.user, name);
   }
 }
