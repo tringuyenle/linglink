@@ -7,7 +7,7 @@ import { setInfor, setToken, TokenPayload } from "@/app/redux/slices/authSlice";
 import createAxiosInstance from "@/app/utils/axiosInstance";
 
 
-const handleExtendLogin = async () => {
+export default async function HandleExtendLogin() {
     const dispatch = useAppDispatch()
     const router = useRouter()
     const searchParams = useSearchParams()
@@ -30,5 +30,3 @@ const handleExtendLogin = async () => {
         <div>Loading . . .</div>
     )
 }
-
-export default handleExtendLogin
