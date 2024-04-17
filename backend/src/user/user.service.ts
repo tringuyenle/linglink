@@ -20,9 +20,12 @@ export class UserService {
     );
   }
 
-  async searchByName(name: string) {
+  async searchByName(user: User, name: string) {
     const users = await this.userModel
-      .find({ name: { $regex: name, $options: 'i' } })
+      .find({
+        name: { $regex: name, $options: 'i' },
+        _id: { $ne: user._id },
+      })
       .exec();
     return users;
   }
