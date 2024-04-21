@@ -99,8 +99,10 @@ const FlashcardShowAll = ({ data }: { data: any }) => {
     return result.data;
   };
   return (
-    <div className="w-full">
-      <h2 className="text-center uppercase mb-6 font-semibold">Danh sách Flashcard</h2>
+    <div className="w-full h-full overflow-y-auto no-scrollbar">
+      <h2 className="text-center uppercase mb-6 font-semibold">
+        Danh sách Flashcard
+      </h2>
       <div className="flex flex-col gap-4">
         {data.map((item: any, index: number) => (
           <div
@@ -244,10 +246,8 @@ const FlashcardListDetail = ({
               <DialogTrigger asChild>
                 <Button className="my-4">Xem thống kê</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[600px] flex items-center justify-center">
-                <div className="w-full px-6">
-                  <FlashcardShowAll data={data?.flashcards} />
-                </div>
+              <DialogContent className="sm:max-w-[600px] flex items-center flex-col justify-center max-h-[80vh] overflow-y-auto">
+                <FlashcardShowAll data={data?.flashcards} />
               </DialogContent>
             </Dialog>
           </div>
