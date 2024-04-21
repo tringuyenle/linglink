@@ -38,7 +38,7 @@ export function Chat({ selectedUser, isMobile, chatRoomId }: ChatProps) {
     // get messages history for chat room
     getMessages();
 
-    sk.on('getmessage', (newMessage) => {
+    sk?.on('getmessage', (newMessage) => {
       if (newMessage.chatRoomId == chatRoomId) 
         setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
